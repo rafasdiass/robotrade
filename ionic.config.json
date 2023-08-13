@@ -1,0 +1,7 @@
+{
+  "name": "meuRobo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
