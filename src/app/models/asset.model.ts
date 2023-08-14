@@ -1,0 +1,1 @@
+// modelo para representar um ativo negociavel, como moeda ou ação

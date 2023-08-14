@@ -1,3 +1,4 @@
+// Uma visualização em tempo real dos dados do mercado, talvez com gráficos e indicadores.
 import { Component, OnInit } from '@angular/core';
 
 @Component({
