@@ -1,3 +1,4 @@
+//Uma lista detalhada de todas as negociações realizadas pelo robô.
 import { Component, OnInit } from '@angular/core';
 
 @Component({

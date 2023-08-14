@@ -1,3 +1,4 @@
+// Um lugar para configurar o robô, incluindo definir parâmetros para a estratégia de negociação, definir limites de risco e talvez até mesmo escolher entre diferentes estratégias.
 import { Component, OnInit } from '@angular/core';
 
 @Component({

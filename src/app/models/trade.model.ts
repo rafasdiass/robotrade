@@ -1,0 +1,1 @@
+// um modelo para representar uma negociacao individual, incluindo detalhes como ativo negociado, direcao(compra/venda), o preço de entrada, preço de saida, o resultado(lucro/perda) e a hora da negociação
