@@ -8,7 +8,8 @@
   <base href="/" />
 
   <meta name="color-scheme" content="light dark" />
-  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport"
+    content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
 
@@ -19,8 +20,18 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 </head>
 
-<body>
+<header>
+    <img class="card-img-top" src="holder.js/100px180/" alt="Title">
+    <div class="card-body">
+      <h1>
+        Bem vindo ao RoboTrade!
+      </h1>
+    </div>
+</header>
+
+<body class="body-primary">
   <app-root></app-root>
+  <app-navbar></app-navbar>
 </body>
 
 </html>
