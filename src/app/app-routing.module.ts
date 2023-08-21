@@ -28,6 +28,10 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./components/dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
+  {
+    path: 'trading-strategies',
+    loadChildren: () => import('./components/trading-strategies/trading-strategies.module').then( m => m.TradingStrategiesPageModule)
   }
 ];
 

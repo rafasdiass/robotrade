@@ -76,4 +76,6 @@
     </ion-list>
   </ion-card-content>
 </ion-card>
+<!-- Inclusão do componente TradingStrategies como um componente filho -->
+<app-trading-strategies (strategyChanged)="updateStrategy($event)"></app-trading-strategies>
 </ion-content>
