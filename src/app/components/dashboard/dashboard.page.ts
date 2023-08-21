@@ -52,7 +52,10 @@ export class DashboardPage {
 
   async checkForConsecutiveLosses() {
     const lastTwoTrades = this.tradeHistory.slice(-2).map(trade => trade.status);
+    console.log('Últimos dois trades:', lastTwoTrades);
+
     if (lastTwoTrades.every(status => status === 'loss')) {
+      console.log('Abrindo modal');
       const alert = await this.alertController.create({
         header: 'Atenção',
         message: 'Duas perdas consecutivas. Gostaria de pausar?',
@@ -62,12 +65,18 @@ export class DashboardPage {
     }
   }
 
-  updateCurrentValue(status: string, amount: number) {
-    if (status === 'win') {
-      this.currentValue += amount;
-    } else if (status === 'loss') {
-      this.currentValue -= amount;
+  updateCurrentValue(event: any, trade: any) {
+    const { value } = event.detail;
+    console.log(`Status atualizado para: ${value} com o montante: ${trade.amount}`);
+
+    trade.status = value;
+
+    if (value === 'win') {
+      this.currentValue += trade.amount;
+    } else if (value === 'loss') {
+      this.currentValue -= trade.amount;
     }
+
     this.checkForConsecutiveLosses();
   }
 }

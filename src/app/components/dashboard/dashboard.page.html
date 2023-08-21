@@ -42,7 +42,8 @@
       <ion-list>
         <ion-item *ngFor="let trade of tradeHistory">
           <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
-          <ion-radio-group [(ngModel)]="trade.status" (ionChange)="updateCurrentValue(trade.status, trade.amount)">
+          <ion-radio-group (ionChange)="updateCurrentValue($event, trade)">
+
             <ion-item>
               <ion-label>Win</ion-label>
               <ion-radio slot="start" value="win" [ngClass]="{'win-hover': trade.status === 'win'}"></ion-radio>
