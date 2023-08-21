@@ -1,0 +1,13 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Escolha a Estratégia</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-segment [(ngModel)]="selectedStrategy" (ionChange)="onStrategyChange()">
+      <ion-segment-button value="soros">Soros</ion-segment-button>
+      <ion-segment-button value="maoFixa">Mão Fixa</ion-segment-button>
+      <ion-segment-button value="martingale">Martingale</ion-segment-button>
+      <ion-segment-button value="sorosGale">Soros Gale</ion-segment-button>
+    </ion-segment>
+  </ion-card-content>
+</ion-card>
