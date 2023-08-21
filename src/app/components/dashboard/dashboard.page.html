@@ -43,27 +43,37 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Histórico de Negociações</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-button (click)="addTrade()">Adicionar Trade</ion-button>
-      <ion-list>
-        <ion-item *ngFor="let trade of tradeHistory">
-          <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
-          <ion-radio-group (ionChange)="updateCurrentValue($event, trade)">
-            <ion-item>
-              <ion-label>Win</ion-label>
-              <ion-radio slot="start" value="win"></ion-radio>
-            </ion-item>
-            <ion-item>
-              <ion-label>Loss</ion-label>
-              <ion-radio slot="start" value="loss"></ion-radio>
-            </ion-item>
-          </ion-radio-group>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+ 
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Histórico de Negociações</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-button (click)="addTrade()">Adicionar Trade</ion-button>
+    <ion-list>
+      <ion-item *ngFor="let trade of tradeHistory">
+        <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
+        <ion-radio-group (ionChange)="updateCurrentValue($event, trade)">
+          <ion-item>
+            <ion-label>Win</ion-label>
+            <ion-radio slot="start" value="win" [ngClass]="{'win-hover': trade.status === 'win'}"></ion-radio>
+          </ion-item>
+          <ion-item>
+            <ion-label>Loss</ion-label>
+            <ion-radio slot="start" value="loss" [ngClass]="{'loss-hover': trade.status === 'loss'}"></ion-radio>
+          </ion-item>
+          <!-- Adicionado aqui: opção de cerco -->
+          <ion-item>
+            <ion-label>Cerco de Preço</ion-label>
+            <ion-select [(ngModel)]="trade.priceHedge" (ionChange)="updateCerco(trade)">
+              <ion-select-option value="none">None</ion-select-option>
+              <ion-select-option value="both">Vitória em Ambas</ion-select-option>
+              <ion-select-option value="one">Vitória em Uma</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-radio-group>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>
 </ion-content>

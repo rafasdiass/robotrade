@@ -90,4 +90,12 @@ export class DashboardPage {
 
     this.checkForConsecutiveLosses();
   }
+  updateCerco(trade: any) {
+    if (trade.priceHedge === 'both') {
+      this.currentValue += trade.amount * 2;
+    } else if (trade.priceHedge === 'one') {
+      this.currentValue += trade.amount;
+    }
+  }
+
 }
