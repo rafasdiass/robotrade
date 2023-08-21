@@ -26,6 +26,15 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Valor Atualizado das Operações</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>R$ {{ currentValue }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Histórico de Negociações</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -33,7 +42,7 @@
       <ion-list>
         <ion-item *ngFor="let trade of tradeHistory">
           <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
-          <ion-radio-group [(ngModel)]="trade.status">
+          <ion-radio-group [(ngModel)]="trade.status" (ionChange)="updateCurrentValue(trade.status, trade.amount)">
             <ion-item>
               <ion-label>Win</ion-label>
               <ion-radio slot="start" value="win" [ngClass]="{'win-hover': trade.status === 'win'}"></ion-radio>

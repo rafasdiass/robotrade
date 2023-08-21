@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
-import { PauseModalComponent } from '../pause-modal/pause-modal.component';
+import { ModalController, AlertController } from '@ionic/angular';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -9,9 +9,10 @@ import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 export class DashboardPage {
   private _accountBalance: number = 0;
   initialBank: number = 0;
+  currentValue: number = 0;
   tradeHistory: any[] = [];
 
-  constructor(private modalController: ModalController) { }
+  constructor(private modalController: ModalController, private alertController: AlertController) { }
 
   ngOnInit() { }
 
@@ -36,13 +37,11 @@ export class DashboardPage {
 
     for (let i = 0; i < 10; i++) {
       const roundedAmount = Math.round(nextAmount);
-
       this.tradeHistory.push({
         id: i,
         amount: roundedAmount,
         status: 'pending'
       });
-
       nextAmount += nextAmount * 0.1;
     }
   }
@@ -54,11 +53,21 @@ export class DashboardPage {
   async checkForConsecutiveLosses() {
     const lastTwoTrades = this.tradeHistory.slice(-2).map(trade => trade.status);
     if (lastTwoTrades.every(status => status === 'loss')) {
-      const modal = await this.modalController.create({
-        component: PauseModalComponent,  
-        cssClass: 'my-custom-class'
+      const alert = await this.alertController.create({
+        header: 'Atenção',
+        message: 'Duas perdas consecutivas. Gostaria de pausar?',
+        buttons: ['Cancelar', 'Pausar']
       });
-      return await modal.present();
+      await alert.present();
     }
+  }
+
+  updateCurrentValue(status: string, amount: number) {
+    if (status === 'win') {
+      this.currentValue += amount;
+    } else if (status === 'loss') {
+      this.currentValue -= amount;
+    }
+    this.checkForConsecutiveLosses();
   }
 }
