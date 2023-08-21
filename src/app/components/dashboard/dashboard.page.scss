@@ -1,35 +1,20 @@
-ion-card {
-  margin: 16px;
-  padding: 16px;
-}
+ion-input {
+  --background: #f0f0f0; // cor de fundo
+  --color: #333; // cor do texto
+  --border-radius: 10px; // cantos arredondados
+  --padding-start: 10px; // padding à esquerda
+  --padding-end: 10px; // padding à direita
 
-ion-card-header {
-  background-color: #f1f1f1;
-  padding: 8px;
-}
-
-ion-card-title {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-ion-card-content {
-  ion-button {
-    margin-top: 8px;
-  }
-  p {
-    font-size: 1em;
-    margin-top: 8px;
-  }
-  ion-label {
-    font-size: 1em;
+  &:focus-within {
+    --background: #e0e0e0; // cor de fundo quando focado
+    --color: #000; // cor do texto quando focado
   }
 }
 
-.win-hover:hover {
-  background-color: rgba(0, 255, 0, 0.2);
+.win-hover {
+  --background: lightgreen; // cor de fundo para status "win"
 }
 
-.loss-hover:hover {
-  background-color: rgba(255, 0, 0, 0.2);
+.loss-hover {
+  --background: #fdd; // cor de fundo para status "loss"
 }
