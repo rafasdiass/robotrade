@@ -25,3 +25,11 @@ ion-card-content {
     font-size: 1em;
   }
 }
+
+.win-hover:hover {
+  background-color: rgba(0, 255, 0, 0.2);
+}
+
+.loss-hover:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+}

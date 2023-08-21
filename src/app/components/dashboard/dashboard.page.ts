@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-
+import { ModalController } from '@ionic/angular';
+import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -10,11 +11,9 @@ export class DashboardPage {
   initialBank: number = 0;
   tradeHistory: any[] = [];
 
-  constructor() { }
+  constructor(private modalController: ModalController) { }
 
-  ngOnInit() {
-    // A banca inicial será calculada quando o saldo da conta for atualizado
-  }
+  ngOnInit() { }
 
   get accountBalance(): number {
     return this._accountBalance;
@@ -33,11 +32,9 @@ export class DashboardPage {
   generateTrades() {
     this.tradeHistory = [];
     let nextAmount = this.initialBank / 10;
-    // Se o valor inicial for menor que 5, fixe-o como 5
     nextAmount = Math.max(nextAmount, 5);
 
     for (let i = 0; i < 10; i++) {
-      // Arredonda para o número inteiro mais próximo
       const roundedAmount = Math.round(nextAmount);
 
       this.tradeHistory.push({
@@ -46,11 +43,22 @@ export class DashboardPage {
         status: 'pending'
       });
 
-      nextAmount += nextAmount * 0.1;  // 10% Juros simples
+      nextAmount += nextAmount * 0.1;
     }
   }
 
   addTrade() {
-    // Você pode adicionar mais lógica aqui para adicionar negociações
+    this.checkForConsecutiveLosses();
+  }
+
+  async checkForConsecutiveLosses() {
+    const lastTwoTrades = this.tradeHistory.slice(-2).map(trade => trade.status);
+    if (lastTwoTrades.every(status => status === 'loss')) {
+      const modal = await this.modalController.create({
+        component: PauseModalComponent,  
+        cssClass: 'my-custom-class'
+      });
+      return await modal.present();
+    }
   }
 }

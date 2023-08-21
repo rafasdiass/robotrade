@@ -36,11 +36,11 @@
           <ion-radio-group [(ngModel)]="trade.status">
             <ion-item>
               <ion-label>Win</ion-label>
-              <ion-radio slot="start" value="win"></ion-radio>
+              <ion-radio slot="start" value="win" [ngClass]="{'win-hover': trade.status === 'win'}"></ion-radio>
             </ion-item>
             <ion-item>
               <ion-label>Loss</ion-label>
-              <ion-radio slot="start" value="loss"></ion-radio>
+              <ion-radio slot="start" value="loss" [ngClass]="{'loss-hover': trade.status === 'loss'}"></ion-radio>
             </ion-item>
           </ion-radio-group>
         </ion-item>
