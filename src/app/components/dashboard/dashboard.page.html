@@ -1,23 +1,50 @@
-<div class="dashboard-container">
-  <h1>Robô Dashboard</h1>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Robô Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
 
-  <div class="balance">
-    <h2>Saldo da Conta</h2>
-    <p>R$ <!-- Insira o valor do saldo aqui --></p>
-  </div>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Saldo da Conta</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-input [(ngModel)]="accountBalance" type="number" placeholder="Insira o saldo aqui"></ion-input>
+      <p>R$ {{ accountBalance }}</p>
+    </ion-card-content>
+  </ion-card>
 
-  <div class="open-positions">
-    <h2>Posições Abertas</h2>
-    <!-- Lista de posições abertas aqui -->
-  </div>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Banca Inicial do Dia</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>R$ {{ initialBank }}</p>
+    </ion-card-content>
+  </ion-card>
 
-  <div class="trade-history">
-    <h2>Histórico de Negociações</h2>
-    <!-- Lista de histórico de negociações aqui -->
-  </div>
-
-  <div class="alerts">
-    <h2>Alertas e Notificações</h2>
-    <!-- Lista de alertas e notificações aqui -->
-  </div>
-</div>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Histórico de Negociações</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button (click)="addTrade()">Adicionar Trade</ion-button>
+      <ion-list>
+        <ion-item *ngFor="let trade of tradeHistory">
+          <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
+          <ion-radio-group [(ngModel)]="trade.status">
+            <ion-item>
+              <ion-label>Win</ion-label>
+              <ion-radio slot="start" value="win"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Loss</ion-label>
+              <ion-radio slot="start" value="loss"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
