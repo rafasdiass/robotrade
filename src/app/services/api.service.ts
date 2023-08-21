@@ -6,16 +6,15 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
+  private apiKey = '2UK176WMOKJTX9SC';
+  private baseUrl = 'https://www.alphavantage.co/query?';
 
-  private apiUrl = 'https://your-api-endpoint.com'; // Substitua pelo endpoint da sua API
+  constructor(private http: HttpClient) {}
 
-  constructor(private http: HttpClient) { }
-
-  // Método para coletar sinais do mercado aberto
-  getOpenMarketSignals(): Observable<any> {
-    const endpoint = `${this.apiUrl}/open-market-signals`; // Substitua pelo endpoint correto
+  getStockData(symbol: string): Observable<any> {
+    const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${this.apiKey}`;
     return this.http.get(endpoint);
   }
 
-  // Adicione outros métodos conforme necessário para outras chamadas API
+  // Adicione outros métodos para outras chamadas à API aqui.
 }
