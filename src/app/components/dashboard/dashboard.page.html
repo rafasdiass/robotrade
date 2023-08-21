@@ -26,6 +26,16 @@
 
   <ion-card>
     <ion-card-header>
+      <ion-card-title>Meta Diária (%)</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-input [(ngModel)]="dailyGoal" type="number" placeholder="Insira a meta diária em %"></ion-input>
+      <p>{{ dailyGoal }}%</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
       <ion-card-title>Valor Atualizado das Operações</ion-card-title>
     </ion-card-header>
     <ion-card-content>
@@ -43,14 +53,13 @@
         <ion-item *ngFor="let trade of tradeHistory">
           <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
           <ion-radio-group (ionChange)="updateCurrentValue($event, trade)">
-
             <ion-item>
               <ion-label>Win</ion-label>
-              <ion-radio slot="start" value="win" [ngClass]="{'win-hover': trade.status === 'win'}"></ion-radio>
+              <ion-radio slot="start" value="win"></ion-radio>
             </ion-item>
             <ion-item>
               <ion-label>Loss</ion-label>
-              <ion-radio slot="start" value="loss" [ngClass]="{'loss-hover': trade.status === 'loss'}"></ion-radio>
+              <ion-radio slot="start" value="loss"></ion-radio>
             </ion-item>
           </ion-radio-group>
         </ion-item>

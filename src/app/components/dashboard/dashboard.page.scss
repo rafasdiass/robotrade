@@ -12,9 +12,9 @@ ion-input {
 }
 
 .win-hover {
-  --background: lightgreen; // cor de fundo para status "win"
+  color: green;
 }
 
 .loss-hover {
-  --background: #fdd; // cor de fundo para status "loss"
+  color: red;
 }

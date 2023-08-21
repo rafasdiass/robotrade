@@ -11,6 +11,7 @@ export class DashboardPage {
   initialBank: number = 0;
   currentValue: number = 0;
   tradeHistory: any[] = [];
+  private _dailyGoal: number = 0; // Meta diária em %
 
   constructor(private modalController: ModalController, private alertController: AlertController) { }
 
@@ -25,6 +26,15 @@ export class DashboardPage {
     this.calculateInitialBank();
   }
 
+  get dailyGoal(): number {
+    return this._dailyGoal;
+  }
+
+  set dailyGoal(value: number) {
+    this._dailyGoal = value;
+    this.generateTrades();
+  }
+
   calculateInitialBank() {
     this.initialBank = this._accountBalance * 0.1;
     this.generateTrades();
@@ -32,17 +42,23 @@ export class DashboardPage {
 
   generateTrades() {
     this.tradeHistory = [];
-    let nextAmount = this.initialBank / 10;
-    nextAmount = Math.max(nextAmount, 5);
+    let availableAmount = this.initialBank;
+    const growthRate = this.dailyGoal / 100;
 
     for (let i = 0; i < 10; i++) {
-      const roundedAmount = Math.round(nextAmount);
+      let tradeAmount = Math.round(availableAmount * growthRate);
+      
+      // Asegura que o valor da trade seja pelo menos 5
+      tradeAmount = Math.max(tradeAmount, 5);
+
       this.tradeHistory.push({
         id: i,
-        amount: roundedAmount,
+        amount: tradeAmount,
         status: 'pending'
       });
-      nextAmount += nextAmount * 0.1;
+
+      // Para juros simples, nós adicionamos o valor da trade ao valor disponível
+      availableAmount += tradeAmount;
     }
   }
 
@@ -52,10 +68,7 @@ export class DashboardPage {
 
   async checkForConsecutiveLosses() {
     const lastTwoTrades = this.tradeHistory.slice(-2).map(trade => trade.status);
-    console.log('Últimos dois trades:', lastTwoTrades);
-
     if (lastTwoTrades.every(status => status === 'loss')) {
-      console.log('Abrindo modal');
       const alert = await this.alertController.create({
         header: 'Atenção',
         message: 'Duas perdas consecutivas. Gostaria de pausar?',
@@ -67,8 +80,6 @@ export class DashboardPage {
 
   updateCurrentValue(event: any, trade: any) {
     const { value } = event.detail;
-    console.log(`Status atualizado para: ${value} com o montante: ${trade.amount}`);
-
     trade.status = value;
 
     if (value === 'win') {
