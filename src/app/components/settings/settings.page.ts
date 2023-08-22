@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RoboService } from '../../services/robo.service';
+import { MovingAverageSetting } from "../../models/MovingAverageSetting.model";
 
-interface MovingAverageSetting {
-  type: string;
-  periods: number;
-  currencyPair: string;
-}
 
 @Component({
   selector: 'app-settings',

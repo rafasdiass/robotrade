@@ -1,17 +1,11 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
-import { NavbarComponent } from './components/navbar/navbar.component';
-
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'dashboard',
     pathMatch: 'full'
-  },
-  {
-    path: 'navbar',
-    component: NavbarComponent
   },
   {
     path: 'trade-history',
@@ -44,7 +38,8 @@ const routes: Routes = [
   {
     path: 'moving-average',
     loadChildren: () => import('./indicators/moving-average/moving-average.module').then( m => m.MovingAveragePageModule)
-  }
+  },
+
 ];
 
 @NgModule({
