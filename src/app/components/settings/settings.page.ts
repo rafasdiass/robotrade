@@ -35,21 +35,21 @@ export class SettingsPage implements OnInit, OnDestroy {
   }
 
   get currencyPairsFormArray() {
-    return (this.movingAverageForm.get('currencyPairs') as FormArray);
+    return this.movingAverageForm.get('currencyPairs') as FormArray;
   }
 
   addMovingAverage() {
     if (this.movingAverageForm.valid) {
       const { selectedType, numberOfPeriods, currencyPairs } = this.movingAverageForm.value;
       this.movingAverageSettings.push({ type: selectedType, periods: numberOfPeriods, currencyPairs });
-      // Update RoboService here
+      // Atualizar o RoboService aqui
     } else {
-      // Feedback for the user about invalid fields
+      // Feedback para o usuário sobre campos inválidos
     }
   }
 
   removeMovingAverage(index: number) {
     this.movingAverageSettings.splice(index, 1);
-    // Update RoboService here
+    // Atualizar o RoboService aqui
   }
 }

@@ -86,19 +86,7 @@
     </ion-card-content>
   </ion-card>
 
-  <!-- Sinais do Robô -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Sinais do Robô</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let signal of robotSignals">
-          <ion-label>{{ signal['time'] }}: {{ signal['action'] }} ({{ signal['currencyPair'] }})</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+
 
   <!-- Trading Strategies -->
   <app-trading-strategies (strategyChanged)="updateStrategy($event)"></app-trading-strategies>

@@ -10,14 +10,14 @@
       <ion-label>
         {{ setting.type }} ({{ setting.periods }} períodos) - {{ setting.currencyPairs }}
       </ion-label>
-      <ion-button (click)="removeMovingAverage(i)">Remover</ion-button>
+      <ion-button (click)="removeMovingAverage(i)" color="danger">Remover</ion-button>
     </ion-item>
   </ion-list>
 
   <form [formGroup]="movingAverageForm">
     <ion-item>
       <ion-label>Tipo</ion-label>
-      <ion-select formControlName="selectedType">
+      <ion-select formControlName="selectedType" placeholder="Selecione o Tipo">
         <ion-select-option value="simple">Simples</ion-select-option>
         <ion-select-option value="exponential">Exponencial</ion-select-option>
       </ion-select>
@@ -30,11 +30,11 @@
 
     <ion-item>
       <ion-label>Pares de Moedas</ion-label>
-      <ion-select formControlName="currencyPairs" multiple="true">
+      <ion-select formControlName="currencyPairs" multiple="true" placeholder="Selecione os Pares de Moedas">
         <ion-select-option *ngFor="let pair of currencyPairs" [value]="pair">{{ pair }}</ion-select-option>
       </ion-select>
     </ion-item>
 
-    <ion-button (click)="addMovingAverage()">Adicionar Média Móvel</ion-button>
+    <ion-button (click)="addMovingAverage()" color="primary">Adicionar Média Móvel</ion-button>
   </form>
 </ion-content>

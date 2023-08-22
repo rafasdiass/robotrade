@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
-import { SettingsPage } from '../settings/settings.page'; // importe o seu componente SettingsPage
+import { SettingsPage } from '../settings/settings.page'; // Importe o seu componente SettingsPage
+import { RoboSignalsPage } from '../robo-signals/robo-signals.page'; // Importe o seu componente RoboSignalsPage
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,15 @@ export class NavbarPage implements OnInit {
   async openSettings(ev: any) {
     const popover = await this.popoverController.create({
       component: SettingsPage,
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
+  }
+
+  async openRoboSignals(ev: any) {
+    const popover = await this.popoverController.create({
+      component: RoboSignalsPage,
       event: ev,
       translucent: true
     });
