@@ -1,5 +1,3 @@
-
-
 import { Component, OnInit, inject  } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { Trade } from '../../models/trade.model';
@@ -16,8 +14,6 @@ interface RobotSignal {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-
-
 
 export class DashboardPage implements OnInit {
   private _accountBalance: number = 0;
