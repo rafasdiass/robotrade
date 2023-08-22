@@ -15,6 +15,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   movingAverageForm: FormGroup;
   subscriptions: Subscription[] = [];
   currencyPairs: string[] = [];
+  error: string | null = null;
 
   constructor(
     private roboService: RoboService, 
@@ -47,14 +48,14 @@ export class SettingsPage implements OnInit, OnDestroy {
     if (this.movingAverageForm.valid) {
       const { selectedType, numberOfPeriods, currencyPairs } = this.movingAverageForm.value;
       this.movingAverageSettings.push({ type: selectedType, periods: numberOfPeriods, currencyPairs });
-      // Update RoboService here
+      this.roboService.setMovingAverageSettings(this.movingAverageSettings); // Atualiza o RoboService
     } else {
-      // Feedback to the user about invalid fields
+      this.error = 'Por favor, preencha todos os campos necessários.'; // Feedback para o usuário
     }
   }
 
   removeMovingAverage(index: number) {
     this.movingAverageSettings.splice(index, 1);
-    // Update RoboService here
+    this.roboService.setMovingAverageSettings(this.movingAverageSettings); // Atualiza o RoboService
   }
 }

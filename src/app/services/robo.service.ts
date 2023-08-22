@@ -13,10 +13,12 @@ export class RoboService {
   private RSI: { [currencyPair: string]: number } = {};
   private movingAverageSettings: MovingAverageSetting[] = [];
 
+  public movingAverageSettings$: BehaviorSubject<MovingAverageSetting[]> = new BehaviorSubject<MovingAverageSetting[]>([]);
+
   constructor(private currencyPairService: CurrencyPairService) {
     this.startPredictions();
     this.currencyPairService.currencyPairs$.subscribe(pairs => {
-      
+      // Your code here
     });
   }
 
@@ -53,10 +55,14 @@ export class RoboService {
 
   setMovingAverageSettings(settings: MovingAverageSetting[]) {
     this.movingAverageSettings = settings;
+    this.movingAverageSettings$.next(this.movingAverageSettings);
     this.applyMovingAverageSettings();
   }
 
   private applyMovingAverageSettings() {
+    // Limpa os valores anteriores
+    this.movingAverages = {};
+
     this.movingAverageSettings.forEach(setting => {
       const { currencyPairs, type, periods } = setting;
       currencyPairs.forEach(pair => {

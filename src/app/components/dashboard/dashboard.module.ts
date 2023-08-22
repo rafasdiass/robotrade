@@ -23,6 +23,7 @@ import { NavbarPageModule } from './../navbar/navbar.module';
     RoboSignalsPageModule,
     NavbarPageModule
   ],
-  declarations: [DashboardPage]
+  declarations: [DashboardPage],
+  exports : [DashboardPage]
 })
 export class DashboardPageModule {}
