@@ -12,36 +12,55 @@ export class MovingAveragePage implements OnInit {
   results: { [key: string]: number | null } = {};
   availableCurrencyPairs: string[] = [];
   currencyPairs: { [key: string]: boolean } = {};
-  isLoading: boolean = false; 
+  isLoading: boolean = false;
   error: string | null = null;
 
   constructor(private roboService: RoboService) {
-    this.availableCurrencyPairs = this.roboService.currencyPairs;
+    this.roboService.currencyPairs$.subscribe((pairs) => {
+      this.availableCurrencyPairs = pairs;
+      // Inicializando o objeto currencyPairs com valores false
+      pairs.forEach(pair => this.currencyPairs[pair] = false);
+    });
   }
 
-  objectKeys(obj: any): string[] {
-    return Object.keys(obj);
-  } 
   ngOnInit() {
   }
 
+  // Atualiza o estado do par de moedas selecionado
   updateSelectedPairs(pair: string) {
-    // Implemente aqui a lógica para manter apenas até 5 pares de moedas selecionados, se necessário
+    if (this.currencyPairs[pair]) {
+      this.currencyPairs[pair] = false;
+    } else {
+      // Garantir que não mais do que 5 pares sejam selecionados
+      const selectedCount = Object.values(this.currencyPairs).filter(val => val).length;
+      if (selectedCount < 5) {
+        this.currencyPairs[pair] = true;
+      }
+    }
+  }
+
+  // Obter as chaves do objeto currencyPairs
+  get objectKeys() {
+    return Object.keys(this.currencyPairs);
   }
 
   calculateMovingAverage() {
     if (this.numberOfPeriods && this.selectedType) {
       this.isLoading = true;
-      Object.keys(this.currencyPairs).forEach((pair) => {
-        if (this.currencyPairs[pair]) {
-          this.roboService.updateMovingAverage(pair, this.selectedType, Number(this.numberOfPeriods));
-          this.results[pair] = this.roboService.getMovingAverage(pair);
-        }
-      });
+      const selectedPairs = Object.keys(this.currencyPairs).filter((pair) => this.currencyPairs[pair]);
+
+      const settings = {
+        currencyPairs: selectedPairs,
+        type: this.selectedType,
+        periods: Number(this.numberOfPeriods),
+      };
+
+      this.roboService.setMovingAverageSettings([settings]);
       this.isLoading = false;
     } else {
       this.error = 'Por favor, selecione todos os campos necessários.';
     }
-    this.roboService.evaluateMovingAverageCrossovers();
+
+    this.roboService.triggerEvaluateIndicators();
   }
 }

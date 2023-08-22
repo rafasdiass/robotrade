@@ -33,7 +33,7 @@
   </ion-list>
 
   <!-- Resultados -->
-  <ion-list *ngFor="let pair of objectKeys(currencyPairs)">
+  <ion-list *ngFor="let pair of objectKeys">
     <ion-item *ngIf="currencyPairs[pair]">
       <ion-label>
         <strong>{{ pair }}</strong>: {{ results[pair] || 'N/A' }}

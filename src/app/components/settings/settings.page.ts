@@ -15,7 +15,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   currencyPairs: string[] = [];
 
-  constructor(private roboService: RoboService, private fb: FormBuilder) {
+  constructor(private RoboService: RoboService, private fb: FormBuilder) {
     this.movingAverageForm = this.fb.group({
       selectedType: ['', Validators.required],
       numberOfPeriods: [null, [Validators.required, Validators.min(1)]],
@@ -24,12 +24,10 @@ export class SettingsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const someSubscription = this.roboService.predictions$.subscribe(predictions => {
-      // Alguma lógica aqui
+    const currencyPairsSubscription = this.RoboService.currencyPairs$.subscribe(pairs => {
+      this.currencyPairs = pairs;
     });
-    this.subscriptions.push(someSubscription);
-
-    this.currencyPairs = this.roboService.getListOfCurrencies();
+    this.subscriptions.push(currencyPairsSubscription);
   }
 
   ngOnDestroy() {
