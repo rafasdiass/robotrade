@@ -19,5 +19,4 @@ export class ApiService {
     const endpoint = `${this.baseUrl}function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=${this.apiKey}`;
     return this.http.get(endpoint);
   }
-  
 }

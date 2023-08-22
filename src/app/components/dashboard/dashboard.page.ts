@@ -1,22 +1,40 @@
-import { Component, inject } from '@angular/core';
+
+
+import { Component, OnInit, inject  } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { Trade } from '../../models/trade.model';
+
+interface RobotSignal {
+  time: string;
+  action: string;
+  currencyPair: string;
+  // outras propriedades aqui, se houver
+}
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-export class DashboardPage {
+
+
+
+export class DashboardPage implements OnInit {
   private _accountBalance: number = 0;
   private _initialBank: number = 0;
   private _currentValue: number = 0;
   private _dailyGoal: number = 0;
   tradeHistory: Trade[] = [];
   currentStrategy!: string;
+  
+  robotSignals: RobotSignal[] = [];  // Movi esta linha para dentro da classe
 
-  private ModalController = inject(ModalController)
-  private alertController = inject(AlertController)
+
+
+  constructor(private modalController: ModalController, private alertController: AlertController) {
+    this.simulateRobotSignals();
+  }
+
 
   ngOnInit() { }
 
@@ -102,5 +120,17 @@ export class DashboardPage {
   updateStrategy(newStrategy: string) {
     this.currentStrategy = newStrategy;
     this.generateTrades();
+  }
+
+  simulateRobotSignals() {
+    const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD'];
+  
+    setInterval(() => {
+      const currentTime = new Date().toLocaleTimeString();
+      const action = Math.random() > 0.5 ? 'Compra' : 'Venda';
+      const currencyPair = currencyPairs[Math.floor(Math.random() * currencyPairs.length)];
+  
+      this.robotSignals.push({ time: currentTime, action: action, currencyPair: currencyPair });
+    }, 5000);
   }
 }

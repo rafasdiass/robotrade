@@ -15,6 +15,7 @@ import { RoboSignalsPage } from './robo-signals.page';
     IonicModule,
     RoboSignalsPageRoutingModule
   ],
-  declarations: [RoboSignalsPage]
+  declarations: [RoboSignalsPage],
+  exports : [RoboSignalsPage]
 })
 export class RoboSignalsPageModule {}
