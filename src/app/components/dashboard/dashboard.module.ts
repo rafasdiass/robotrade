@@ -8,6 +8,7 @@ import { DashboardPageRoutingModule } from './dashboard-routing.module';
 
 import { DashboardPage } from './dashboard.page';
 import { TradingStrategiesPageModule } from '../trading-strategies/trading-strategies.module';
+import { RoboSignalsPageModule } from '../robo-signals/robo-signals.module';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { TradingStrategiesPageModule } from '../trading-strategies/trading-strat
     FormsModule,
     IonicModule,
     DashboardPageRoutingModule,
-    TradingStrategiesPageModule
+    TradingStrategiesPageModule,
+    RoboSignalsPageModule
   ],
   declarations: [DashboardPage]
 })

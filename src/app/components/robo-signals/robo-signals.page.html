@@ -10,7 +10,7 @@
   <ion-list>
     <ion-item *ngFor="let key of currentPredictions | keyvalue">
       <ion-label>{{ key.key }}</ion-label>
-      <ion-badge>{{ key.value }}</ion-badge>
+      <ion-badge>{{ key.value === 'Compra' ? 'Compra' : 'Venda' }}</ion-badge>
     </ion-item>
   </ion-list>
 </ion-content>

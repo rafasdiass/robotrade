@@ -75,5 +75,99 @@
     </ion-card-content>
   </ion-card>
 
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Robô Dashboard</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Saldo da Conta</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-input [(ngModel)]="accountBalance" type="number" placeholder="Insira o saldo aqui"></ion-input>
+        <p>R$ {{ accountBalance }}</p>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Banca Inicial do Dia</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ initialBank }}</p>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Meta Diária (%)</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-input [(ngModel)]="dailyGoal" type="number" placeholder="Insira a meta diária em %"></ion-input>
+        <p>{{ dailyGoal }}%</p>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Valor Atualizado das Operações</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>R$ {{ currentValue }}</p>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Histórico de Negociações</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button (click)="addTrade()">Adicionar Trade</ion-button>
+        <ion-list>
+          <ion-item *ngFor="let trade of tradeHistory">
+            <ion-label>Entrada: R$ {{ trade.amount }}</ion-label>
+            <ion-radio-group (ionChange)="updateCurrentValue($event, trade)">
+              <ion-item>
+                <ion-label>Win</ion-label>
+                <ion-radio slot="start" value="win" [ngClass]="{'win-hover': trade.status === 'win'}"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>Loss</ion-label>
+                <ion-radio slot="start" value="loss" [ngClass]="{'loss-hover': trade.status === 'loss'}"></ion-radio>
+              </ion-item>
+              <ion-item>
+                <ion-label>Cerco de Preço</ion-label>
+                <ion-select [(ngModel)]="trade.priceHedge" (ionChange)="updateCerco(trade)">
+                  <ion-select-option value="none">Nenhum</ion-select-option>
+                  <ion-select-option value="both">Vitória em Ambas</ion-select-option>
+                  <ion-select-option value="one">Vitória em Uma</ion-select-option>
+                </ion-select>
+              </ion-item>
+            </ion-radio-group>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  
+    <ion-card>
+    <ion-card-header>
+      <ion-card-title>Sinais do Robô</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let signal of robotSignals">
+          <ion-label>{{ signal['time'] }}: {{ signal['action'] }} ({{ signal['currencyPair'] }})</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+  
+    <app-trading-strategies (strategyChanged)="updateStrategy($event)"></app-trading-strategies>
+  </ion-content>
+  
+
   <app-trading-strategies (strategyChanged)="updateStrategy($event)"></app-trading-strategies>
 </ion-content>

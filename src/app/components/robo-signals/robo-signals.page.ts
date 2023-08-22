@@ -7,11 +7,10 @@ import { RoboService } from '../../services/robo.service';
   styleUrls: ['./robo-signals.page.scss'],
 })
 export class RoboSignalsPage implements OnInit {
-
   currentPredictions: { [key: string]: string } = {};
+  robotSignals: { [key: string]: any }[] = [];
 
   constructor(private roboService: RoboService) {
-    // Se inscreve no BehaviorSubject para obter as últimas previsões
     this.roboService.predictions$.subscribe(predictions => {
       this.currentPredictions = predictions;
     });
