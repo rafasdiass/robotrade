@@ -12,4 +12,9 @@ export class NavbarPage implements OnInit {
   ngOnInit() {
   }
 
+  openSettings() {
+    // Código para abrir a página de configurações ou executar outras ações
+    console.log('Configurações clicadas.');
+  }
+
 }
