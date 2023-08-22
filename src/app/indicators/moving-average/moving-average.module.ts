@@ -15,6 +15,7 @@ import { MovingAveragePage } from './moving-average.page';
     IonicModule,
     MovingAveragePageRoutingModule
   ],
-  declarations: [MovingAveragePage]
+  declarations: [MovingAveragePage],
+  exports :[MovingAveragePage]
 })
 export class MovingAveragePageModule {}
