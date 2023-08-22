@@ -1,37 +1,52 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, timer } from 'rxjs';
+import { MovingAverageSetting } from "../models/MovingAverageSetting.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoboService {
-  public currencyPairs: string[] = []; 
+  public currencyPairs: string[] = [];
   private lastThreeCloses: { [currencyPair: string]: number[] } = {};
   public predictions$: BehaviorSubject<{ [currencyPair: string]: string }> = new BehaviorSubject({});
   private movingAverages: { [currencyPair: string]: number } = {};
-  private fastMovingAverages: { [currencyPair: string]: number } = {};
-  private slowMovingAverages: { [currencyPair: string]: number } = {};
+  private movingAverageSettings: MovingAverageSetting[] = [];
 
   constructor(private apiService: ApiService) {
     this.updateCurrencyPairs();
     this.startPredictions();
   }
-
+  getMovingAverage(pair: string): number | null {
+    return this.movingAverages[pair] || null;
+  }
   updateCurrencyPairs(): void {
     this.apiService.getListOfCurrencies().subscribe(data => {
       if (data['bestMatches']) {
         this.currencyPairs = data['bestMatches'].map((match: any) => match['1. symbol']);
-        this.currencyPairs.forEach(pair => {
-          if (!this.lastThreeCloses[pair]) {
-            this.lastThreeCloses[pair] = [];
-          }
-        });
       }
     });
   }
 
-  getNextFiveMinuteMark(): number {
+  getListOfCurrencies(): string[] {
+    return this.currencyPairs;
+  }
+
+  setMovingAverageSettings(settings: MovingAverageSetting[]) {
+    this.movingAverageSettings = settings;
+    this.applyMovingAverageSettings();
+  }
+
+  private applyMovingAverageSettings() {
+    this.movingAverageSettings.forEach(setting => {
+      const { currencyPairs, type, periods } = setting;
+      currencyPairs.forEach(pair => {
+        this.updateMovingAverage(pair, type, periods);
+      });
+    });
+  }
+
+  private getNextFiveMinuteMark(): number {
     const now = new Date();
     const next = new Date(now);
     next.setMinutes(Math.ceil(now.getMinutes() / 5) * 5);
@@ -44,70 +59,46 @@ export class RoboService {
     const initialDelay = this.getNextFiveMinuteMark();
     timer(initialDelay, 300000)
       .subscribe(() => {
-        this.currencyPairs.forEach(pair => {
-          this.apiService.getStockData(pair).subscribe((data: any) => {
-            const latestData = data['Time Series (5min)'];
-            for (const time in latestData) {
-              const closePrice = parseFloat(latestData[time]['4. close']);
-              
-              if (this.lastThreeCloses[pair].length >= 3) {
-                this.lastThreeCloses[pair].shift();
-              }
-              this.lastThreeCloses[pair].push(closePrice);
-
-              if (this.lastThreeCloses[pair].length === 3) {
-                const average = this.lastThreeCloses[pair].reduce((a, b) => a + b) / 3;
-                const lastClose = this.lastThreeCloses[pair][this.lastThreeCloses[pair].length - 1];
-                
-                if (average > lastClose) {
-                  this.predictions$.next({ ...this.predictions$.getValue(), [pair]: 'Compra' });
-                } else {
-                  this.predictions$.next({ ...this.predictions$.getValue(), [pair]: 'Venda' });
-                }
-              }
-            }
-          });
-        });
+        this.applyMovingAverageSettings();
+        this.evaluateMovingAverageCrossovers();
       });
   }
 
   updateMovingAverage(pair: string, type: string, periods: number) {
-    if (this.lastThreeCloses[pair].length >= periods) {
+    if (this.lastThreeCloses[pair] && this.lastThreeCloses[pair].length >= periods) {
+      let sum, average;
+
       if (type === 'SMA') {
-        const lastNPrices = this.lastThreeCloses[pair].slice(-periods);
-        const sum = lastNPrices.reduce((acc, price) => acc + price, 0);
-        this.movingAverages[pair] = sum / periods;
-      } else if (type === 'EMA') {
+        sum = this.lastThreeCloses[pair].slice(-periods).reduce((acc, price) => acc + price, 0);
+        average = sum / periods;
+      } else {
         const multiplier = 2 / (periods + 1);
-        let EMA = this.lastThreeCloses[pair].slice(0, periods).reduce((acc, price) => acc + price, 0) / periods;
+        average = this.lastThreeCloses[pair].slice(0, periods).reduce((acc, price) => acc + price, 0) / periods;
         for (let i = periods; i < this.lastThreeCloses[pair].length; i++) {
           const closePrice = this.lastThreeCloses[pair][i];
-          EMA = (closePrice - EMA) * multiplier + EMA;
+          average = (closePrice - average) * multiplier + average;
         }
-        this.movingAverages[pair] = EMA;
       }
-    }
-  }
 
-  getMovingAverage(pair: string): number {
-    return this.movingAverages[pair] || 0;
+      this.movingAverages[pair] = average;
+    }
   }
 
   evaluateMovingAverageCrossovers() {
     this.currencyPairs.forEach(pair => {
-      const fastMA = this.fastMovingAverages[pair] || 0;
-      const slowMA = this.slowMovingAverages[pair] || 0;
-  
-      if (fastMA && slowMA) {
+      const ma = this.movingAverages[pair] || 0;
+      const lastClose = this.lastThreeCloses[pair] ? this.lastThreeCloses[pair].slice(-1)[0] : 0;
+
+      if (ma && lastClose) {
         const previousSignal = this.predictions$.getValue()[pair] || null;
         let newSignal = null;
-  
-        if (fastMA > slowMA) {
+
+        if (ma > lastClose) {
           newSignal = 'Compra';
         } else {
           newSignal = 'Venda';
         }
-  
+
         if (previousSignal !== newSignal) {
           this.predictions$.next({ ...this.predictions$.getValue(), [pair]: newSignal });
         }
