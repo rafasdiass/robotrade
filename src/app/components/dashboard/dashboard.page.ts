@@ -1,7 +1,6 @@
-import { Component, Injectable, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { Trade } from '../../models/trade.model';
-
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +15,7 @@ export class DashboardPage {
   tradeHistory: Trade[] = [];
   currentStrategy!: string;
 
-  private modalController = inject(ModalController)
+  private ModalController = inject(ModalController)
   private alertController = inject(AlertController)
 
   ngOnInit() { }
