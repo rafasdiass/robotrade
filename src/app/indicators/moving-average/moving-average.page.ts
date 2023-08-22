@@ -9,18 +9,38 @@ import { RoboService } from '../../services/robo.service';
 export class MovingAveragePage implements OnInit {
   selectedType: string = '';
   numberOfPeriods: number | null = null;
-  result: number | null = null;
-  currencyPair: string = 'USDJPY'; // Você pode permitir que o usuário selecione isso
+  results: { [key: string]: number | null } = {};
+  availableCurrencyPairs: string[] = [];
+  currencyPairs: { [key: string]: boolean } = {};
+  isLoading: boolean = false; 
+  error: string | null = null;
 
-  constructor(private roboService: RoboService) { }
+  constructor(private roboService: RoboService) {
+    this.availableCurrencyPairs = this.roboService.currencyPairs;
+  }
 
+  objectKeys(obj: any): string[] {
+    return Object.keys(obj);
+  } 
   ngOnInit() {
+  }
+
+  updateSelectedPairs(pair: string) {
+    // Implemente aqui a lógica para manter apenas até 5 pares de moedas selecionados, se necessário
   }
 
   calculateMovingAverage() {
     if (this.numberOfPeriods && this.selectedType) {
-      this.roboService.updateMovingAverage(this.currencyPair, this.selectedType, Number(this.numberOfPeriods));
-      this.result = this.roboService.getMovingAverage(this.currencyPair);
+      this.isLoading = true;
+      Object.keys(this.currencyPairs).forEach((pair) => {
+        if (this.currencyPairs[pair]) {
+          this.roboService.updateMovingAverage(pair, this.selectedType, Number(this.numberOfPeriods));
+          this.results[pair] = this.roboService.getMovingAverage(pair);
+        }
+      });
+      this.isLoading = false;
+    } else {
+      this.error = 'Por favor, selecione todos os campos necessários.';
     }
   }
 }

@@ -1,19 +1,31 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, timer } from 'rxjs';
-
 @Injectable({
   providedIn: 'root'
 })
 export class RoboService {
-  private currencyPairs: string[] = ['USDJPY', 'EURUSD', 'GBPUSD'];
+  public currencyPairs: string[] = [];  // Inicializado como vazio
   private lastThreeCloses: { [currencyPair: string]: number[] } = {};
   public predictions$: BehaviorSubject<{ [currencyPair: string]: string }> = new BehaviorSubject({});
   private movingAverages: { [currencyPair: string]: number } = {};
 
   constructor(private apiService: ApiService) {
-    this.currencyPairs.forEach(pair => this.lastThreeCloses[pair] = []);
+    this.updateCurrencyPairs();  // Atualiza currencyPairs a partir da API
     this.startPredictions();
+  }
+
+  updateCurrencyPairs(): void {
+    this.apiService.getListOfCurrencies().subscribe(data => {
+      if (data['bestMatches']) {
+        this.currencyPairs = data['bestMatches'].map((match: any) => match['1. symbol']);
+        this.currencyPairs.forEach(pair => {
+          if (!this.lastThreeCloses[pair]) {
+            this.lastThreeCloses[pair] = [];
+          }
+        });
+      }
+    });
   }
 
   getNextFiveMinuteMark(): number {
@@ -27,13 +39,14 @@ export class RoboService {
 
   startPredictions() {
     const initialDelay = this.getNextFiveMinuteMark();
-    timer(initialDelay, 300000) // Starts at the next 5-min mark, then every 5 mins
+    timer(initialDelay, 300000)
       .subscribe(() => {
         this.currencyPairs.forEach(pair => {
           this.apiService.getStockData(pair).subscribe((data: any) => {
             const latestData = data['Time Series (5min)'];
             for (const time in latestData) {
               const closePrice = parseFloat(latestData[time]['4. close']);
+              
               if (this.lastThreeCloses[pair].length >= 3) {
                 this.lastThreeCloses[pair].shift();
               }
@@ -57,19 +70,24 @@ export class RoboService {
 
   updateMovingAverage(pair: string, type: string, periods: number) {
     if (this.lastThreeCloses[pair].length >= periods) {
-      let movingAverage = 0;
-      if (type === 'simple') {
+      if (type === 'SMA') {
         const lastNPrices = this.lastThreeCloses[pair].slice(-periods);
         const sum = lastNPrices.reduce((acc, price) => acc + price, 0);
-        movingAverage = sum / periods;
-      } else if (type === 'exponential') {
-        // Implemente sua lógica de média móvel exponencial aqui
+        this.movingAverages[pair] = sum / periods;
+      } else if (type === 'EMA') {
+        const multiplier = 2 / (periods + 1);
+        let EMA = this.lastThreeCloses[pair].slice(0, periods).reduce((acc, price) => acc + price, 0) / periods; // SMA as the first EMA
+        for (let i = periods; i < this.lastThreeCloses[pair].length; i++) {
+          const closePrice = this.lastThreeCloses[pair][i];
+          EMA = (closePrice - EMA) * multiplier + EMA;
+        }
+        this.movingAverages[pair] = EMA;
       }
-      this.movingAverages[pair] = movingAverage;
     }
   }
 
   getMovingAverage(pair: string): number {
     return this.movingAverages[pair] || 0;
   }
+
 }

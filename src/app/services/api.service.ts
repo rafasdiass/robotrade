@@ -16,7 +16,7 @@ export class ApiService {
     return this.http.get(endpoint);
   }
   getListOfCurrencies(): Observable<any> {
-    const endpoint = `${this.baseUrl}function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=${this.apiKey}`;
+    const endpoint = `${this.baseUrl}function=SYMBOL_SEARCH&keywords=currency&apikey=${this.apiKey}`;
     return this.http.get(endpoint);
   }
 }

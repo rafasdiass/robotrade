@@ -1,30 +1,51 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>
-      Média Móvel
-    </ion-title>
+    <ion-title>Média Móvel</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
     <ion-item>
-      <ion-label>Escolha o tipo</ion-label>
+      <ion-label position="stacked">Tipo de Média Móvel</ion-label>
       <ion-select [(ngModel)]="selectedType">
-        <ion-select-option value="simple">Simples</ion-select-option>
-        <ion-select-option value="exponential">Exponencial</ion-select-option>
+        <ion-select-option value="SMA">SMA</ion-select-option>
+        <ion-select-option value="EMA">EMA</ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item>
-      <ion-label>Número de Períodos</ion-label>
-      <ion-input [(ngModel)]="numberOfPeriods" type="number"></ion-input>
+      <ion-label position="stacked">Número de Períodos</ion-label>
+      <ion-input type="number" [(ngModel)]="numberOfPeriods"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Selecione até 5 Pares de Moedas</ion-label>
+      <ion-list *ngFor="let pair of availableCurrencyPairs">
+        <ion-item>
+          <ion-checkbox slot="start" [(ngModel)]="currencyPairs[pair]" (ionChange)="updateSelectedPairs(pair)"></ion-checkbox>
+          <ion-label>{{ pair }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-item>
+
+    <ion-button expand="block" (click)="calculateMovingAverage()">Calcular Média Móvel</ion-button>
+  </ion-list>
+
+  <!-- Resultados -->
+  <ion-list *ngFor="let pair of objectKeys(currencyPairs)">
+    <ion-item *ngIf="currencyPairs[pair]">
+      <ion-label>
+        <strong>{{ pair }}</strong>: {{ results[pair] || 'N/A' }}
+      </ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-button (click)="calculateMovingAverage()">Calcular</ion-button>
-
-  <div *ngIf="result !== null">
-    <p>Resultado: {{ result }}</p>
-  </div>
+  <!-- Exibir spinner se carregando -->
+  <ion-spinner *ngIf="isLoading"></ion-spinner>
+  
+  <!-- Exibir mensagem de erro se houver -->
+  <ion-text color="danger" *ngIf="error">
+    {{ error }}
+  </ion-text>
 </ion-content>
