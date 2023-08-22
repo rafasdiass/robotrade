@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+
+
+import { Component, OnInit, inject  } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { Trade } from '../../models/trade.model';
 
@@ -27,9 +29,12 @@ export class DashboardPage implements OnInit {
   
   robotSignals: RobotSignal[] = [];  // Movi esta linha para dentro da classe
 
+
+
   constructor(private modalController: ModalController, private alertController: AlertController) {
     this.simulateRobotSignals();
   }
+
 
   ngOnInit() { }
 
