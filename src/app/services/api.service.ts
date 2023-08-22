@@ -15,6 +15,9 @@ export class ApiService {
     const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${this.apiKey}`;
     return this.http.get(endpoint);
   }
-
-  // Adicione outros métodos para outras chamadas à API aqui.
+  getListOfCurrencies(): Observable<any> {
+    const endpoint = `${this.baseUrl}function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=JPY&apikey=${this.apiKey}`;
+    return this.http.get(endpoint);
+  }
+  
 }

@@ -32,6 +32,14 @@ const routes: Routes = [
   {
     path: 'trading-strategies',
     loadChildren: () => import('./components/trading-strategies/trading-strategies.module').then( m => m.TradingStrategiesPageModule)
+  },
+  {
+    path: 'robo-signals',
+    loadChildren: () => import('./components/robo-signals/robo-signals.module').then( m => m.RoboSignalsPageModule)
+  },
+  {
+    path: 'coins',
+    loadChildren: () => import('./components/coins/coins.module').then( m => m.CoinsPageModule)
   }
 ];
 

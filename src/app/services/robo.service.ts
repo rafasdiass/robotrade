@@ -6,45 +6,46 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class RoboService {
-
-  private symbol = 'AAPL'; // símbolo da ação que o robô vai negociar
-  private lastThreeCloses: number[] = []; // últimos três preços de fechamento
-  
-  // BehaviorSubject para emitir previsões sobre o próximo movimento do candle.
-  public prediction$: BehaviorSubject<string> = new BehaviorSubject('Indeterminado');
+  private currencyPairs: string[] = ['USDJPY', 'EURUSD', 'GBPUSD']; // Exemplo de pares de moedas que o robô vai negociar
+  private lastThreeCloses: { [currencyPair: string]: number[] } = {}; // últimos três preços de fechamento para cada par de moedas
+  public predictions$: BehaviorSubject<{ [currencyPair: string]: string }> = new BehaviorSubject({});
 
   constructor(private apiService: ApiService) {
-    // Inicia a estratégia de previsão.
-    this.startPrediction();
+    // Aqui você pode substituir com uma chamada para obter uma lista real de pares de moedas da sua API
+    // Exemplo: this.apiService.getListOfCurrencies().subscribe(data => { ... });
+    this.currencyPairs.forEach(pair => this.lastThreeCloses[pair] = []);
+    this.startPredictions();
   }
 
-  // Método para iniciar a estratégia de previsão.
-  startPrediction() {
-    this.prediction$.next('Iniciando previsão...');
+  startPredictions() {
+    this.currencyPairs.forEach(pair => {
+      this.apiService.getStockData(pair).subscribe(data => {
+        const latestData = data['Time Series (5min)'];
+        for (const time in latestData) {
+          const closePrice = parseFloat(latestData[time]['4. close']);
+          
+          if (!this.lastThreeCloses[pair]) {
+            this.lastThreeCloses[pair] = [];
+          }
+          
+          if (this.lastThreeCloses[pair].length >= 3) {
+            this.lastThreeCloses[pair].shift();
+          }
+          
+          this.lastThreeCloses[pair].push(closePrice);
 
-    // Assuma que temos um método para buscar dados de candle de 5 minutos
-    this.apiService.getStockData(this.symbol).subscribe(data => {
-      const latestData = data['Time Series (5min)'];
-      for (const time in latestData) {
-        const closePrice = parseFloat(latestData[time]['4. close']);
-        
-        // Atualiza o array dos últimos três preços de fechamento
-        if (this.lastThreeCloses.length >= 3) {
-          this.lastThreeCloses.shift();
-        }
-        this.lastThreeCloses.push(closePrice);
-
-        // Estratégia de exemplo para previsão
-        if (this.lastThreeCloses.length === 3) {
-          const average = this.lastThreeCloses.reduce((a, b) => a + b) / 3;
-          const lastClose = this.lastThreeCloses[this.lastThreeCloses.length - 1];
-          if (average > lastClose) {
-            this.prediction$.next('Prevendo que o próximo candle subirá');
-          } else {
-            this.prediction$.next('Prevendo que o próximo candle descerá');
+          if (this.lastThreeCloses[pair].length === 3) {
+            const average = this.lastThreeCloses[pair].reduce((a, b) => a + b) / 3;
+            const lastClose = this.lastThreeCloses[pair][this.lastThreeCloses[pair].length - 1];
+            
+            if (average > lastClose) {
+              this.predictions$.next({ [pair]: 'Prevendo que o próximo candle subirá' });
+            } else {
+              this.predictions$.next({ [pair]: 'Prevendo que o próximo candle descerá' });
+            }
           }
         }
-      }
+      });
     });
   }
 }
