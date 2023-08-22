@@ -18,7 +18,6 @@ export class MovingAveragePage implements OnInit {
   constructor(private roboService: RoboService) {
     this.roboService.currencyPairs$.subscribe((pairs) => {
       this.availableCurrencyPairs = pairs;
-      // Inicializando o objeto currencyPairs com valores false
       pairs.forEach(pair => this.currencyPairs[pair] = false);
     });
   }
@@ -26,12 +25,10 @@ export class MovingAveragePage implements OnInit {
   ngOnInit() {
   }
 
-  // Atualiza o estado do par de moedas selecionado
   updateSelectedPairs(pair: string) {
     if (this.currencyPairs[pair]) {
       this.currencyPairs[pair] = false;
     } else {
-      // Garantir que não mais do que 5 pares sejam selecionados
       const selectedCount = Object.values(this.currencyPairs).filter(val => val).length;
       if (selectedCount < 5) {
         this.currencyPairs[pair] = true;
@@ -39,7 +36,6 @@ export class MovingAveragePage implements OnInit {
     }
   }
 
-  // Obter as chaves do objeto currencyPairs
   get objectKeys() {
     return Object.keys(this.currencyPairs);
   }
@@ -55,12 +51,12 @@ export class MovingAveragePage implements OnInit {
         periods: Number(this.numberOfPeriods),
       };
 
-      this.roboService.setMovingAverageSettings([settings]);
+      this.roboService.setMovingAverageSettings([settings]); // Make sure 'setMovingAverageSettings' exists in your service
+      this.roboService.triggerEvaluateIndicators(); // Make sure 'triggerEvaluateIndicators' exists in your service
+
       this.isLoading = false;
     } else {
       this.error = 'Por favor, selecione todos os campos necessários.';
     }
-
-    this.roboService.triggerEvaluateIndicators();
   }
 }

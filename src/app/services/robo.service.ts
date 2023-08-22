@@ -31,6 +31,16 @@ export class RoboService {
     });
   }
 
+  // Nova função para atualizar o estado.
+  public updateState(currencyPair: string, closeValue: number) {
+    if (!this.lastCloses[currencyPair]) {
+      this.lastCloses[currencyPair] = [];
+    }
+    this.lastCloses[currencyPair].push(closeValue);
+    // Mantenha apenas os últimos N fechamentos.
+    this.lastCloses[currencyPair] = this.lastCloses[currencyPair].slice(-100);
+  }
+
   private getNextFiveMinuteMark(): number {
     const now = new Date();
     const next = new Date(now);
@@ -46,23 +56,18 @@ export class RoboService {
       this.updateAllData();
     });
   }
-  public triggerEvaluateIndicators() {
-    this.evaluateIndicators();
-  }
-  
+
   private updateAllData() {
     console.log("updateAllData called");
     this.applyMovingAverageSettings();
     this.updateRSI();
     this.evaluateIndicators();
   }
-  
 
   setMovingAverageSettings(settings: MovingAverageSetting[]) {
     this.movingAverageSettings = settings;
     this.applyMovingAverageSettings();
   }
-
   private applyMovingAverageSettings() {
     if (this.movingAverageSettings) {
       this.movingAverageSettings.forEach(setting => {
@@ -91,7 +96,9 @@ export class RoboService {
       });
     }
   }
-
+  public triggerEvaluateIndicators() {
+    this.evaluateIndicators();
+  }
   private updateRSI() {
     // This is a basic RSI calculation and presumes that you have an array of previous closes
     Object.keys(this.lastCloses).forEach(pair => {

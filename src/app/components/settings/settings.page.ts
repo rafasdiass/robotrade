@@ -15,7 +15,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   currencyPairs: string[] = [];
 
-  constructor(private RoboService: RoboService, private fb: FormBuilder) {
+  constructor(private roboService: RoboService, private fb: FormBuilder) {
     this.movingAverageForm = this.fb.group({
       selectedType: ['', Validators.required],
       numberOfPeriods: [null, [Validators.required, Validators.min(1)]],
@@ -24,7 +24,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const currencyPairsSubscription = this.RoboService.currencyPairs$.subscribe(pairs => {
+    const currencyPairsSubscription = this.roboService.currencyPairs$.subscribe(pairs => {
       this.currencyPairs = pairs;
     });
     this.subscriptions.push(currencyPairsSubscription);
@@ -42,14 +42,14 @@ export class SettingsPage implements OnInit, OnDestroy {
     if (this.movingAverageForm.valid) {
       const { selectedType, numberOfPeriods, currencyPairs } = this.movingAverageForm.value;
       this.movingAverageSettings.push({ type: selectedType, periods: numberOfPeriods, currencyPairs });
-      // Atualizar RoboService aqui
+      // Update RoboService here
     } else {
-      // Feedback para o usuário sobre campos inválidos
+      // Feedback for the user about invalid fields
     }
   }
 
   removeMovingAverage(index: number) {
     this.movingAverageSettings.splice(index, 1);
-    // Atualizar RoboService aqui
+    // Update RoboService here
   }
 }
