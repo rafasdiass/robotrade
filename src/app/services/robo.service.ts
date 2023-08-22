@@ -9,6 +9,7 @@ export class RoboService {
   private currencyPairs: string[] = ['USDJPY', 'EURUSD', 'GBPUSD'];
   private lastThreeCloses: { [currencyPair: string]: number[] } = {};
   public predictions$: BehaviorSubject<{ [currencyPair: string]: string }> = new BehaviorSubject({});
+  private movingAverages: { [currencyPair: string]: number } = {};
 
   constructor(private apiService: ApiService) {
     this.currencyPairs.forEach(pair => this.lastThreeCloses[pair] = []);
@@ -41,4 +42,22 @@ export class RoboService {
       });
     });
   }
+  updateMovingAverage(pair: string, type: string, periods: number) {
+    if (this.lastThreeCloses[pair].length >= periods) {
+      let movingAverage = 0;
+      if (type === 'simple') {
+        const lastNPrices = this.lastThreeCloses[pair].slice(-periods);
+        const sum = lastNPrices.reduce((acc, price) => acc + price, 0);
+        movingAverage = sum / periods;
+      } else if (type === 'exponential') {
+        // Implemente sua lógica de média móvel exponencial aqui
+      }
+      this.movingAverages[pair] = movingAverage;
+    }
+  }
+
+  getMovingAverage(pair: string): number {
+    return this.movingAverages[pair] || 0;
+  }
 }
+

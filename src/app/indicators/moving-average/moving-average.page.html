@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Média Móvel
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label>Escolha o tipo</ion-label>
+      <ion-select [(ngModel)]="selectedType">
+        <ion-select-option value="simple">Simples</ion-select-option>
+        <ion-select-option value="exponential">Exponencial</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Número de Períodos</ion-label>
+      <ion-input [(ngModel)]="numberOfPeriods" type="number"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="calculateMovingAverage()">Calcular</ion-button>
+
+  <div *ngIf="result !== null">
+    <p>Resultado: {{ result }}</p>
+  </div>
+</ion-content>

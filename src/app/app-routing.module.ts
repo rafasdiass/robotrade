@@ -40,6 +40,10 @@ const routes: Routes = [
   {
     path: 'coins',
     loadChildren: () => import('./components/coins/coins.module').then( m => m.CoinsPageModule)
+  },
+  {
+    path: 'moving-average',
+    loadChildren: () => import('./indicators/moving-average/moving-average.module').then( m => m.MovingAveragePageModule)
   }
 ];
 
