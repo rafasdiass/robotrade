@@ -33,6 +33,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.predictionsSubscription = this.roboService.predictions$.subscribe(predictions => {
+      console.log("Predictions updated: ", predictions);  // <-- Log here
       this.robotSignals = Object.keys(predictions).map(currencyPair => ({
         time: new Date().toLocaleTimeString(),
         action: predictions[currencyPair],

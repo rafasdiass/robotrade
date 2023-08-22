@@ -51,12 +51,12 @@ export class RoboService {
   }
   
   private updateAllData() {
-    // In reality, you might want to get updated data from the API here
-    // For this example, I'm just going to call the methods to evaluate indicators
+    console.log("updateAllData called");
     this.applyMovingAverageSettings();
     this.updateRSI();
     this.evaluateIndicators();
   }
+  
 
   setMovingAverageSettings(settings: MovingAverageSetting[]) {
     this.movingAverageSettings = settings;
@@ -118,6 +118,7 @@ export class RoboService {
   }
 
   private evaluateIndicators() {
+    console.log("Evaluating Indicators");
     if (this.currencyPairs) {
       this.currencyPairs.forEach(pair => {
         const ma = this.movingAverages[pair] || 0;
