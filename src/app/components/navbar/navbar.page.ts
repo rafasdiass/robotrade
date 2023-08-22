@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { PopoverController } from '@ionic/angular';
+import { SettingsPage } from '../settings/settings.page'; // importe o seu componente SettingsPage
 
 @Component({
   selector: 'app-navbar',
@@ -7,14 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarPage implements OnInit {
 
-  constructor() { }
+  constructor(private popoverController: PopoverController) { }
 
   ngOnInit() {
   }
 
-  openSettings() {
-    // Código para abrir a página de configurações ou executar outras ações
-    console.log('Configurações clicadas.');
+  async openSettings(ev: any) {
+    const popover = await this.popoverController.create({
+      component: SettingsPage,
+      event: ev,
+      translucent: true
+    });
+    return await popover.present();
   }
-
 }

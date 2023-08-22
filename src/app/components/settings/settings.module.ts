@@ -20,6 +20,7 @@ import { RoboSignalsPageModule } from '../robo-signals/robo-signals.module';
     RoboSignalsPageModule,
     ReactiveFormsModule
   ],
-  declarations: [SettingsPage]
+  declarations: [SettingsPage],
+  exports : [SettingsPage]
 })
 export class SettingsPageModule {}
