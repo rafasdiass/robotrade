@@ -42,5 +42,6 @@ export class MovingAveragePage implements OnInit {
     } else {
       this.error = 'Por favor, selecione todos os campos necessários.';
     }
+    this.roboService.evaluateMovingAverageCrossovers();
   }
 }

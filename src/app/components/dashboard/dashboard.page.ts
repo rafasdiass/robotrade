@@ -1,12 +1,13 @@
-import { Component, OnInit, inject  } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { Trade } from '../../models/trade.model';
+import { RoboService } from '../../services/robo.service';
+import { Subscription } from 'rxjs';
 
 interface RobotSignal {
   time: string;
   action: string;
   currencyPair: string;
-  // outras propriedades aqui, se houver
 }
 
 @Component({
@@ -14,25 +15,35 @@ interface RobotSignal {
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-
-export class DashboardPage implements OnInit {
+export class DashboardPage implements OnInit, OnDestroy {
   private _accountBalance: number = 0;
   private _initialBank: number = 0;
   private _currentValue: number = 0;
   private _dailyGoal: number = 0;
   tradeHistory: Trade[] = [];
   currentStrategy!: string;
-  
-  robotSignals: RobotSignal[] = [];  // Movi esta linha para dentro da classe
+  robotSignals: RobotSignal[] = [];
+  predictionsSubscription!: Subscription;
 
+  constructor(
+    private modalController: ModalController,
+    private alertController: AlertController,
+    private roboService: RoboService
+  ) {}
 
-
-  constructor(private modalController: ModalController, private alertController: AlertController) {
-    this.simulateRobotSignals();
+  ngOnInit() {
+    this.predictionsSubscription = this.roboService.predictions$.subscribe(predictions => {
+      this.robotSignals = Object.keys(predictions).map(currencyPair => ({
+        time: new Date().toLocaleTimeString(),
+        action: predictions[currencyPair],
+        currencyPair
+      }));
+    });
   }
 
-
-  ngOnInit() { }
+  ngOnDestroy() {
+    this.predictionsSubscription.unsubscribe();
+  }
 
   get accountBalance(): number {
     return this._accountBalance;
@@ -78,10 +89,6 @@ export class DashboardPage implements OnInit {
     }
   }
 
-  addTrade() {
-    this.checkForConsecutiveLosses();
-  }
-
   async checkForConsecutiveLosses() {
     const lastTwoTrades = this.tradeHistory.slice(-2).map(trade => trade.status);
     if (lastTwoTrades.every(status => status === 'loss')) {
@@ -116,17 +123,5 @@ export class DashboardPage implements OnInit {
   updateStrategy(newStrategy: string) {
     this.currentStrategy = newStrategy;
     this.generateTrades();
-  }
-
-  simulateRobotSignals() {
-    const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD'];
-  
-    setInterval(() => {
-      const currentTime = new Date().toLocaleTimeString();
-      const action = Math.random() > 0.5 ? 'Compra' : 'Venda';
-      const currencyPair = currencyPairs[Math.floor(Math.random() * currencyPairs.length)];
-  
-      this.robotSignals.push({ time: currentTime, action: action, currencyPair: currencyPair });
-    }, 5000);
   }
 }

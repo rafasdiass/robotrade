@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { BehaviorSubject, timer } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
 export class RoboService {
-  public currencyPairs: string[] = [];  // Inicializado como vazio
+  public currencyPairs: string[] = []; 
   private lastThreeCloses: { [currencyPair: string]: number[] } = {};
   public predictions$: BehaviorSubject<{ [currencyPair: string]: string }> = new BehaviorSubject({});
   private movingAverages: { [currencyPair: string]: number } = {};
+  private fastMovingAverages: { [currencyPair: string]: number } = {};
+  private slowMovingAverages: { [currencyPair: string]: number } = {};
 
   constructor(private apiService: ApiService) {
-    this.updateCurrencyPairs();  // Atualiza currencyPairs a partir da API
+    this.updateCurrencyPairs();
     this.startPredictions();
   }
 
@@ -76,7 +79,7 @@ export class RoboService {
         this.movingAverages[pair] = sum / periods;
       } else if (type === 'EMA') {
         const multiplier = 2 / (periods + 1);
-        let EMA = this.lastThreeCloses[pair].slice(0, periods).reduce((acc, price) => acc + price, 0) / periods; // SMA as the first EMA
+        let EMA = this.lastThreeCloses[pair].slice(0, periods).reduce((acc, price) => acc + price, 0) / periods;
         for (let i = periods; i < this.lastThreeCloses[pair].length; i++) {
           const closePrice = this.lastThreeCloses[pair][i];
           EMA = (closePrice - EMA) * multiplier + EMA;
@@ -90,4 +93,25 @@ export class RoboService {
     return this.movingAverages[pair] || 0;
   }
 
+  evaluateMovingAverageCrossovers() {
+    this.currencyPairs.forEach(pair => {
+      const fastMA = this.fastMovingAverages[pair] || 0;
+      const slowMA = this.slowMovingAverages[pair] || 0;
+  
+      if (fastMA && slowMA) {
+        const previousSignal = this.predictions$.getValue()[pair] || null;
+        let newSignal = null;
+  
+        if (fastMA > slowMA) {
+          newSignal = 'Compra';
+        } else {
+          newSignal = 'Venda';
+        }
+  
+        if (previousSignal !== newSignal) {
+          this.predictions$.next({ ...this.predictions$.getValue(), [pair]: newSignal });
+        }
+      }
+    });
+  }
 }
