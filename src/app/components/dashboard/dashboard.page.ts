@@ -1,14 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalController, AlertController } from '@ionic/angular';
 import { Trade } from '../../models/trade.model';
-import { RoboService } from '../../services/robo.service';
 import { Subscription } from 'rxjs';
-
-interface RobotSignal {
-  time: string;
-  action: string;
-  currencyPair: string;
-}
 
 @Component({
   selector: 'app-dashboard',
@@ -22,28 +15,18 @@ export class DashboardPage implements OnInit, OnDestroy {
   private _dailyGoal: number = 0;
   tradeHistory: Trade[] = [];
   currentStrategy!: string;
-  robotSignals: RobotSignal[] = [];
-  predictionsSubscription!: Subscription;
 
   constructor(
     private modalController: ModalController,
-    private alertController: AlertController,
-    private roboService: RoboService
+    private alertController: AlertController
   ) {}
 
   ngOnInit() {
-    this.predictionsSubscription = this.roboService.predictions$.subscribe(predictions => {
-      console.log("Predictions updated: ", predictions);  // <-- Log here
-      this.robotSignals = Object.keys(predictions).map(currencyPair => ({
-        time: new Date().toLocaleTimeString(),
-        action: predictions[currencyPair],
-        currencyPair
-      }));
-    });
+    // Initialization logic here
   }
 
   ngOnDestroy() {
-    this.predictionsSubscription.unsubscribe();
+    // Cleanup logic here
   }
 
   get accountBalance(): number {

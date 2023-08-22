@@ -17,7 +17,7 @@
   <form [formGroup]="movingAverageForm">
     <ion-item>
       <ion-label>Tipo</ion-label>
-      <ion-select formControlName="selectedType" placeholder="Selecione o Tipo">
+      <ion-select formControlName="selectedType" placeholder="Selecione o Tipo" aria-label="Selecione o Tipo">
         <ion-select-option value="simple">Simples</ion-select-option>
         <ion-select-option value="exponential">Exponencial</ion-select-option>
       </ion-select>
@@ -25,12 +25,12 @@
 
     <ion-item>
       <ion-label>Períodos</ion-label>
-      <ion-input formControlName="numberOfPeriods" type="number"></ion-input>
+      <ion-input formControlName="numberOfPeriods" type="number" aria-label="Períodos"></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label>Pares de Moedas</ion-label>
-      <ion-select formControlName="currencyPairs" multiple="true" placeholder="Selecione os Pares de Moedas">
+      <ion-select formControlName="currencyPairs" multiple="true" placeholder="Selecione os Pares de Moedas" aria-label="Selecione os Pares de Moedas">
         <ion-select-option *ngFor="let pair of currencyPairs" [value]="pair">{{ pair }}</ion-select-option>
       </ion-select>
     </ion-item>

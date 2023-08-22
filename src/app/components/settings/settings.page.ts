@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MovingAverageSetting } from "../../models/MovingAverageSetting.model";
 import { RoboService } from '../../services/robo.service';
+import { CurrencyPairService } from '../../services/currency-pair.service';
 
 @Component({
   selector: 'app-settings',
@@ -15,7 +16,11 @@ export class SettingsPage implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   currencyPairs: string[] = [];
 
-  constructor(private roboService: RoboService, private fb: FormBuilder) {
+  constructor(
+    private roboService: RoboService, 
+    private fb: FormBuilder,
+    private currencyPairService: CurrencyPairService
+  ) {
     this.movingAverageForm = this.fb.group({
       selectedType: ['', Validators.required],
       numberOfPeriods: [null, [Validators.required, Validators.min(1)]],
@@ -24,7 +29,7 @@ export class SettingsPage implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const currencyPairsSubscription = this.roboService.currencyPairs$.subscribe(pairs => {
+    const currencyPairsSubscription = this.currencyPairService.currencyPairs$.subscribe(pairs => {
       this.currencyPairs = pairs;
     });
     this.subscriptions.push(currencyPairsSubscription);
@@ -42,14 +47,14 @@ export class SettingsPage implements OnInit, OnDestroy {
     if (this.movingAverageForm.valid) {
       const { selectedType, numberOfPeriods, currencyPairs } = this.movingAverageForm.value;
       this.movingAverageSettings.push({ type: selectedType, periods: numberOfPeriods, currencyPairs });
-      // Atualizar o RoboService aqui
+      // Update RoboService here
     } else {
-      // Feedback para o usuário sobre campos inválidos
+      // Feedback to the user about invalid fields
     }
   }
 
   removeMovingAverage(index: number) {
     this.movingAverageSettings.splice(index, 1);
-    // Atualizar o RoboService aqui
+    // Update RoboService here
   }
 }
