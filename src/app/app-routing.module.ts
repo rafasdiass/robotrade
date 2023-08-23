@@ -11,10 +11,7 @@ const routes: Routes = [
     path: 'dashboard',
     loadChildren: () => import('./components/dashboard/dashboard.module').then(m => m.DashboardPageModule)
   },
-  {
-    path: 'trade-history',
-    loadChildren: () => import('./components/trade-history/trade-history.module').then(m => m.TradeHistoryPageModule)
-  },
+  
   
   {
     path: 'live-feed',
@@ -25,10 +22,7 @@ const routes: Routes = [
     path: 'robo-signals',
     loadChildren: () => import('./robo/robo-signals/robo-signals.module').then(m => m.RoboSignalsPageModule)
   },
-  {
-    path: 'coins',
-    loadChildren: () => import('./components/coins/coins.module').then(m => m.CoinsPageModule)
-  },
+  
   
   {
     path: 'soros-strategy',
