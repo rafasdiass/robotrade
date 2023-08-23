@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PopoverController } from '@ionic/angular';
-import { RoboSignalsPage } from '../../robo/robo-signals/robo-signals.page';
 
 @Component({
   selector: 'app-navbar',
@@ -10,23 +8,16 @@ import { RoboSignalsPage } from '../../robo/robo-signals/robo-signals.page';
 })
 export class NavbarPage implements OnInit {
 
-  constructor(private router: Router, private popoverController: PopoverController) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
 
-  
-
-  async openRoboSignals(ev: any) {
-    const popover = await this.popoverController.create({
-      component: RoboSignalsPage,
-      event: ev,
-      translucent: true
-    });
-    return await popover.present();
+  openRoboSignals() {
+    this.router.navigate(['/robo-signals']);
   }
 
-  // Methods to navigate to the new pages
+  // Métodos para navegar para as novas páginas
   openSorosStrategy() {
     this.router.navigate(['/soros-strategy']);
   }

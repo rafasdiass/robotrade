@@ -9,6 +9,7 @@ import { NavbarPageRoutingModule } from './navbar-routing.module';
 import { NavbarPage } from './navbar.page';
 
 import { SorosStrategyPageModule } from 'src/app/trading-strategies/soros-strategy/soros-strategy.module';
+import { RoboSignalsPageModule } from 'src/app/robo/robo-signals/robo-signals.module';
 
 @NgModule({
   imports: [
@@ -16,6 +17,7 @@ import { SorosStrategyPageModule } from 'src/app/trading-strategies/soros-strate
     FormsModule,
     IonicModule,
     NavbarPageRoutingModule,
+    RoboSignalsPageModule,
     
     SorosStrategyPageModule
   ],

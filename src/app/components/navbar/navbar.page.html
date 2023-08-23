@@ -1,17 +1,17 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Your Title Here</ion-title>
-    
-      <ion-button (click)="openRoboSignals($event)">
+    <ion-buttons slot="end">
+      <ion-button (click)="openRoboSignals()" class="robo-button">
         <ion-icon slot="icon-only" name="analytics-outline"></ion-icon>
       </ion-button>
       <!-- New icons to navigate to new pages -->
-      <ion-button (click)="openSorosStrategy()">
+      <ion-button (click)="openSorosStrategy()" class="soros-button">
         <ion-icon slot="icon-only" name="cash-outline"></ion-icon>
       </ion-button>
-      <ion-button (click)="openBankManagement()">
+      <ion-button (click)="openBankManagement()" class="bank-button">
         <ion-icon slot="icon-only" name="wallet-outline"></ion-icon>
       </ion-button>
-   
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
