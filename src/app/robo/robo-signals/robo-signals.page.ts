@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoboService } from '../../services/robo.service';
 import { CurrencyPairService } from '../../services/currency-pair.service';
-import { ApiService } from '../../services/api.service'; 
+import { ApiService } from '../../services/api.service';  // Importe ApiService
 
 interface RobotSignal {
   time: string;
@@ -22,7 +22,7 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
   constructor(
     private roboService: RoboService,
     private currencyPairService: CurrencyPairService,
-    private apiService: ApiService  
+    private apiService: ApiService  // Injete ApiService
   ) {}
 
   ngOnInit() {
@@ -34,9 +34,11 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
 
     // Subscreva aos pares de moedas atualizados
     const currencyPairSubscription = this.currencyPairService.currencyPairs$.subscribe(pairs => {
+      console.log('Novos pares de moedas:', pairs);  // Log para depuração
       pairs.forEach(pair => {
         // Para cada par de moedas, obtenha um sinal de ação
         this.roboService.decideAcao(pair).subscribe(signal => {
+          console.log('Sinal recebido:', signal);  // Log para depuração
           const robotSignal: RobotSignal = {
             time: new Date().toLocaleTimeString(),
             action: signal,
@@ -51,7 +53,7 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    
+    // Cancele todas as inscrições quando o componente for destruído
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }
