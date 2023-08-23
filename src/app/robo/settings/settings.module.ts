@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { SettingsPageRoutingModule } from './settings-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsPage } from './settings.page';
-import { MovingAveragePageModule } from 'src/app/indicators/moving-average/moving-average.module';
+import { MovingAveragePageModule } from 'src/app/trading-strategies/indicators/moving-average/moving-average.module';
 import { RoboSignalsPageModule } from '../robo-signals/robo-signals.module';
 
 @NgModule({

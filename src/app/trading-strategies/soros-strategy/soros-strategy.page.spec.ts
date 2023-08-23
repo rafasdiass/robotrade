@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RoboSignalsPage } from './robo-signals.page';
+import { SorosStrategyPage } from './soros-strategy.page';
 
-describe('RoboSignalsPage', () => {
-  let component: RoboSignalsPage;
-  let fixture: ComponentFixture<RoboSignalsPage>;
+describe('SorosStrategyPage', () => {
+  let component: SorosStrategyPage;
+  let fixture: ComponentFixture<SorosStrategyPage>;
 
   beforeEach(async(() => {
-    fixture = TestBed.createComponent(RoboSignalsPage);
+    fixture = TestBed.createComponent(SorosStrategyPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

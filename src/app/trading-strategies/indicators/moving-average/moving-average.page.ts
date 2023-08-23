@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { RoboService } from '../../services/robo.service';
-import { CurrencyPairService } from '../../services/currency-pair.service';
+import { RoboService } from '../../../services/robo.service';
+import { CurrencyPairService } from '../../../services/currency-pair.service';
 
 @Component({
   selector: 'app-moving-average',

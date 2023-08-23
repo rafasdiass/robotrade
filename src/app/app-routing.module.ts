@@ -17,19 +17,16 @@ const routes: Routes = [
   },
   {
     path: 'settings',
-    loadChildren: () => import('./components/settings/settings.module').then(m => m.SettingsPageModule)
+    loadChildren: () => import('./robo/settings/settings.module').then(m => m.SettingsPageModule)
   },
   {
     path: 'live-feed',
     loadChildren: () => import('./components/live-feed/live-feed.module').then(m => m.LiveFeedPageModule)
   },
-  {
-    path: 'trading-strategies',
-    loadChildren: () => import('./components/trading-strategies/trading-strategies.module').then(m => m.TradingStrategiesPageModule)
-  },
+  
   {
     path: 'robo-signals',
-    loadChildren: () => import('./components/robo-signals/robo-signals.module').then(m => m.RoboSignalsPageModule)
+    loadChildren: () => import('./robo/robo-signals/robo-signals.module').then(m => m.RoboSignalsPageModule)
   },
   {
     path: 'coins',
@@ -37,8 +34,13 @@ const routes: Routes = [
   },
   {
     path: 'moving-average',
-    loadChildren: () => import('./indicators/moving-average/moving-average.module').then(m => m.MovingAveragePageModule)
-  }
+    loadChildren: () => import('./trading-strategies/indicators/moving-average/moving-average.module').then(m => m.MovingAveragePageModule)
+  },
+  {
+    path: 'soros-strategy',
+    loadChildren: () => import('./trading-strategies/soros-strategy/soros-strategy.module').then( m => m.SorosStrategyPageModule)
+  },
+  
 ];
 
 @NgModule({

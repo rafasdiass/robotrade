@@ -8,8 +8,8 @@ import { IonicModule } from '@ionic/angular';
 import { DashboardPageRoutingModule } from './dashboard-routing.module';
 
 import { DashboardPage } from './dashboard.page';
-import { TradingStrategiesPageModule } from '../trading-strategies/trading-strategies.module';
-import { RoboSignalsPageModule } from '../robo-signals/robo-signals.module';
+
+import { RoboSignalsPageModule } from '../../robo/robo-signals/robo-signals.module';
 import { NavbarPageModule } from './../navbar/navbar.module';
 
 
@@ -19,7 +19,7 @@ import { NavbarPageModule } from './../navbar/navbar.module';
     FormsModule,
     IonicModule,
     DashboardPageRoutingModule,
-    TradingStrategiesPageModule,
+   
     RoboSignalsPageModule,
     NavbarPageModule
   ],

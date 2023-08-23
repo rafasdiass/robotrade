@@ -1,0 +1,24 @@
+<ion-item>
+  <ion-label position="floating" aria-label="Valor da Perda">Valor da Perda:</ion-label>
+  <ion-input type="number" [(ngModel)]="lossValue" (ionChange)="onLossValueChange(lossValue)"></ion-input>
+</ion-item>
+
+<ion-item>
+  <ion-label position="floating" aria-label="Estratégia">Estratégia:</ion-label>
+  <ion-select [(ngModel)]="selectedStrategy" (ionChange)="onStrategyChange()">
+    <ion-select-option value="soros">
+      <ion-icon name="rocket-outline"></ion-icon> Soros
+    </ion-select-option>
+    <ion-select-option value="maoFixa">
+      <ion-icon name="hand-outline"></ion-icon> Mão Fixa
+    </ion-select-option>
+    <ion-select-option value="martingale">
+      <ion-icon name="shuffle-outline"></ion-icon> Martingale
+    </ion-select-option>
+    <ion-select-option value="sorosGale">
+      <ion-icon name="speedometer-outline"></ion-icon> SorosGale
+    </ion-select-option>
+  </ion-select>
+</ion-item>
+
+<!-- Aqui você pode adicionar mais elementos Ionic para exibir o tradeHistory ou outras informações -->

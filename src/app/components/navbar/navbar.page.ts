@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopoverController } from '@ionic/angular';
-import { RoboSignalsPage } from '../robo-signals/robo-signals.page';
+import { RoboSignalsPage } from '../../robo/robo-signals/robo-signals.page';
 
 @Component({
   selector: 'app-navbar',
