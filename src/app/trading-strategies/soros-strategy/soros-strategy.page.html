@@ -1,24 +1,77 @@
 <ion-item>
   <ion-label position="floating" aria-label="Valor da Perda">Valor da Perda:</ion-label>
-  <ion-input type="number" [(ngModel)]="lossValue" (ionChange)="onLossValueChange(lossValue)"></ion-input>
+  <ion-input type="number" aria-label="Valor da Perda" [(ngModel)]="lossValue" (blur)="onLossValueChange()"></ion-input>
 </ion-item>
 
 <ion-item>
-  <ion-label position="floating" aria-label="Estratégia">Estratégia:</ion-label>
-  <ion-select [(ngModel)]="selectedStrategy" (ionChange)="onStrategyChange()">
-    <ion-select-option value="soros">
-      <ion-icon name="rocket-outline"></ion-icon> Soros
-    </ion-select-option>
-    <ion-select-option value="maoFixa">
-      <ion-icon name="hand-outline"></ion-icon> Mão Fixa
-    </ion-select-option>
-    <ion-select-option value="martingale">
-      <ion-icon name="shuffle-outline"></ion-icon> Martingale
-    </ion-select-option>
-    <ion-select-option value="sorosGale">
-      <ion-icon name="speedometer-outline"></ion-icon> SorosGale
-    </ion-select-option>
-  </ion-select>
+  <ion-label position="floating" aria-label="Payout">Payout:</ion-label>
+  <ion-input type="number" aria-label="Payout" [(ngModel)]="payout" (blur)="onPayoutChange()"></ion-input>
 </ion-item>
 
-<!-- Aqui você pode adicionar mais elementos Ionic para exibir o tradeHistory ou outras informações -->
+<!-- Soros Strategy -->
+<ion-card>
+  <ion-card-header>
+    <ion-icon name="rocket-outline"></ion-icon> Soros
+  </ion-card-header>
+  <ion-card-content>
+    <div class="strategy-levels">
+      <div *ngFor="let level of levels">
+        <h3>Nível {{ level }}</h3>
+        <div>
+          {{ sorosTrades[level - 1] ? sorosTrades[level - 1][0].amount : 'Calculando...' }}
+        </div>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>
+
+<!-- Mao Fixa Strategy -->
+<ion-card>
+  <ion-card-header>
+    <ion-icon name="hand"></ion-icon> Mão Fixa
+  </ion-card-header>
+  <ion-card-content>
+    <div class="strategy-levels">
+      <div *ngFor="let level of levels">
+        <h3>Nível {{ level }}</h3>
+        <div>
+          {{ maoFixaTrades[level - 1] ? maoFixaTrades[level - 1][0].amount : 'Calculando...' }}
+        </div>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>
+
+<!-- SorosGale Strategy -->
+<ion-card>
+  <ion-card-header>
+    <ion-icon name="speedometer"></ion-icon> SorosGale
+  </ion-card-header>
+  <ion-card-content>
+    <div class="strategy-levels">
+      <div *ngFor="let level of levels">
+        <h3>Nível {{ level }}</h3>
+        <div>
+          {{ sorosGaleTrades[level - 1] ? sorosGaleTrades[level - 1][0].amount : 'Calculando...' }}
+        </div>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>
+
+<!-- SorosMartingale Strategy -->
+<ion-card>
+  <ion-card-header>
+    <ion-icon name="shuffle"></ion-icon> SorosMartingale
+  </ion-card-header>
+  <ion-card-content>
+    <div class="strategy-levels">
+      <div *ngFor="let level of levels">
+        <h3>Nível {{ level }}</h3>
+        <div>
+          {{ sorosMartingaleTrades[level - 1] ? sorosMartingaleTrades[level - 1][0].amount : 'Calculando...' }}
+        </div>
+      </div>
+    </div>
+  </ion-card-content>
+</ion-card>

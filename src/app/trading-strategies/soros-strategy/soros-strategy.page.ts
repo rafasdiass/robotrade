@@ -6,74 +6,65 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./soros-strategy.page.scss'],
 })
 export class SorosStrategyPage implements OnInit {
-  selectedStrategy: string = 'soros'; // Valor inicial
-  lossValue: number = 0; // Valor da perda inicial
-  tradeHistory: any[] = []; // Histórico de trades
+  lossValue: number = 0;  // Iniciado como 0
+  payout: number = 0; 
+  levels = [1, 2, 3];
+  sorosTrades: any[] = [];
+  maoFixaTrades: any[] = [];
+  sorosGaleTrades: any[] = [];
+  sorosMartingaleTrades: any[] = [];
 
   constructor() { }
 
   ngOnInit() { }
-
-  onStrategyChange() {
-    this.generateTrades();
+  onLossValueChange() {
+    if (this.lossValue > 0 && this.payout > 0) {
+      this.generateAllTrades();
+    }
   }
-
-  onLossValueChange(value: number) {
-    this.lossValue = value;
-    this.generateTrades();
+  
+  onPayoutChange() {
+    if (this.lossValue > 0 && this.payout > 0) {
+      this.generateAllTrades();
+    }
   }
-
-  generateTrades() {
-    this.tradeHistory = [];
-    let availableAmount = this.lossValue;
-
-    switch (this.selectedStrategy) {
-      case 'soros':
-        this.generateSorosTrades(availableAmount);
-        break;
-      case 'maoFixa':
-        this.generateMaoFixaTrades(availableAmount);
-        break;
-      case 'martingale':
-        this.generateMartingaleTrades(availableAmount);
-        break;
-      case 'sorosGale':
-        this.generateSorosGaleTrades(availableAmount);
-        break;
-      default:
-        console.log('Estratégia desconhecida');
+  
+  generateAllTrades() {
+    if (this.lossValue > 0 && this.payout > 0) {
+      this.sorosTrades = this.levels.map(level => this.generateSorosTrades(this.lossValue, this.payout, level));
+      this.maoFixaTrades = this.levels.map(level => this.generateMaoFixaTrades(this.lossValue, level));
+      this.sorosGaleTrades = this.levels.map(level => this.generateSorosGaleTrades(this.lossValue, this.payout, level));
+      this.sorosMartingaleTrades = this.levels.map(level => this.generateSorosMartingaleTrades(this.lossValue, this.payout, level));
     }
   }
 
-  generateSorosTrades(availableAmount: number) {
-    for (let i = 0; i < 10; i++) {
-      const tradeAmount = Math.round(availableAmount * 0.02);
-      this.tradeHistory.push({ id: i, amount: tradeAmount, status: 'pending' });
-      availableAmount += tradeAmount;
-    }
+  generateSorosTrades(availableAmount: number, payout: number, level: number) {
+    const trades = [];
+    let tradeAmount = availableAmount;
+    const winAmount = tradeAmount * (payout / 100);
+    trades.push({ id: 0, amount: tradeAmount, status: 'pending' });
+    return trades;
   }
 
-  generateMaoFixaTrades(availableAmount: number) {
-    const tradeAmount = availableAmount * 0.02;
-    for (let i = 0; i < 10; i++) {
-      this.tradeHistory.push({ id: i, amount: tradeAmount, status: 'pending' });
-    }
+  generateMaoFixaTrades(availableAmount: number, level: number) {
+    const trades = [];
+    const tradeAmount = availableAmount;
+    trades.push({ id: 0, amount: tradeAmount, status: 'pending' });
+    return trades;
   }
 
-  generateMartingaleTrades(availableAmount: number) {
-    let tradeAmount = 5;
-    for (let i = 0; i < 10; i++) {
-      this.tradeHistory.push({ id: i, amount: tradeAmount, status: 'pending' });
-      tradeAmount *= 2;
-    }
+  generateSorosGaleTrades(availableAmount: number, payout: number, level: number) {
+    const trades = [];
+    let tradeAmount = availableAmount;
+    const winAmount = tradeAmount * (payout / 100);
+    trades.push({ id: 0, amount: tradeAmount, status: 'pending' });
+    return trades;
   }
 
-  generateSorosGaleTrades(availableAmount: number) {
-    for (let i = 0; i < 10; i++) {
-      const tradeAmount = Math.round(availableAmount * 0.02);
-      this.tradeHistory.push({ id: i, amount: tradeAmount, status: 'pending' });
-      availableAmount += tradeAmount;
-      availableAmount *= 1.5;
-    }
+  generateSorosMartingaleTrades(availableAmount: number, payout: number, level: number) {
+    const trades = [];
+    let tradeAmount = availableAmount;
+    trades.push({ id: 0, amount: tradeAmount, status: 'pending' });
+    return trades;
   }
 }
