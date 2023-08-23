@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { NavbarPageRoutingModule } from './navbar-routing.module';
 
 import { NavbarPage } from './navbar.page';
-import { SettingsPageModule } from '../../robo/settings/settings.module';
+
 import { SorosStrategyPageModule } from 'src/app/trading-strategies/soros-strategy/soros-strategy.module';
 
 @NgModule({
@@ -16,7 +16,7 @@ import { SorosStrategyPageModule } from 'src/app/trading-strategies/soros-strate
     FormsModule,
     IonicModule,
     NavbarPageRoutingModule,
-    SettingsPageModule,
+    
     SorosStrategyPageModule
   ],
   declarations: [NavbarPage],

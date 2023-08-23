@@ -15,10 +15,7 @@ const routes: Routes = [
     path: 'trade-history',
     loadChildren: () => import('./components/trade-history/trade-history.module').then(m => m.TradeHistoryPageModule)
   },
-  {
-    path: 'settings',
-    loadChildren: () => import('./robo/settings/settings.module').then(m => m.SettingsPageModule)
-  },
+  
   {
     path: 'live-feed',
     loadChildren: () => import('./components/live-feed/live-feed.module').then(m => m.LiveFeedPageModule)
@@ -32,10 +29,7 @@ const routes: Routes = [
     path: 'coins',
     loadChildren: () => import('./components/coins/coins.module').then(m => m.CoinsPageModule)
   },
-  {
-    path: 'moving-average',
-    loadChildren: () => import('./trading-strategies/indicators/moving-average/moving-average.module').then(m => m.MovingAveragePageModule)
-  },
+  
   {
     path: 'soros-strategy',
     loadChildren: () => import('./trading-strategies/soros-strategy/soros-strategy.module').then( m => m.SorosStrategyPageModule)

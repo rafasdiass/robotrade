@@ -9,7 +9,7 @@ export class ApiService {
   private apiKey = '589Y14LQPVGKZQ3N';
   private baseUrl = 'https://www.alphavantage.co/query?';
 
-  constructor(private http: HttpClient) {} // Correção aqui
+  constructor(private http: HttpClient) {}
 
   getStockData(symbol: string): Observable<any> {
     const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${this.apiKey}`;
@@ -18,6 +18,11 @@ export class ApiService {
 
   getListOfCurrencies(): Observable<any> {
     const endpoint = `${this.baseUrl}function=SYMBOL_SEARCH&keywords=currency&apikey=${this.apiKey}`;
+    return this.http.get(endpoint);
+  }
+
+  getCandleData(pair: string): Observable<any> {
+    const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${pair}&interval=5min&apikey=${this.apiKey}`;
     return this.http.get(endpoint);
   }
 }

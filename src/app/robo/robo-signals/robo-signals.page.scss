@@ -1,0 +1,19 @@
+ion-item {
+  &.buy-signal {
+    ion-label {
+      color: green;
+    }
+  }
+
+  &.sell-signal {
+    ion-label {
+      color: red;
+    }
+  }
+
+  &.no-signal {
+    ion-label {
+      color: grey;
+    }
+  }
+}

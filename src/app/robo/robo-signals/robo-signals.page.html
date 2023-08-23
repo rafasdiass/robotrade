@@ -1,4 +1,4 @@
-<!-- <ion-header>
+<ion-header>
   <ion-toolbar>
     <ion-title>
       Sinais do Robô
@@ -8,23 +8,12 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let key of currentPredictions | keyvalue">
-      <ion-label>{{ key.key }}</ion-label>
-      <ion-badge>{{ key.value === 'Compra' ? 'Compra' : 'Venda' }}</ion-badge>
+    <ion-item *ngFor="let signal of signals" [ngClass]="{'buy-signal': signal.action === 'Sinal de Compra', 'sell-signal': signal.action === 'Sinal de Venda', 'no-signal': signal.action === 'Sem sinal'}">
+      <ion-label>
+        <h2>{{ signal.currencyPair }}</h2>
+        <p>{{ signal.action }}</p>
+        <p>{{ signal.time }}</p>
+      </ion-label>
     </ion-item>
   </ion-list>
-</ion-content> -->
-
-  <!-- Sinais do Robô -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Sinais do Robô</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item *ngFor="let signal of robotSignals">
-          <ion-label>{{ signal['time'] }}: {{ signal['action'] }} ({{ signal['currencyPair'] }})</ion-label>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+</ion-content>

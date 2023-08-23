@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoboService } from '../../services/robo.service';
+import { CurrencyPairService } from '../../services/currency-pair.service';
 
 interface RobotSignal {
   time: string;
@@ -14,27 +15,32 @@ interface RobotSignal {
   styleUrls: ['./robo-signals.page.scss'],
 })
 export class RoboSignalsPage implements OnInit, OnDestroy {
-  currentPredictions: { [key: string]: string } = {};
-  robotSignals: RobotSignal[] = [];
-  predictionsSubscription!: Subscription;
+  private subscriptions: Subscription[] = [];
+  public signals: RobotSignal[] = [];
 
-  constructor(private roboService: RoboService) {}
+  constructor(private roboService: RoboService, private currencyPairService: CurrencyPairService) {}
 
   ngOnInit() {
-    this.predictionsSubscription = this.roboService.predictions$.subscribe(predictions => {
-      console.log("Predictions updated: ", predictions);
-      this.currentPredictions = predictions;
-
-      // Assuming predictions include action and currencyPair
-      this.robotSignals = Object.keys(predictions).map(currencyPair => ({
-        time: new Date().toLocaleTimeString(),
-        action: predictions[currencyPair],
-        currencyPair
-      }));
+    // Subscreva aos pares de moedas atualizados
+    const currencyPairSubscription = this.currencyPairService.currencyPairs$.subscribe(pairs => {
+      pairs.forEach(pair => {
+        // Para cada par de moedas, obtenha um sinal de ação
+        this.roboService.decideAcao(pair).subscribe(signal => {
+          const robotSignal: RobotSignal = {
+            time: new Date().toLocaleTimeString(),
+            action: signal,
+            currencyPair: pair
+          };
+          this.signals.push(robotSignal);
+        });
+      });
     });
+
+    this.subscriptions.push(currencyPairSubscription);
   }
 
   ngOnDestroy() {
-    this.predictionsSubscription.unsubscribe();
+    // Cancele todas as inscrições quando o componente for destruído
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

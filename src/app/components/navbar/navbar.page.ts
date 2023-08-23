@@ -15,9 +15,7 @@ export class NavbarPage implements OnInit {
   ngOnInit() {
   }
 
-  openSettings() {
-    this.router.navigate(['/settings']);
-  }
+  
 
   async openRoboSignals(ev: any) {
     const popover = await this.popoverController.create({
