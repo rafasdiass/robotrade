@@ -47,4 +47,19 @@ export class UtilService {
   
     return priceChange;
   }
+
+  calculateStochasticOscillator(prices: number[], period: number = 14): number {
+    const recentPrices = prices.slice(0, period);
+    const lowestPrice = Math.min(...recentPrices);
+    const highestPrice = Math.max(...recentPrices);
+    const currentPrice = prices[0];
+
+    if (highestPrice === lowestPrice) {
+      return 100; // Evita divisão por zero
+    }
+
+    const stochasticOscillator = ((currentPrice - lowestPrice) / (highestPrice - lowestPrice)) * 100;
+
+    return stochasticOscillator;
+  }
 }
