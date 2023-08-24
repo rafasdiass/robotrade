@@ -28,4 +28,23 @@ export class UtilService {
   
     return rsi;
   }
+
+  calculateEMA(prices: number[], period: number = 9): number {
+    let ema = prices[0];
+    const multiplier = 2 / (period + 1);
+  
+    for (let i = 1; i < period; i++) {
+      ema = ((prices[i] - ema) * multiplier) + ema;
+    }
+  
+    return ema;
+  }
+
+  calculatePriceChange(prices: number[]): number {
+    const initialPrice = prices[prices.length - 1];
+    const finalPrice = prices[0];
+    const priceChange = ((finalPrice - initialPrice) / initialPrice) * 100;
+  
+    return priceChange;
+  }
 }

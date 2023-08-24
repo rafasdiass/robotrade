@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from './api.service';  // Importe o novo ApiService
+import { ApiService } from './api.service';
 import { UtilService } from './util.service';
 
 @Injectable({
@@ -10,18 +10,14 @@ export class CurrencyPairService {
   public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   constructor(private apiService: ApiService, private utilService: UtilService) {
-    // Inicializa com pares de moedas pré-definidos
     this.currencyPairs$.next(['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD']);
-    
-    // Chama updateCurrencyPairs para atualizar com base na API, se necessário
     this.updateCurrencyPairs();
   }
 
   updateCurrencyPairs(): void {
-    this.apiService.getListOfCurrencies().subscribe(data => {  
+    this.apiService.getListOfCurrencies().subscribe(data => {
       console.log('Dados brutos da API:', data);  // Log para depuração
   
-      // Atualize esta parte com base na estrutura de dados da sua nova API
       if (data && data['Time Series (5min)']) {
         const currencyPairs = Object.keys(data['Time Series (5min)'])
           .filter((symbol: string) => /EUR|USD|JPY|CAD/.test(symbol))
@@ -44,17 +40,29 @@ export class CurrencyPairService {
     this.apiService.getCandleData(pair).subscribe(data => {
       if (data && data['Time Series (5min)']) {
         const timeSeries = data['Time Series (5min)'];
-        const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 7);
+        const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 9);
 
         const rsi = this.utilService.calculateRSI(prices);
+        const ema9 = this.utilService.calculateEMA(prices);
+
+        let decision = 'Sem sinal';
 
         if (rsi > 70) {
-          console.log(`Sinal de Venda para ${pair}`);
+          decision = `Sinal de Venda para ${pair} baseado no RSI`;
         } else if (rsi < 30) {
-          console.log(`Sinal de Compra para ${pair}`);
-        } else {
-          console.log(`Sem sinal para ${pair}`);
+          decision = `Sinal de Compra para ${pair} baseado no RSI`;
         }
+
+        // Lógica para EMA de 9 períodos
+        if (prices[1] > ema9 && prices[2] > ema9 && prices[0] < ema9) {
+          decision = `Sinal de Venda para ${pair} baseado na EMA`;
+        } else if (prices[1] < ema9 && prices[2] < ema9 && prices[0] > ema9) {
+          decision = `Sinal de Compra para ${pair} baseado na EMA`;
+        }
+
+        console.log(decision);
+      } else {
+        console.log(`Dados insuficientes para decisão sobre ${pair}`);
       }
     });
   }

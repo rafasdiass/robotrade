@@ -15,22 +15,30 @@ export class RoboService {
       this.apiService.getStockData(symbol).subscribe((data: any) => {
         if (data && data['Time Series (5min)']) {
           const timeSeries = data['Time Series (5min)'];
-          const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 7);
+          const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 9);
 
           const rsi = this.utilService.calculateRSI(prices);
-          const priceChange = ((prices[0] - prices[6]) / prices[6]) * 100;
+          const ema9 = this.utilService.calculateEMA(prices, 9);
+          const priceChange = this.utilService.calculatePriceChange(prices);
 
-          if (Math.abs(priceChange) > 2) {  // Limiar de 2%
-            observer.next(priceChange > 0 ? 'Sinal de Venda baseado no preço' : 'Sinal de Compra baseado no preço');
-          } else {
-            if (rsi > 70) {
-              observer.next('Sinal de Venda baseado no RSI');
-            } else if (rsi < 30) {
-              observer.next('Sinal de Compra baseado no RSI');
-            } else {
-              observer.next('Sem sinal');
-            }
+          let decision = 'Sem sinal';
+
+          if (Math.abs(priceChange) > 2) {
+            decision = priceChange > 0 ? 'Sinal de Venda baseado no preço' : 'Sinal de Compra baseado no preço';
+          } else if (rsi > 70) {
+            decision = 'Sinal de Venda baseado no RSI';
+          } else if (rsi < 30) {
+            decision = 'Sinal de Compra baseado no RSI';
           }
+
+          // Lógica para EMA de 9 períodos
+          if (prices[1] > ema9 && prices[2] > ema9 && prices[0] < ema9) {
+            decision = 'Sinal de Venda baseado na EMA';
+          } else if (prices[1] < ema9 && prices[2] < ema9 && prices[0] > ema9) {
+            decision = 'Sinal de Compra baseado na EMA';
+          }
+
+          observer.next(decision);
           observer.complete();
         } else {
           observer.next('Dados insuficientes para decisão');
