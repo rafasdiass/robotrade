@@ -31,12 +31,12 @@ export class CompoundInterestPage implements OnInit {
     for (let i = 0; i < 30; i++) {
       const entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
       const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
-      const result = entryAmount + profit; // Soma a entrada e o lucro para obter o resultado da operação
   
-      totalAmount += result - entryAmount; // Atualiza o valor total da banca
+      totalAmount = totalAmount - entryAmount + entryAmount + profit; // Atualiza o valor total da banca
       this.entries.push({ day: i + 1, entryAmount, profit, totalAmount: Math.floor(totalAmount) });
     }
   }
+  
   
   // Função para atualizar o cálculo quando os valores são alterados
   updateValues() {
