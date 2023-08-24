@@ -10,10 +10,15 @@ export class CurrencyPairService {
   public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   constructor(private apiService: ApiService, private utilService: UtilService) {
+    // Inicializa com pares de moedas pré-definidos
+    this.currencyPairs$.next(['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD']);
+    
+    // Chama updateCurrencyPairs para atualizar com base na API, se necessário
     this.updateCurrencyPairs();
   }
 
   updateCurrencyPairs(): void {
+    // Se você ainda quer atualizar com base na API, você pode fazer isso aqui
     this.apiService.getListOfCurrencies().subscribe(data => {
       if (data && data['bestMatches']) {
         const currencyPairs = data['bestMatches']
