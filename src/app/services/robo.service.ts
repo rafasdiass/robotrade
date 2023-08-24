@@ -24,18 +24,23 @@ export class RoboService {
           let decision = 'Sem sinal';
 
           if (Math.abs(priceChange) > 2) {
-            decision = priceChange > 0 ? 'Sinal de Venda baseado no preço' : 'Sinal de Compra baseado no preço';
+            decision = 'Venda';
+            console.log('Sinal de Venda baseado no preço');
           } else if (rsi > 70) {
-            decision = 'Sinal de Venda baseado no RSI';
+            decision = 'Venda';
+            console.log('Sinal de Venda baseado no RSI');
           } else if (rsi < 30) {
-            decision = 'Sinal de Compra baseado no RSI';
+            decision = 'Compra';
+            console.log('Sinal de Compra baseado no RSI');
           }
 
           // Lógica para EMA de 9 períodos
           if (prices[1] > ema9 && prices[2] > ema9 && prices[0] < ema9) {
-            decision = 'Sinal de Venda baseado na EMA';
+            decision = 'Venda';
+            console.log('Sinal de Venda baseado na EMA');
           } else if (prices[1] < ema9 && prices[2] < ema9 && prices[0] > ema9) {
-            decision = 'Sinal de Compra baseado na EMA';
+            decision = 'Compra';
+            console.log('Sinal de Compra baseado na EMA');
           }
 
           observer.next(decision);
