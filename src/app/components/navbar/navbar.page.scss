@@ -1,18 +1,45 @@
+ion-toolbar {
+  background-color: #1e1e1e;
+  ion-title {
+    color: #ffffff;
+  }
+}
+
+ion-button {
+  --padding-start: 15px;
+  --padding-end: 15px;
+  --border-radius: 4px;
+  --background: transparent;  // Remova o background circular
+  margin: 0 5px;
+}
+
+.robo-button,
+.soros-button,
+.bank-button,
+.compound-interest-button {
+  ion-icon {
+    font-size: 24px;
+    color: #ffffff;
+    margin-right: 8px;
+  }
+  // Adicione o background diretamente aqui
+  background-color: var(--button-color);
+  color: #ffffff;
+  border-radius: 4px;
+}
+
 .robo-button {
-    ion-icon {
-      color: blue;
-    }
-  }
-  
-  .soros-button {
-    ion-icon {
-      color: green;
-    }
-  }
-  
-  .bank-button {
-    ion-icon {
-      color: orange;
-    }
-  }
-  
+  --button-color: #4CAF50;
+}
+
+.soros-button {
+  --button-color: #2196F3;
+}
+
+.bank-button {
+  --button-color: #FFC107;
+}
+
+.compound-interest-button {
+  --button-color: #9C27B0;
+}

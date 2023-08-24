@@ -2,15 +2,25 @@
   <ion-toolbar>
     <ion-title>Robocoins</ion-title>
     <ion-buttons slot="end">
+      <!-- Removido o slot="icon-only" -->
       <ion-button (click)="openRoboSignals()" class="robo-button">
-        <ion-icon slot="icon-only" name="analytics-outline"></ion-icon>
+        <ion-icon name="analytics-outline"></ion-icon>
+        Sinais de Robo
       </ion-button>
-      <!-- New icons to navigate to new pages -->
+      <!-- Removido o slot="icon-only" -->
       <ion-button (click)="openSorosStrategy()" class="soros-button">
-        <ion-icon slot="icon-only" name="cash-outline"></ion-icon>
+        <ion-icon name="cash-outline"></ion-icon>
+        Estratégias de Soros
       </ion-button>
+      <!-- Removido o slot="icon-only" -->
       <ion-button (click)="openBankManagement()" class="bank-button">
-        <ion-icon slot="icon-only" name="wallet-outline"></ion-icon>
+        <ion-icon name="wallet-outline"></ion-icon>
+        Gestão de Banca
+      </ion-button>
+      <!-- Removido o slot="icon-only" -->
+      <ion-button (click)="openCompoundInterest()" class="compound-interest-button">
+        <ion-icon name="calculator-outline"></ion-icon>
+        Juros Composto
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

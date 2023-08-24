@@ -17,12 +17,16 @@ export class NavbarPage implements OnInit {
     this.router.navigate(['/robo-signals']);
   }
 
-  // Métodos para navegar para as novas páginas
   openSorosStrategy() {
     this.router.navigate(['/soros-strategy']);
   }
 
   openBankManagement() {
     this.router.navigate(['/bank-management']);
+  }
+
+  // Método para navegar para a nova página de CompoundInterest
+  openCompoundInterest() {
+    this.router.navigate(['/compound-interest']);
   }
 }
