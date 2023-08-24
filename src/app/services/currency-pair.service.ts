@@ -10,7 +10,7 @@ export class CurrencyPairService {
   public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   constructor(private apiService: ApiService, private utilService: UtilService) {
-    this.currencyPairs$.next(['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD']);
+    this.currencyPairs$.next(['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD', `AUDUSD`, `NZDJPY` , 'AUDUSD' ,  ' AUDCAD`']);
     this.updateCurrencyPairs();
   }
 
@@ -20,7 +20,7 @@ export class CurrencyPairService {
   
       if (data && data['Time Series (5min)']) {
         const currencyPairs = Object.keys(data['Time Series (5min)'])
-          .filter((symbol: string) => /EUR|USD|JPY|CAD/.test(symbol))
+          .filter((symbol: string) => /EUR|USD|JPY|AUD|CAD/.test(symbol))
           .slice(0, 5);
   
         console.log('Pares de moedas filtrados:', currencyPairs);  // Log para depuração

@@ -53,8 +53,8 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
           action: signal,
           currencyPair: pair
         };
-        // Adiciona o novo sinal ao final do array existente
-        this.signals.push(robotSignal);
+        // Adiciona o novo sinal ao início do array existente
+        this.signals.unshift(robotSignal);
       });
     });
   }
