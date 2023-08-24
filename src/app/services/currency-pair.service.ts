@@ -40,17 +40,18 @@ export class CurrencyPairService {
     this.apiService.getCandleData(pair).subscribe(data => {
       if (data && data['Time Series (5min)']) {
         const timeSeries = data['Time Series (5min)'];
-        const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 9);
+        const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 14);
 
         const rsi = this.utilService.calculateRSI(prices);
         const ema9 = this.utilService.calculateEMA(prices);
+        const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices);
 
         let decision = 'Sem sinal';
 
-        if (rsi > 70) {
-          decision = `Sinal de Venda para ${pair} baseado no RSI`;
-        } else if (rsi < 30) {
-          decision = `Sinal de Compra para ${pair} baseado no RSI`;
+        if (rsi > 70 || stochasticOscillator > 80) {
+          decision = `Sinal de Venda para ${pair} baseado no RSI ou Oscilador Estocástico`;
+        } else if (rsi < 30 || stochasticOscillator < 20) {
+          decision = `Sinal de Compra para ${pair} baseado no RSI ou Oscilador Estocástico`;
         }
 
         // Lógica para EMA de 9 períodos
