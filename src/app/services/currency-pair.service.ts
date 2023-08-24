@@ -18,18 +18,30 @@ export class CurrencyPairService {
   }
 
   updateCurrencyPairs(): void {
-    // Se você ainda quer atualizar com base na API, você pode fazer isso aqui
     this.apiService.getListOfCurrencies().subscribe(data => {
+      console.log('Dados brutos da API:', data);  // Log para depuração
+  
       if (data && data['bestMatches']) {
+        console.log('Matches brutos:', data['bestMatches']);  // Log adicional para depuração
+  
         const currencyPairs = data['bestMatches']
           .map((match: any) => match['1. symbol'])
           .filter((symbol: string) => /EUR|USD|JPY|CAD/.test(symbol))
           .slice(0, 5);
-
-        this.currencyPairs$.next(currencyPairs);
+  
+        console.log('Pares de moedas filtrados:', currencyPairs);  // Log para depuração
+  
+        if (currencyPairs.length > 0) {
+          this.currencyPairs$.next(currencyPairs);
+        } else {
+          console.log('Nenhum par de moedas correspondente encontrado.');  // Log para depuração
+        }
+      } else {
+        console.log('Dados da API inválidos ou ausentes.');  // Log para depuração
       }
     });
   }
+  
 
   decideAcaoParMoeda(pair: string) {
     this.apiService.getCandleData(pair).subscribe(data => {
