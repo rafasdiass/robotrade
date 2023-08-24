@@ -40,4 +40,12 @@ export class ApiService {
   getData(ref: string): Observable<APIResponse> {  // Use a interface APIResponse aqui
     return this.mountGETRequest(this.mountURL(`symbol=${ref}&interval=5min`));
   }
+  getAllCurrencyPairs(): Observable<APIResponse> {
+    // Substitua esta URL pela URL da API que retorna todos os pares de moedas
+    const endpoint = `${this.baseUrl}/query?apiKey=${this.apiKey}&function=GET_ALL_CURRENCY_PAIRS`;
+    return this.http.get<APIResponse>(endpoint).pipe(
+      catchError(this.handleError)
+    );
+  }
+
 }

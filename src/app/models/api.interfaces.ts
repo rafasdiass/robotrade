@@ -8,6 +8,7 @@ export interface TimeSeriesEntry {
   
   export interface APIResponse {
     'Time Series (5min)': TimeSeries;
+    allPairs?: string[];  // Adicionado este campo como um array de strings
     // Adicione outros campos conforme necessário
   }
   

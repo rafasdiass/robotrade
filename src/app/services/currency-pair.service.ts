@@ -21,25 +21,31 @@ export class CurrencyPairService {
   }
 
   updateCurrencyPairs(): void {
-    this.apiService.getListOfCurrencies().subscribe((data: APIResponse) => { 
-      console.log('Dados brutos da API:', data);
+    this.apiService.getAllCurrencyPairs().subscribe((response: APIResponse) => {
+      console.log('Dados brutos da API:', response);
   
-      const timeSeries: TimeSeries | undefined = data?.['Time Series (5min)']; 
-      if (timeSeries) {
-        const currencyPairs = Object.keys(timeSeries)
-          .filter((symbol: string) => /EUR|USD|JPY|AUD|CAD/.test(symbol))
-          .slice(0, 5);
+      
+      const allPairs: string[] = response.allPairs || [];  // Adicionado valor padrão []
   
-        console.log('Pares de moedas filtrados:', currencyPairs);
+      if (allPairs.length > 0) {
+        console.log('Todos os pares de moedas:', allPairs);
   
-        if (currencyPairs.length > 0) {
-          this.currencyPairs$.next(currencyPairs);
+        // Filtra os pares de moedas com base em uma expressão regular
+        const filteredPairs = allPairs.filter(pair => /EUR|USD|JPY|AUD|CAD/.test(pair));
+  
+        if (filteredPairs.length > 0) {
+          console.log('Pares de moedas filtrados:', filteredPairs);
+          this.currencyPairs$.next(filteredPairs);
         } else {
           console.log('Nenhum par de moedas correspondente encontrado.');
         }
       } else {
         console.log('Dados da API inválidos ou ausentes.');
       }
+    }, error => {
+      console.log('Erro ao buscar dados da API:', error);
     });
   }
+  
+  
 }
