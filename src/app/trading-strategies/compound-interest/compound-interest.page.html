@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Calculadora de Juros Compostos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Card para Valor Inicial, Meta Diária e Payout -->
+  <ion-card>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Valor Inicial (R$)</ion-label>
+        <ion-input [(ngModel)]="initialAmount" (ionChange)="updateValues()"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Meta Diária (%)</ion-label>
+        <ion-input [(ngModel)]="dailyGoal" (ionChange)="updateValues()"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Payout (%)</ion-label>
+        <ion-input [(ngModel)]="payout" (ionChange)="updateValues()"></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Cards para as Entradas -->
+  <ion-card *ngFor="let entry of entries; let i = index">
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            {{ i + 1 }}ª Entrada
+          </ion-col>
+          <ion-col>
+            <!-- Valor da entrada -->
+          </ion-col>
+          <ion-col>
+            {{ entry.result }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

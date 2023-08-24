@@ -28,6 +28,10 @@ const routes: Routes = [
     path: 'soros-strategy',
     loadChildren: () => import('./trading-strategies/soros-strategy/soros-strategy.module').then( m => m.SorosStrategyPageModule)
   },
+  {
+    path: 'compound-interest',
+    loadChildren: () => import('./trading-strategies/compound-interest/compound-interest.module').then( m => m.CompoundInterestPageModule)
+  },
   
 ];
 
