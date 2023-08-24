@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { UtilService } from './util.service';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,36 +12,28 @@ export class RoboService {
 
   decideAcao(symbol: string): Observable<string> {
     return new Observable(observer => {
-      this.apiService.getStockData(symbol).subscribe((data: any) => {
-        if (data && data['Time Series (5min)']) {
-          const timeSeries = data['Time Series (5min)'];
-          const prices = Object.values(timeSeries).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 14);
+      forkJoin([
+        this.apiService.getCandleData(symbol, '5min'),
+        this.apiService.getCandleData(symbol, '15min')
+      ]).subscribe(([data5min, data15min]) => {
+        if (data5min && data5min['Time Series (5min)'] && data15min && data15min['Time Series (15min)']) {
+          const timeSeries5min = data5min['Time Series (5min)'];
+          const prices5min = Object.values(timeSeries5min).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 14);
 
-          const rsi = this.utilService.calculateRSI(prices);
-          const ema9 = this.utilService.calculateEMA(prices, 9);
-          const priceChange = this.utilService.calculatePriceChange(prices);
-          const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices);
+          const timeSeries15min = data15min['Time Series (15min)'];
+          const prices15min = Object.values(timeSeries15min).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 14);
+
+          const rsi5min = this.utilService.calculateRSI(prices5min);
+          const rsi15min = this.utilService.calculateRSI(prices15min);
 
           let decision = 'Sem sinal';
 
-          if (Math.abs(priceChange) > 2) {
+          if (rsi5min > 70 && rsi15min > 70) {
             decision = 'Venda';
-            console.log('Sinal de Venda baseado no preço');
-          } else if (rsi > 70 || stochasticOscillator > 80) {
-            decision = 'Venda';
-            console.log('Sinal de Venda baseado no RSI ou Oscilador Estocástico');
-          } else if (rsi < 30 || stochasticOscillator < 20) {
+            console.log('Sinal de Venda baseado nos gráficos de 5min e 15min');
+          } else if (rsi5min < 30 && rsi15min < 30) {
             decision = 'Compra';
-            console.log('Sinal de Compra baseado no RSI ou Oscilador Estocástico');
-          }
-
-          // Lógica para EMA de 9 períodos
-          if (prices[1] > ema9 && prices[2] > ema9 && prices[0] < ema9) {
-            decision = 'Venda';
-            console.log('Sinal de Venda baseado na EMA');
-          } else if (prices[1] < ema9 && prices[2] < ema9 && prices[0] > ema9) {
-            decision = 'Compra';
-            console.log('Sinal de Compra baseado na EMA');
+            console.log('Sinal de Compra baseado nos gráficos de 5min e 15min');
           }
 
           observer.next(decision);

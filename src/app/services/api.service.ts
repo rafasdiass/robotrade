@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiKey = '589Y14LQPVGKZQ3N';  // Chave de API da Alpha Vantage
+  private apiKey = 'HYL1WMYBF10QPI3R';  // Chave de API da Alpha Vantage
   private baseUrl = 'https://www.alphavantage.co/query?';  // URL base da Alpha Vantage
 
   constructor(private http: HttpClient) {}
@@ -34,22 +34,27 @@ export class ApiService {
     );
   }
 
-  // Método para obter dados de candle (exemplo)
-  getCandleData(pair: string): Observable<any> {
-    const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${pair}&interval=5min&apikey=${this.apiKey}`;
+  // Método para obter dados de candle com intervalo de 5 minutos (exemplo)
+  getCandleData(pair: string, interval: string = '5min'): Observable<any> {
+    const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${pair}&interval=${interval}&apikey=${this.apiKey}`;
     return this.http.get(endpoint).pipe(
       catchError(this.handleError)
     );
   }
 
   // Método para obter dados de ações (exemplo)
-getStockData(symbol: string): Observable<any> {
-  const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${this.apiKey}`;
-  return this.http.get(endpoint).pipe(
-    catchError(this.handleError)
-  );
-}
+  getStockData(symbol: string): Observable<any> {
+    const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${this.apiKey}`;
+    return this.http.get(endpoint).pipe(
+      catchError(this.handleError)
+    );
+  }
 
-
- 
+  // Método para obter dados de candle com intervalo de 15 minutos
+  getCandleData15min(pair: string): Observable<any> {
+    const endpoint = `${this.baseUrl}function=TIME_SERIES_INTRADAY&symbol=${pair}&interval=15min&apikey=${this.apiKey}`;
+    return this.http.get(endpoint).pipe(
+      catchError(this.handleError)
+    );
+  }
 }
