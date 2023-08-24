@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService, ApiResponse } from './api.service';  // Importe a interface ApiResponse
+import { ApiService } from './api.service';  // Importe o novo ApiService
 import { UtilService } from './util.service';
 
 @Injectable({
@@ -18,14 +18,12 @@ export class CurrencyPairService {
   }
 
   updateCurrencyPairs(): void {
-    this.apiService.getListOfCurrencies().subscribe((data: ApiResponse) => {  // Use a interface ApiResponse
+    this.apiService.getListOfCurrencies().subscribe(data => {  
       console.log('Dados brutos da API:', data);  // Log para depuração
   
-      if (data && data.bestMatches) {
-        console.log('Matches brutos:', data.bestMatches);  // Log adicional para depuração
-  
-        const currencyPairs = data.bestMatches
-          .map((match: any) => match['1. symbol'])
+      // Atualize esta parte com base na estrutura de dados da sua nova API
+      if (data && data['Time Series (5min)']) {
+        const currencyPairs = Object.keys(data['Time Series (5min)'])
           .filter((symbol: string) => /EUR|USD|JPY|CAD/.test(symbol))
           .slice(0, 5);
   
@@ -41,7 +39,6 @@ export class CurrencyPairService {
       }
     });
   }
-  
 
   decideAcaoParMoeda(pair: string) {
     this.apiService.getCandleData(pair).subscribe(data => {
