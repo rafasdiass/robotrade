@@ -1,15 +1,14 @@
 ion-item {
-  &.buy-signal {
-    ion-label {
-      color: green;
-    }
+  .buy-signal {
+    background-color: #e6ffe6;  // Verde claro
+    border-left: 5px solid #00cc00;  // Verde
   }
 
-  &.sell-signal {
-    ion-label {
-      color: red;
-    }
+  .sell-signal {
+    background-color: #ffe6e6;  // Vermelho claro
+    border-left: 5px solid #cc0000;  // Vermelho
   }
+  
 
   &.no-signal {
     ion-label {

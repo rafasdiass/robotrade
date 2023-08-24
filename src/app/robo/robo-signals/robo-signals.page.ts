@@ -9,6 +9,7 @@ interface RobotSignal {
   action: string;
   currencyPair: string;
 }
+
 @Component({
   selector: 'app-robo-signals',
   templateUrl: './robo-signals.page.html',
@@ -58,7 +59,6 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
       });
     });
   }
-  
 
   ngOnDestroy() {
     this.subscriptions.forEach(sub => sub.unsubscribe());

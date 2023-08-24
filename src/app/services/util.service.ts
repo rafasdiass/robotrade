@@ -62,6 +62,7 @@ export class UtilService {
 
     return stochasticOscillator;
   }
+
   calculateFibonacciLevels(low: number, high: number): { [key: string]: number } {
     const diff = high - low;
   
@@ -74,5 +75,4 @@ export class UtilService {
       '100.0%': high
     };
   }
-  
 }

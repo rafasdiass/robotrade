@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { UtilService } from './util.service';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,29 +12,41 @@ export class RoboService {
 
   decideAcao(symbol: string): Observable<string> {
     return new Observable(observer => {
-      forkJoin([
-        this.apiService.getCandleData(symbol, '5min'),
-        this.apiService.getCandleData(symbol, '15min')
-      ]).subscribe(([data5min, data15min]) => {
-        if (data5min && data5min['Time Series (5min)'] && data15min && data15min['Time Series (15min)']) {
+      this.apiService.getCandleData(symbol, '5min').subscribe(data5min => {
+        if (data5min && data5min['Time Series (5min)']) {
           const timeSeries5min = data5min['Time Series (5min)'];
           const prices5min = Object.values(timeSeries5min).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 14);
 
-          const timeSeries15min = data15min['Time Series (15min)'];
-          const prices15min = Object.values(timeSeries15min).map((entry: any) => parseFloat(entry['4. close'])).slice(0, 14);
+          const rsi = this.utilService.calculateRSI(prices5min);
+          const ema = this.utilService.calculateEMA(prices5min);
+          const priceChange = this.utilService.calculatePriceChange(prices5min);
+          const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices5min);
+          const fibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices5min), Math.max(...prices5min));
 
-          const rsi5min = this.utilService.calculateRSI(prices5min);
-          const rsi15min = this.utilService.calculateRSI(prices15min);
+          let score = 0;
+
+          // RSI strategy
+          if (rsi < 30) score++;
+          else if (rsi > 70) score--;
+
+          // EMA strategy
+          if (prices5min[0] > ema) score++;
+          else if (prices5min[0] < ema) score--;
+
+          // Price Change strategy
+          if (priceChange > 0) score++;
+          else if (priceChange < 0) score--;
+
+          // Stochastic Oscillator strategy
+          if (stochasticOscillator < 20) score++;
+          else if (stochasticOscillator > 80) score--;
+
+          // Fibonacci Levels strategy (just an example, can be refined)
+          if (prices5min[0] > fibonacciLevels['61.8%'] && prices5min[0] < fibonacciLevels['100.0%']) score++;
 
           let decision = 'Sem sinal';
-
-          if (rsi5min > 70 && rsi15min > 70) {
-            decision = 'Venda';
-            console.log('Sinal de Venda baseado nos gráficos de 5min e 15min');
-          } else if (rsi5min < 30 && rsi15min < 30) {
-            decision = 'Compra';
-            console.log('Sinal de Compra baseado nos gráficos de 5min e 15min');
-          }
+          if (score > 0) decision = 'Compra';
+          else if (score < 0) decision = 'Venda';
 
           observer.next(decision);
           observer.complete();
