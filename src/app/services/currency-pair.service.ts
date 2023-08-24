@@ -20,7 +20,25 @@ export class CurrencyPairService {
   }
 
   updateCurrencyPairs(): void {
-    // ... (sem alterações aqui)
+    this.apiService.getListOfCurrencies().subscribe(data => {
+      console.log('Dados brutos da API:', data);
+  
+      if (data && data['Time Series (5min)']) {
+        const currencyPairs = Object.keys(data['Time Series (5min)'])
+          .filter((symbol: string) => /EUR|USD|JPY|AUD|CAD/.test(symbol))
+          .slice(0, 5);
+  
+        console.log('Pares de moedas filtrados:', currencyPairs);
+  
+        if (currencyPairs.length > 0) {
+          this.currencyPairs$.next(currencyPairs);
+        } else {
+          console.log('Nenhum par de moedas correspondente encontrado.');
+        }
+      } else {
+        console.log('Dados da API inválidos ou ausentes.');
+      }
+    });
   }
 
   decideAcaoParMoeda(pair: string) {
