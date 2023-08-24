@@ -15,6 +15,7 @@ import { CompoundInterestPage } from './compound-interest.page';
     IonicModule,
     CompoundInterestPageRoutingModule
   ],
-  declarations: [CompoundInterestPage]
+  declarations: [CompoundInterestPage],
+  exports : [CompoundInterestPage]
 })
 export class CompoundInterestPageModule {}

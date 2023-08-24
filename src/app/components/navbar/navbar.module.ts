@@ -10,6 +10,7 @@ import { NavbarPage } from './navbar.page';
 
 import { SorosStrategyPageModule } from 'src/app/trading-strategies/soros-strategy/soros-strategy.module';
 import { RoboSignalsPageModule } from 'src/app/robo/robo-signals/robo-signals.module';
+import { CompoundInterestPageModule } from 'src/app/trading-strategies/compound-interest/compound-interest.module';
 
 @NgModule({
   imports: [
@@ -19,7 +20,9 @@ import { RoboSignalsPageModule } from 'src/app/robo/robo-signals/robo-signals.mo
     NavbarPageRoutingModule,
     RoboSignalsPageModule,
     
-    SorosStrategyPageModule
+    
+    SorosStrategyPageModule,
+    CompoundInterestPageModule
   ],
   declarations: [NavbarPage],
   exports: [NavbarPage]
