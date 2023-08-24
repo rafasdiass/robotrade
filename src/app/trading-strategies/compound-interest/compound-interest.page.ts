@@ -21,21 +21,23 @@ export class CompoundInterestPage implements OnInit {
     this.updateValues();
   }
 
-  // Função para calcular juros compostos
   calculateCompoundInterest() {
-    let totalAmount = this.initialAmount;
-    const dailyMultiplier = 1 + (this.dailyGoal / 100);
-    const payoutMultiplier = this.payout / 100;
-
+    let totalAmount = this.initialAmount; // Valor inicial da banca
+    const dailyGoalPercent = this.dailyGoal / 100; // Meta diária em porcentagem
+    const payoutPercent = this.payout / 100; // Payout em porcentagem
+  
+    this.entries = []; // Limpa o array de entradas
+  
     for (let i = 0; i < 30; i++) {
-      totalAmount = totalAmount * dailyMultiplier;
-      const profit = totalAmount * payoutMultiplier;
-      totalAmount += profit;
-      const result = Math.floor(totalAmount);
-      this.entries.push({ result });
+      const entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
+      const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
+      const result = entryAmount + profit; // Soma a entrada e o lucro para obter o resultado da operação
+  
+      totalAmount += result - entryAmount; // Atualiza o valor total da banca
+      this.entries.push({ day: i + 1, entryAmount, profit, totalAmount: Math.floor(totalAmount) });
     }
   }
-
+  
   // Função para atualizar o cálculo quando os valores são alterados
   updateValues() {
     this.entries = []; // Limpa o array de entradas
