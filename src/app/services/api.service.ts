@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
+
+// Definindo a interface para a resposta da API
+export interface ApiResponse {
+  bestMatches: any[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +31,15 @@ export class ApiService {
 
   getListOfCurrencies(): Observable<any> {
     const endpoint = `${this.baseUrl}function=SYMBOL_SEARCH&keywords=currency&apikey=${this.apiKey}`;
-    return this.http.get(endpoint).pipe(
+    return this.http.get<ApiResponse>(endpoint).pipe(
+      map(data => {
+        if (data && data.bestMatches) {
+          return data.bestMatches.filter((match: any) => 
+            /EUR|USD|JPY|CAD/.test(match['1. symbol'])
+          );
+        }
+        return [];
+      }),
       catchError(this.handleError)
     );
   }

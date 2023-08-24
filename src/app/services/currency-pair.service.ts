@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ApiService } from './api.service';
+import { ApiService, ApiResponse } from './api.service';  // Importe a interface ApiResponse
 import { UtilService } from './util.service';
 
 @Injectable({
@@ -18,13 +18,13 @@ export class CurrencyPairService {
   }
 
   updateCurrencyPairs(): void {
-    this.apiService.getListOfCurrencies().subscribe(data => {
+    this.apiService.getListOfCurrencies().subscribe((data: ApiResponse) => {  // Use a interface ApiResponse
       console.log('Dados brutos da API:', data);  // Log para depuração
   
-      if (data && data['bestMatches']) {
-        console.log('Matches brutos:', data['bestMatches']);  // Log adicional para depuração
+      if (data && data.bestMatches) {
+        console.log('Matches brutos:', data.bestMatches);  // Log adicional para depuração
   
-        const currencyPairs = data['bestMatches']
+        const currencyPairs = data.bestMatches
           .map((match: any) => match['1. symbol'])
           .filter((symbol: string) => /EUR|USD|JPY|CAD/.test(symbol))
           .slice(0, 5);
