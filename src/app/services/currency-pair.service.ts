@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
 import { UtilService } from './util.service';
+import { APIResponse, TimeSeries } from '../models/api.interfaces'; 
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +21,12 @@ export class CurrencyPairService {
   }
 
   updateCurrencyPairs(): void {
-    this.apiService.getListOfCurrencies().subscribe(data => {
+    this.apiService.getListOfCurrencies().subscribe((data: APIResponse) => { 
       console.log('Dados brutos da API:', data);
   
-      if (data && data['Time Series (5min)']) {
-        const currencyPairs = Object.keys(data['Time Series (5min)'])
+      const timeSeries: TimeSeries | undefined = data?.['Time Series (5min)']; 
+      if (timeSeries) {
+        const currencyPairs = Object.keys(timeSeries)
           .filter((symbol: string) => /EUR|USD|JPY|AUD|CAD/.test(symbol))
           .slice(0, 5);
   

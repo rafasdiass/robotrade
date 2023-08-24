@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoboService } from '../../services/robo.service';
 import { CurrencyPairService } from '../../services/currency-pair.service';
-import { ApiService } from '../../services/api.service';  // Importe ApiService
+import { ApiService } from '../../services/api.service';
 
 interface RobotSignal {
   time: string;
@@ -18,7 +18,7 @@ interface RobotSignal {
 export class RoboSignalsPage implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public signals: RobotSignal[] = [];
-  private updateInterval: any;
+  private updateIntervalId: any;
 
   constructor(
     private roboService: RoboService,
@@ -26,42 +26,48 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
     private apiService: ApiService
   ) {}
 
-  ngOnInit() {
-    this.apiService.validateAPI().subscribe(
+  ngOnInit(): void {
+    this.performHealthCheck();
+    this.subscribeToCurrencyPairs();
+    this.setUpdateInterval();
+  }
+
+  private performHealthCheck(): void {
+    this.apiService.healthCheck().subscribe(
       data => console.log('API is working', data),
       error => console.log('API is not working', error)
     );
+  }
 
+  private subscribeToCurrencyPairs(): void {
     const currencyPairSubscription = this.currencyPairService.currencyPairs$.subscribe(pairs => {
       this.updateSignals(pairs);
     });
-
     this.subscriptions.push(currencyPairSubscription);
+  }
 
-    // Atualiza os sinais a cada 5 minutos (300000 ms)
-    this.updateInterval = setInterval(() => {
+  private setUpdateInterval(): void {
+    this.updateIntervalId = setInterval(() => {
       this.updateSignals(this.currencyPairService.currencyPairs$.getValue());
     }, 300000);
   }
 
-  updateSignals(pairs: string[]) {
+  private updateSignals(pairs: string[]): void {
     console.log('Novos pares de moedas:', pairs);
     pairs.forEach(pair => {
       this.roboService.decideAcao(pair).subscribe(signal => {
-        console.log('Sinal recebido:', signal);
         const robotSignal: RobotSignal = {
           time: new Date().toLocaleTimeString(),
           action: signal,
           currencyPair: pair
         };
-        // Adiciona o novo sinal ao início do array existente
         this.signals.unshift(robotSignal);
       });
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
-    clearInterval(this.updateInterval);
+    clearInterval(this.updateIntervalId);
   }
 }
