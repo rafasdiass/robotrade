@@ -16,6 +16,8 @@ interface AuthResponse {
 export class ApiService {
   private apiKey = environment.apiKey;  
   private baseUrl = environment.baseUrl;
+  private clientId = environment.clientId; 
+  private clientSecret = environment.clientSecret; 
   public accessToken: string | null = null;
 
   constructor(private http: HttpClient) { }
@@ -25,10 +27,10 @@ export class ApiService {
     return throwError(error);
   }
 
-  authenticate(clientId: string, clientSecret: string): Observable<AuthResponse> {
+  authenticate(): Observable<AuthResponse> {
     const body = {
-      client_id: clientId,
-      client_secret: clientSecret
+      client_id: this.clientId,
+      client_secret: this.clientSecret
     };
     const authUrl = `${this.baseUrl}/v1/auth/token`;
     return this.http.post<AuthResponse>(authUrl, body, {
