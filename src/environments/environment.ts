@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiKey: '23F6OIQ1B6RGNQCN',
-  baseUrl: 'https://www.alphavantage.co'
+  apiKey: 'tJnGr62ESj7soPhCu3Mo',
+  baseUrl: 'https://data.nasdaq.com/api/v3' // URL base atualizada
 };

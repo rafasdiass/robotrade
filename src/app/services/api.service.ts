@@ -1,9 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { APIResponse } from '../models/api.interfaces'; 
+import { APIResponse } from '../models/api.interfaces';
+
+interface AuthResponse {
+  access_token: string;
+  expires_in: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +16,7 @@ import { APIResponse } from '../models/api.interfaces';
 export class ApiService {
   private apiKey = environment.apiKey;  
   private baseUrl = environment.baseUrl;
+  public accessToken: string | null = null;
 
   constructor(private http: HttpClient) { }
 
@@ -18,12 +24,28 @@ export class ApiService {
     console.error('API Error:', error);
     return throwError(error);
   }
- 
-  private mountURL(params: string, func: string = 'TIME_SERIES_INTRADAY'): string {
-    return `${this.baseUrl}/query?apikey=${this.apiKey}&function=${func}&${params}`;
 
+  authenticate(clientId: string, clientSecret: string): Observable<AuthResponse> {
+    const body = {
+      client_id: clientId,
+      client_secret: clientSecret
+    };
+    const authUrl = `${this.baseUrl}/v1/auth/token`;
+    return this.http.post<AuthResponse>(authUrl, body, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      catchError(this.handleError),
+      map(response => {
+        this.accessToken = response.access_token;
+        return response;
+      })
+    );
   }
- 
+
+  private mountNasdaqURL(endpoint: string, params: string): string {
+    return `${this.baseUrl}/${endpoint}?api_key=${this.apiKey}&${params}`;
+  }
+
   private mountGETRequest(endpoint: string): Observable<APIResponse> {  
     return this.http.get<APIResponse>(endpoint).pipe(  
       catchError(this.handleError)
@@ -31,22 +53,21 @@ export class ApiService {
   }
   
   healthCheck(): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountURL('symbol=MSFT&interval=5min'));
+    return this.mountGETRequest(this.mountNasdaqURL('datasets/WIKI/AAPL.csv', 'order=asc'));
   }
 
   getListOfCurrencies(): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountURL('from_currency=USD&to_currency=JPY', 'CURRENCY_EXCHANGE_RATE'));
+    return this.mountGETRequest(this.mountNasdaqURL('datasets/CURRENCY/USDJPY.csv', ''));
   }
 
   getData(ref: string): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountURL(`symbol=${ref}&interval=5min`));
+    return this.mountGETRequest(this.mountNasdaqURL(`datasets/${ref}/candles.csv`, 'start_date=2023-01-01&end_date=2023-12-31'));
   }
+
   getAllCurrencyPairs(): Observable<APIResponse> {
-    
-    const endpoint = `${this.baseUrl}/query?function=GET_ALL_CURRENCY_PAIRS&apikey=${encodeURIComponent(this.apiKey)}`;
+    const endpoint = this.mountNasdaqURL('datasets/CURRENCY/ALL_PAIRS.csv', '');
     return this.http.get<APIResponse>(endpoint).pipe(
       catchError(this.handleError)
     );
   }
-
 }
