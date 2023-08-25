@@ -46,11 +46,35 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
     const roboDecisionSubscription = this.roboService.decision$.subscribe(decision => {
       if (decision) {
         console.log('Decisão atualizada via BehaviorSubject:', decision);
-        // Aqui você pode fazer algo com a decisão atualizada
+  
+        // Obter todos os pares de moedas atuais
+        const currentCurrencyPairs = this.currencyPairService.currencyPairs$.getValue();
+  
+        // Atualizar a interface do usuário para cada par de moedas
+        currentCurrencyPairs.forEach(pair => {
+          if (this.lastDecisions[pair] !== decision) {
+            // Criar um novo sinal de robô com a decisão atualizada
+            const newSignal: RobotSignal = {
+              time: new Date().toLocaleTimeString(),
+              action: decision,
+              currencyPair: pair
+            };
+  
+            // Adicionar o novo sinal ao início do array de sinais
+            this.signals.unshift(newSignal);
+  
+            // Atualizar a última decisão para o par de moedas atual
+            this.lastDecisions[pair] = decision;
+  
+            // Forçar a detecção de mudanças para atualizar a UI
+            this.cdr.detectChanges();
+          }
+        });
       }
     });
     this.subscriptions.push(roboDecisionSubscription);
   }
+  
 
   private subscribeToCurrencyPairs(): void {
     const currencyPairSubscription = this.currencyPairService.currencyPairs$.subscribe(pairs => {
