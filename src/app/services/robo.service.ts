@@ -13,44 +13,42 @@ export class RoboService {
   private readonly BUY = 'Compra';
   private readonly SELL = 'Venda';
   private readonly NO_SIGNAL = 'Sem sinal';
-  private lastDecisions: { [currencyPair: string]: string } = {}; // Objeto para armazenar a última decisão para cada par de moedas
+  private lastDecisions: { [currencyPair: string]: string } = {};
 
   constructor(
     private apiService: ApiService,
     private utilService: UtilService,
     private currencyPairService: CurrencyPairService
   ) {
-    // Iniciar o intervalo de 5 minutos
     const fiveMinuteInterval$ = interval(300000);
 
-    // Observar mudanças
-combineLatest([
-  fiveMinuteInterval$,
-  this.currencyPairService.currencyPairs$
-])
-.pipe(
-  filter(() => new Date().getSeconds() <= 45),
-  switchMap(([_, currencyPairs]) => {
-    return from(currencyPairs).pipe(
-      switchMap(symbol => {
-        if (typeof symbol === 'string') {
-          return this.decideAcao(symbol).pipe(
-            map(decision => ({ symbol, decision }))  // Mapeie a decisão e o símbolo juntos
-          );
-        }
-        return of({ symbol: 'Tipo de dado inválido', decision: 'Tipo de dado inválido' });
+    combineLatest([
+      fiveMinuteInterval$,
+      this.currencyPairService.currencyPairs$
+    ])
+    .pipe(
+      filter(() => new Date().getSeconds() <= 45),
+      switchMap(([_, currencyPairs]) => {
+        return from(currencyPairs).pipe(
+          switchMap(symbol => {
+            if (typeof symbol === 'string') {
+              return this.decideAcao(symbol).pipe(
+                map(decision => ({ symbol, decision }))
+              );
+            }
+            return of({ symbol: 'Tipo de dado inválido', decision: 'Tipo de dado inválido' });
+          })
+        );
       })
-    );
-  })
-)
-.subscribe(({ symbol, decision }) => {  // Desestruture o objeto para obter símbolo e decisão
-  if (this.lastDecisions[symbol] !== decision) { // Verifique se a decisão mudou para este par de moedas
-    console.log('Decisão alterada:', decision);
-    this.lastDecisions[symbol] = decision; // Atualize a última decisão para este par de moedas
-  } else {
-    console.log('Decisão inalterada:', decision);
-  }
-});
+    )
+    .subscribe(({ symbol, decision }) => {
+      if (this.lastDecisions[symbol] !== decision) {
+        console.log('Decisão alterada:', decision);
+        this.lastDecisions[symbol] = decision;
+      } else {
+        console.log('Decisão inalterada:', decision);
+      }
+    });
   }
 
   decideAcao(symbol: string): Observable<string> {
@@ -80,7 +78,7 @@ combineLatest([
 
   private makeDecision(prices: number[]): string {
     const rsi = this.utilService.calculateRSI(prices);
-    const ema = this.utilService.calculateEMA(prices);
+    const ema9 = this.utilService.calculateEMA(prices, 9); // EMA de 9 períodos
     const priceChange = this.utilService.calculatePriceChange(prices);
     const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices);
     const fibonacciLevels: FibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices), Math.max(...prices));
@@ -88,7 +86,7 @@ combineLatest([
     let score = 0;
 
     score += this.applyRSIStrategy(rsi);
-    score += this.applyEMAStrategy(prices[0], ema);
+    score += this.applyEMAStrategy(prices[0], ema9); // Utilizando EMA de 9 períodos
     score += this.applyPriceChangeStrategy(priceChange);
     score += this.applyStochasticOscillatorStrategy(stochasticOscillator);
     score += this.applyFibonacciLevelsStrategy(prices[0], fibonacciLevels);
@@ -100,8 +98,8 @@ combineLatest([
     return rsi < 30 ? 1 : rsi > 70 ? -1 : 0;
   }
 
-  private applyEMAStrategy(price: number, ema: number): number {
-    return price > ema ? 1 : price < ema ? -1 : 0;
+  private applyEMAStrategy(price: number, ema9: number): number {
+    return price > ema9 ? 1 : price < ema9 ? -1 : 0;
   }
 
   private applyPriceChangeStrategy(priceChange: number): number {

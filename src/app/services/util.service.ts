@@ -33,11 +33,29 @@ export class UtilService {
     let ema = prices[0];
     const multiplier = 2 / (period + 1);
   
-    for (let i = 1; i < period; i++) {
+    for (let i = 1; i < prices.length; i++) {
       ema = ((prices[i] - ema) * multiplier) + ema;
     }
   
     return ema;
+  }
+
+  ema9PeriodRule(prices: number[]): string {
+    const ema9 = this.calculateEMA(prices, 9);
+    const firstCandle = prices[1];
+    const secondCandle = prices[2];
+    const thirdCandle = prices[0];
+
+    if (firstCandle < ema9 && secondCandle < ema9 && thirdCandle > ema9) {
+      return "Retrair";
+    }
+
+    return "Sem sinal";
+  }
+
+  calculateSMA(prices: number[], period: number): number {
+    const sum = prices.slice(0, period).reduce((acc, val) => acc + val, 0);
+    return sum / period;
   }
 
   calculatePriceChange(prices: number[]): number {
@@ -55,7 +73,7 @@ export class UtilService {
     const currentPrice = prices[0];
 
     if (highestPrice === lowestPrice) {
-      return 100; // Evita divisão por zero
+      return 100; 
     }
 
     const stochasticOscillator = ((currentPrice - lowestPrice) / (highestPrice - lowestPrice)) * 100;
