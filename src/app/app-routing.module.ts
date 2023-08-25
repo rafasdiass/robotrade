@@ -32,6 +32,10 @@ const routes: Routes = [
     path: 'compound-interest',
     loadChildren: () => import('./trading-strategies/compound-interest/compound-interest.module').then( m => m.CompoundInterestPageModule)
   },
+  {
+    path: 'simple-interest',
+    loadChildren: () => import('./trading-strategies/simple-interest/simple-interest.module').then( m => m.SimpleInterestPageModule)
+  },
   
 ];
 

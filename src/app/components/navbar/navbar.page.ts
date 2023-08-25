@@ -22,7 +22,7 @@ export class NavbarPage implements OnInit {
   }
 
   openBankManagement() {
-    this.router.navigate(['/bank-management']);
+    this.router.navigate(['/simple-interest']);
   }
 
   // Método para navegar para a nova página de CompoundInterest
