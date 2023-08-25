@@ -1,37 +1,62 @@
-// @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
-
-
-
-.input-field {
-  text-align: right;
-}
-
-.entry-card {
-  background-color: #e6e6e6;
-  border-radius: 10px;
-  margin: 5px 10px;
-}
-
-.entry-label,
-.entry-value,
-.entry-result {
+// Estilo para o contêiner do título da página
+.page-title-container {
   text-align: center;
-  font-weight: 300;
 }
 
-.entry-label {
-  font-size: 1.2em;
+// Estilo para o título da página
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  display: inline-block;
 }
 
-.entry-value {
-  font-size: 1.1em;
-  color: #007bff;
+// Estilo para o título da página
+.page-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
-.entry-result {
-  font-size: 1.1em;
-  color: #28a745;
+// Estilo para o card de entrada
+.input-card {
+  margin: 16px;
+  ion-card-content {
+    ion-item {
+      margin-bottom: 12px;
+      
+    }
+  }
 }
+
+// Estilo para os cards de entradas
+.entry-card {
+  margin: 8px;
+  ion-card-content {
+    background-color: #525252;
+  }
+}
+
+
+
+// Estilo para as colunas dentro das linhas
 .entry-col {
-    color : #000000;
+  text-align: center;
+  font-size: 14px;
+  padding: 8px;
+  color: #fffdfd;
+}
+
+// Estilo para os itens de entrada
+.input-item {
+  ion-label {
+    font-weight: bold;
+  }
+  ion-input {
+    text-align: right;
+  }
+
 }
