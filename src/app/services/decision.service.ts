@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { UtilService } from './util.service';
-import { FibonacciLevels } from '../models/api.interfaces';
 import { BUY, SELL, NO_SIGNAL, RSI_LOWER_LIMIT, RSI_UPPER_LIMIT } from './constants';
 
 @Injectable({
@@ -15,7 +14,9 @@ export class DecisionService {
     const ema9 = this.utilService.calculateEMA(prices, 9); // EMA de 9 períodos
     const priceChange = this.utilService.calculatePriceChange(prices);
     const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices);
-    const fibonacciLevels: FibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices), Math.max(...prices));
+    const fibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices), Math.max(...prices));
+
+    const { wPatterns, mPatterns } = this.utilService.identifyPatterns(prices);
 
     let score = 0;
 
@@ -24,6 +25,7 @@ export class DecisionService {
     score += this.applyPriceChangeStrategy(priceChange);
     score += this.applyStochasticOscillatorStrategy(stochasticOscillator);
     score += this.applyFibonacciLevelsStrategy(prices[0], fibonacciLevels);
+    score += this.applyPatternStrategy(wPatterns, mPatterns, prices.length - 1);
 
     return score > 0 ? BUY : score < 0 ? SELL : NO_SIGNAL;
   }
@@ -44,7 +46,21 @@ export class DecisionService {
     return stochasticOscillator < 20 ? 1 : stochasticOscillator > 80 ? -1 : 0;
   }
 
-  private applyFibonacciLevelsStrategy(price: number, fibonacciLevels: FibonacciLevels): number {
+  private applyFibonacciLevelsStrategy(price: number, fibonacciLevels: { [key: string]: number }): number {
     return (price > fibonacciLevels['61.8%'] && price < fibonacciLevels['100.0%']) ? 1 : 0;
+  }
+
+  private applyPatternStrategy(wPatterns: number[], mPatterns: number[], lastIndex: number): number {
+    // Se o último preço faz parte de um padrão "W", consideramos isso um sinal de compra (+1)
+    if (wPatterns.includes(lastIndex)) {
+      return 1;
+    }
+
+    // Se o último preço faz parte de um padrão "M", consideramos isso um sinal de venda (-1)
+    if (mPatterns.includes(lastIndex)) {
+      return -1;
+    }
+
+    return 0; // Sem sinal
   }
 }

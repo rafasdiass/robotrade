@@ -93,4 +93,26 @@ export class UtilService {
       '100.0%': high
     };
   }
+  identifyPatterns(prices: number[]): { wPatterns: number[], mPatterns: number[] } {
+    const wPatterns: number[] = [];
+    const mPatterns: number[] = [];
+
+    for (let i = 4; i < prices.length; i++) {
+      const slice = prices.slice(i - 4, i + 1);
+
+      // Identificar padrão W (fundo)
+      if (slice[0] > slice[1] && slice[1] < slice[2] && slice[2] > slice[3] && slice[3] < slice[4]) {
+        wPatterns.push(i);
+      }
+
+      // Identificar padrão M (topo)
+      if (slice[0] < slice[1] && slice[1] > slice[2] && slice[2] < slice[3] && slice[3] > slice[4]) {
+        mPatterns.push(i);
+      }
+    }
+
+    return { wPatterns, mPatterns };
+  }
 }
+
+  

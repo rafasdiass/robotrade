@@ -19,6 +19,7 @@ export class CurrencyPairService {
     const fiboLevels = [0.382, 0.5, 0.618];
     return fiboLevels.map(level => low + (high - low) * level);
   }
+
   updateCurrencyPairs(): void {
     this.apiService.getAllCurrencyPairs().subscribe(
       (response: APIResponse) => {
@@ -41,6 +42,3 @@ export class CurrencyPairService {
     );
   }
 }
-  
-  
-
