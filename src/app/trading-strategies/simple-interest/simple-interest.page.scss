@@ -14,11 +14,11 @@
   
 // Estilo para o card de entrada
 .input-card {
-    margin: 16px;
+    width: 40%; // Reduz a largura para 80% da largura do contêiner pai
+    margin: 16px auto; // Margens superior e inferior de 16px e margens laterais automáticas para centralização
     ion-card-content {
       ion-item {
         margin-bottom: 12px;
-        
       }
     }
   }
