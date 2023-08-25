@@ -1,0 +1,57 @@
+// Estilo para o contêiner do título da página
+.page-title-container {
+    text-align: center;
+    background-color: #f2f2f2;
+    border-bottom: 2px solid #d4d4d4;
+  }
+  
+  // Estilo para o título da página
+  .page-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 16px;
+    margin-bottom: 16px;
+    color: #e44d26; // Cor laranja para indicar ação e urgência
+  }
+  
+  // Estilo para o card de entrada
+  .input-card {
+    width: 40%; // Reduz a largura para 40% da largura do contêiner pai
+    margin: 16px auto; // Margens superior e inferior de 16px e margens laterais automáticas para centralização
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    ion-card-content {
+      ion-item {
+        margin-bottom: 12px;
+        background-color: #fff;
+      }
+    }
+  }
+  
+  // Estilo para os cards de entradas
+  .entry-card {
+    margin: 8px;
+    background-color: #e6ffe6; // Cor verde clara para indicar recuperação
+    ion-card-content {
+      background-color: #ccffcc; // Cor verde um pouco mais escura para contraste
+    }
+  }
+  
+  // Estilo para as colunas dentro das linhas
+  .entry-col {
+    text-align: center;
+    font-size: 14px;
+    padding: 8px;
+    color: #333;
+  }
+  
+  // Estilo para os itens de entrada
+  .input-item {
+    ion-label {
+      font-weight: bold;
+    }
+    ion-input {
+      text-align: right;
+    }
+  }
+  

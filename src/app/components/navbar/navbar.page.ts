@@ -18,7 +18,7 @@ export class NavbarPage implements OnInit {
   }
 
   openSorosStrategy() {
-    this.router.navigate(['/soros-strategy']);
+    this.router.navigate(['/martingale']);
   }
 
   openBankManagement() {

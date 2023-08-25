@@ -1,0 +1,45 @@
+<div class="page-title-container">
+  <ion-label class="page-title">
+    Estratégia Martingale
+  </ion-label>
+</div>
+
+<ion-content>
+
+  <!-- Card para Valor Inicial e Payout -->
+  <ion-card class="input-card">
+    <ion-card-content>
+      <ion-item class="input-item">
+        <ion-label>Valor Inicial da Aposta (R$)</ion-label>
+        <ion-input [(ngModel)]="initialAmount" (ionChange)="updateValues()"></ion-input>
+      </ion-item>
+      <ion-item class="input-item">
+        <ion-label>Payout (%)</ion-label>
+        <ion-input [(ngModel)]="payout" (ionChange)="updateValues()"></ion-input>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Cards para as Entradas -->
+  <ion-card *ngFor="let entry of entries" class="entry-card">
+    <ion-card-content class="entry-content">
+      <ion-grid>
+        <ion-row class="entry-row">
+          <ion-col class="entry-col">
+            {{ entry.round }}ª Rodada
+          </ion-col>
+          <ion-col class="entry-col">
+            Aposta Atual: {{ entry.currentBet.toFixed(2) }}
+          </ion-col>
+          <ion-col class="entry-col">
+            Lucro: {{ entry.profit.toFixed(2) }}
+          </ion-col>
+          <ion-col class="entry-col">
+            Total: {{ entry.totalAmount.toFixed(2) }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
