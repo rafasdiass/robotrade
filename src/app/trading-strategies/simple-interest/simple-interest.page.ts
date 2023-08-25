@@ -22,21 +22,23 @@ export class SimpleInterestPage implements OnInit {
   }
 
   calculateSimpleInterest() {
-    let totalAmount = this.initialAmount; // Valor inicial da banca
-    const dailyGoalPercent = this.dailyGoal / 100; // Meta diária em porcentagem
-    const payoutPercent = this.payout / 100; // Payout em porcentagem
+  let totalAmount = this.initialAmount; // Valor inicial da banca
+  const dailyGoalPercent = this.dailyGoal / 100; // Meta diária em porcentagem
+  const payoutPercent = this.payout / 100; // Payout em porcentagem
 
-    this.entries = []; // Limpa o array de entradas
+  this.entries = []; // Limpa o array de entradas
 
-    for (let i = 0; i < 30; i++) {
-      let entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
-      entryAmount = Math.floor(entryAmount); // Arredonda para um número inteiro
-      const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
+  for (let i = 0; i < 30; i++) {
+    let entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
+    entryAmount = Math.floor(entryAmount); // Arredonda para um número inteiro
+    const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
 
-      totalAmount += profit; // Atualiza o valor total da banca usando juros simples
-      this.entries.push({ day: i + 1, entryAmount, profit, totalAmount: Math.floor(totalAmount) });
-    }
+    totalAmount = totalAmount + profit; // Atualiza o valor total da banca usando juros simples
+    totalAmount = parseFloat(totalAmount.toFixed(2)); // Arredonda para duas casas decimais e converte de volta para número
+
+    this.entries.push({ day: i + 1, entryAmount, profit, totalAmount });
   }
+}
 
   // Função para atualizar o cálculo quando os valores são alterados
   updateValues() {

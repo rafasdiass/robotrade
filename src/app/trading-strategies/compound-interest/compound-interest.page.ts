@@ -33,10 +33,11 @@ export class CompoundInterestPage implements OnInit {
       const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
   
       totalAmount = totalAmount - entryAmount + entryAmount + profit; // Atualiza o valor total da banca
-      this.entries.push({ day: i + 1, entryAmount, profit, totalAmount: Math.floor(totalAmount) });
+      totalAmount = parseFloat(totalAmount.toFixed(2)); // Arredonda para duas casas decimais e converte de volta para número
+
+      this.entries.push({ day: i + 1, entryAmount, profit, totalAmount });
     }
   }
-  
   
   // Função para atualizar o cálculo quando os valores são alterados
   updateValues() {
