@@ -11,15 +11,18 @@ export class CurrencyPairService {
   public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
 
   constructor(private apiService: ApiService, private utilService: UtilService) {
+    // Inicializa com alguns pares de moedas padrão e atualiza a lista
     this.currencyPairs$.next(['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD', 'AUDUSD', 'NZDJPY', 'AUDUSD', 'AUDCAD']);
     this.updateCurrencyPairs();
   }
 
+  // Calcula os níveis de Fibonacci com base nos valores baixos e altos fornecidos
   calculateFibonacciLevels(low: number, high: number): number[] {
     const fiboLevels = [0.382, 0.5, 0.618];
     return fiboLevels.map(level => low + (high - low) * level);
   }
 
+  // Atualiza a lista de pares de moedas disponíveis
   updateCurrencyPairs(): void {
     this.apiService.getAllCurrencyPairs().subscribe(
       (response: APIResponse) => {

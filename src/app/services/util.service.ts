@@ -113,6 +113,41 @@ export class UtilService {
 
     return { wPatterns, mPatterns };
   }
+
+  calculateSupportAndResistance(prices: number[]): { support: number, resistance: number } {
+    const low = Math.min(...prices);
+    const high = Math.max(...prices);
+    const close = prices[0];
+
+    const pivotPoint = (low + high + close) / 3;
+    const support = 2 * pivotPoint - high;
+    const resistance = 2 * pivotPoint - low;
+
+    return { support, resistance };
+  }
+
+  applyRetracementStrategy(prices: number[], timeFrame: string): string {
+    const { support, resistance } = this.calculateSupportAndResistance(prices);
+    const currentPrice = prices[0];
+    let retracementSignal = "No Signal";
+
+    if (timeFrame === '5min') {
+      if (currentPrice > support && currentPrice < resistance) {
+        const timeToRetrace = 2.5; // 2:40 to 2 minutes
+        // Logic to check if the candle has worked for 2:40 to 2 minutes
+        retracementSignal = "Retrace";
+      }
+    } else if (timeFrame === '15min') {
+      // Logic for 15min chart to assist the decision
+      // You can adjust this based on your understanding of 15min retracement
+      if (currentPrice > support && currentPrice < resistance) {
+        retracementSignal = "Retrace";
+      }
+    }
+
+    return retracementSignal;
+  }
+
 }
 
   

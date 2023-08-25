@@ -11,17 +11,16 @@ export class DecisionService {
 
   makeDecision(prices: number[]): string {
     const rsi = this.utilService.calculateRSI(prices);
-    const ema9 = this.utilService.calculateEMA(prices, 9); // EMA de 9 períodos
+    const ema9 = this.utilService.calculateEMA(prices, 9);
     const priceChange = this.utilService.calculatePriceChange(prices);
     const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices);
     const fibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices), Math.max(...prices));
-
     const { wPatterns, mPatterns } = this.utilService.identifyPatterns(prices);
 
     let score = 0;
 
     score += this.applyRSIStrategy(rsi);
-    score += this.applyEMAStrategy(prices[0], ema9); // Utilizando EMA de 9 períodos
+    score += this.applyEMAStrategy(prices[0], ema9);
     score += this.applyPriceChangeStrategy(priceChange);
     score += this.applyStochasticOscillatorStrategy(stochasticOscillator);
     score += this.applyFibonacciLevelsStrategy(prices[0], fibonacciLevels);
@@ -51,16 +50,12 @@ export class DecisionService {
   }
 
   private applyPatternStrategy(wPatterns: number[], mPatterns: number[], lastIndex: number): number {
-    // Se o último preço faz parte de um padrão "W", consideramos isso um sinal de compra (+1)
     if (wPatterns.includes(lastIndex)) {
       return 1;
     }
-
-    // Se o último preço faz parte de um padrão "M", consideramos isso um sinal de venda (-1)
     if (mPatterns.includes(lastIndex)) {
       return -1;
     }
-
-    return 0; // Sem sinal
+    return 0;
   }
 }
