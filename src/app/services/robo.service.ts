@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { UtilService } from './util.service';
 import { CurrencyPairService } from './currency-pair.service';
-import { Observable, interval, combineLatest, from, of } from 'rxjs'; 
+import { Observable, interval, combineLatest, from, of, BehaviorSubject } from 'rxjs'; 
 import { switchMap, filter, map } from 'rxjs/operators';
 import { APIResponse, TimeSeries, FibonacciLevels } from '../models/api.interfaces'; 
 
@@ -14,6 +14,9 @@ export class RoboService {
   private readonly SELL = 'Venda';
   private readonly NO_SIGNAL = 'Sem sinal';
   private lastDecisions: { [currencyPair: string]: string } = {};
+
+  private decisionSubject = new BehaviorSubject<string | null>(null);
+  public decision$ = this.decisionSubject.asObservable();
 
   constructor(
     private apiService: ApiService,
@@ -58,6 +61,7 @@ export class RoboService {
         if (timeSeries) {
           const prices = this.extractPrices(timeSeries);
           const decision = this.makeDecision(prices);
+          this.decisionSubject.next(decision);  // Atualiza o BehaviorSubject
           observer.next(decision);
         } else {
           observer.next(this.NO_SIGNAL);

@@ -25,7 +25,7 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
     private roboService: RoboService,
     private currencyPairService: CurrencyPairService,
     private apiService: ApiService,
-    private cdr: ChangeDetectorRef  // Injete o ChangeDetectorRef aqui
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -62,10 +62,10 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
           const robotSignal: RobotSignal = {
             time: new Date().toLocaleTimeString(),
             action: signal,
-            currencyPair: pair
+            currencyPair: pair  // Ajustado para usar o par de moedas atual
           };
           this.signals.unshift(robotSignal);
-          this.lastDecisions[pair] = signal; // Atualize a última decisão para este par de moedas
+          this.lastDecisions[pair] = signal;
   
           // Forçar a detecção de mudanças
           this.cdr.detectChanges();

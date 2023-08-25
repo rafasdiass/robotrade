@@ -12,6 +12,7 @@ import { NavbarPageModule } from './components/navbar/navbar.module';
 import { RoboService } from './services/robo.service';  // Atualize o caminho para o seu serviço
 import { ApiService } from './services/api.service';  
 import { CurrencyPairService } from './services/currency-pair.service';
+import { UtilService } from './services/util.service';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { CurrencyPairService } from './services/currency-pair.service';
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     RoboService,  
     ApiService,
-    CurrencyPairService
+    CurrencyPairService,
+    UtilService
   
   ],
 
