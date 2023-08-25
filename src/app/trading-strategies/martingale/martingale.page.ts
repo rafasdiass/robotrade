@@ -15,7 +15,7 @@ interface MartingaleEntry {
 export class MartingalePage implements OnInit {
 
   // Valores padrão
-  initialAmount: number = 10; // Valor inicial da aposta
+  initialAmount: number = 10; // Valor inicial da aposta (perda inicial)
   payout: number = 85; // Payout em porcentagem
 
   // Array para armazenar os resultados das 4 entradas
@@ -29,7 +29,7 @@ export class MartingalePage implements OnInit {
 
   simulateMartingale(): void {
     let totalAmount: number = 1000; // Valor inicial da banca
-    let currentBet: number = this.initialAmount; // Aposta atual
+    let currentBet: number = this.initialAmount * 2; // Aposta atual (o dobro da perda inicial)
     const payoutPercent: number = this.payout / 100; // Payout em porcentagem
 
     this.entries = []; // Limpa o array de entradas
@@ -38,13 +38,13 @@ export class MartingalePage implements OnInit {
       const profit: number = currentBet * payoutPercent; // Calcula o lucro com base no payout
 
       // Como sempre há vitória
-      totalAmount += profit;
-      currentBet = this.initialAmount; // Redefine a aposta para o valor inicial
-
-      totalAmount = parseFloat(totalAmount.toFixed(2)); // Arredonda para duas casas decimais e converte de volta para número
+      totalAmount = profit + currentBet; // Adiciona o lucro e a aposta atual ao total
 
       const entry: MartingaleEntry = { round: i + 1, currentBet, profit, totalAmount };
       this.entries.push(entry);
+
+      currentBet = totalAmount; // A aposta para a próxima rodada é o total atual
+      totalAmount = parseFloat(totalAmount.toFixed(2)); // Arredonda para duas casas decimais e converte de volta para número
     }
   }
 
