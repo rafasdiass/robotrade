@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiKey: 'HYL1WMYBF10QPI3R',
-  baseUrl: 'https://www.alphavantage.co/query?'
+  apiKey: 'I57942RLIV719X7I',
+  baseUrl: 'https://www.alphavantage.co'
 };

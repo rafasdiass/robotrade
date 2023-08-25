@@ -20,29 +20,30 @@ export class ApiService {
   }
  
   private mountURL(params: string, func: string = 'TIME_SERIES_INTRADAY'): string {
-    return `${this.baseUrl}/query?apiKey=${this.apiKey}&function=${func}&${params}`;
+    return `${this.baseUrl}/query?apikey=${this.apiKey}&function=${func}&${params}`;
+
   }
  
-  private mountGETRequest(endpoint: string): Observable<APIResponse> {  // Use a interface APIResponse aqui
-    return this.http.get<APIResponse>(endpoint).pipe(  // Use a interface APIResponse aqui
+  private mountGETRequest(endpoint: string): Observable<APIResponse> {  
+    return this.http.get<APIResponse>(endpoint).pipe(  
       catchError(this.handleError)
     );
   }
   
-  healthCheck(): Observable<APIResponse> {  // Use a interface APIResponse aqui
+  healthCheck(): Observable<APIResponse> {  
     return this.mountGETRequest(this.mountURL('symbol=MSFT&interval=5min'));
   }
 
-  getListOfCurrencies(): Observable<APIResponse> {  // Use a interface APIResponse aqui
+  getListOfCurrencies(): Observable<APIResponse> {  
     return this.mountGETRequest(this.mountURL('from_currency=USD&to_currency=JPY', 'CURRENCY_EXCHANGE_RATE'));
   }
 
-  getData(ref: string): Observable<APIResponse> {  // Use a interface APIResponse aqui
+  getData(ref: string): Observable<APIResponse> {  
     return this.mountGETRequest(this.mountURL(`symbol=${ref}&interval=5min`));
   }
   getAllCurrencyPairs(): Observable<APIResponse> {
-    // Substitua esta URL pela URL da API que retorna todos os pares de moedas
-    const endpoint = `${this.baseUrl}/query?apiKey=${this.apiKey}&function=GET_ALL_CURRENCY_PAIRS`;
+    
+    const endpoint = `${this.baseUrl}/query?function=GET_ALL_CURRENCY_PAIRS&apikey=${encodeURIComponent(this.apiKey)}`;
     return this.http.get<APIResponse>(endpoint).pipe(
       catchError(this.handleError)
     );

@@ -1,18 +1,38 @@
 ion-item {
-  .buy-signal {
+  &.buy-signal {
     background-color: #e6ffe6;  // Verde claro
     border-left: 5px solid #00cc00;  // Verde
+
+    h2, p {
+      color: #00cc00;  // Verde
+    }
   }
 
-  .sell-signal {
+  &.sell-signal {
     background-color: #ffe6e6;  // Vermelho claro
     border-left: 5px solid #cc0000;  // Vermelho
+
+    h2, p {
+      color: #cc0000;  // Vermelho
+    }
   }
-  
 
   &.no-signal {
     ion-label {
       color: yellow;
+    }
+
+    h2, p {
+      color: yellow;  // Amarelo
+    }
+  }
+
+  &.indecision-signal {
+    background-color: #e6e6ff;  // Azul claro
+    border-left: 5px solid #0000cc;  // Azul
+
+    h2, p {
+      color: #0000cc;  // Azul
     }
   }
 }

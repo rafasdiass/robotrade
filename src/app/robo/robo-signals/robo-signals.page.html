@@ -8,7 +8,13 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let signal of signals" [ngClass]="{'buy-signal': signal.action === 'Compra', 'sell-signal': signal.action === 'Venda', 'no-signal': signal.action === 'Sem sinal'}">
+    <ion-item *ngFor="let signal of signals" 
+              [ngClass]="{
+                'buy-signal': signal.action === 'Compra', 
+                'sell-signal': signal.action === 'Venda', 
+                'no-signal': signal.action === 'Sem sinal',
+                'indecision-signal': signal.action === 'Indecisão'
+              }">
       <ion-label>
         <h2>{{ signal.currencyPair }}</h2>
         <p>{{ signal.action }}</p>

@@ -19,33 +19,28 @@ export class CurrencyPairService {
     const fiboLevels = [0.382, 0.5, 0.618];
     return fiboLevels.map(level => low + (high - low) * level);
   }
-
   updateCurrencyPairs(): void {
-    this.apiService.getAllCurrencyPairs().subscribe((response: APIResponse) => {
-      console.log('Dados brutos da API:', response);
-  
-      
-      const allPairs: string[] = response.allPairs || [];  // Adicionado valor padrão []
-  
-      if (allPairs.length > 0) {
-        console.log('Todos os pares de moedas:', allPairs);
-  
-        // Filtra os pares de moedas com base em uma expressão regular
-        const filteredPairs = allPairs.filter(pair => /EUR|USD|JPY|AUD|CAD/.test(pair));
-  
-        if (filteredPairs.length > 0) {
-          console.log('Pares de moedas filtrados:', filteredPairs);
-          this.currencyPairs$.next(filteredPairs);
+    this.apiService.getAllCurrencyPairs().subscribe(
+      (response: APIResponse) => {
+        if (response && response.allPairs && Array.isArray(response.allPairs)) {
+          const allPairs: string[] = response.allPairs;
+          const filteredPairs = allPairs.filter(pair => /EUR|USD|JPY|AUD|CAD/.test(pair));
+          
+          if (filteredPairs.length > 0) {
+            this.currencyPairs$.next(filteredPairs);
+          } else {
+            console.log('Nenhum par de moedas correspondente encontrado.');
+          }
         } else {
-          console.log('Nenhum par de moedas correspondente encontrado.');
+          console.log('Dados da API inválidos ou ausentes.');
         }
-      } else {
-        console.log('Dados da API inválidos ou ausentes.');
+      },
+      error => {
+        console.log('Erro ao buscar dados da API:', error);
       }
-    }, error => {
-      console.log('Erro ao buscar dados da API:', error);
-    });
+    );
   }
-  
-  
 }
+  
+  
+
