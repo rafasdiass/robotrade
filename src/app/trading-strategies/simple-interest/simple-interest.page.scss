@@ -1,22 +1,23 @@
 // Estilo para o contêiner do título da página
 .page-title-container {
     text-align: center;
+    background-color: #4CAF50;
+    padding: 10px;
+    color: white;
   }
   
   // Estilo para o título da página
   .page-title {
     font-size: 24px;
     font-weight: bold;
-    margin-top: 16px;
-    margin-bottom: 16px;
-    display: inline-block;
   }
   
-// Estilo para o card de entrada
-.input-card {
-    width: 40%; // Reduz a largura para 80% da largura do contêiner pai
-    margin: 16px auto; // Margens superior e inferior de 16px e margens laterais automáticas para centralização
+  // Estilo para o card de entrada
+  .input-card {
+    width: 40%;
+    margin: 16px auto;
     ion-card-content {
+      background-color: #f1f1f1;
       ion-item {
         margin-bottom: 12px;
       }
@@ -27,28 +28,29 @@
   .entry-card {
     margin: 8px;
     ion-card-content {
-      background-color: #525252;
+      background-color: #2196F3;
+      color: white;
     }
   }
-  
-  
   
   // Estilo para as colunas dentro das linhas
   .entry-col {
     text-align: center;
     font-size: 14px;
     padding: 8px;
-    color: #fffdfd;
+    color: #ffffff;
   }
   
   // Estilo para os itens de entrada
   .input-item {
     ion-label {
       font-weight: bold;
+      font-size: 18px; // Aumenta o tamanho da fonte
+      color: #FF4500; // Cor laranja para destaque
+      text-shadow: 1px 1px 2px black; // Sombra no texto para mais destaque
     }
     ion-input {
       text-align: right;
     }
-  
   }
   
