@@ -29,7 +29,8 @@ export class SimpleInterestPage implements OnInit {
     this.entries = []; // Limpa o array de entradas
 
     for (let i = 0; i < 30; i++) {
-      const entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
+      let entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
+      entryAmount = Math.floor(entryAmount); // Arredonda para um número inteiro
       const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
 
       totalAmount += profit; // Atualiza o valor total da banca usando juros simples
