@@ -67,7 +67,7 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
           this.signals.unshift(robotSignal);
           this.lastDecisions[pair] = signal; // Atualize a última decisão para este par de moedas
   
-          // Marque o componente para detecção de mudanças imediatas
+          // Forçar a detecção de mudanças
           this.cdr.detectChanges();
         }
       });
