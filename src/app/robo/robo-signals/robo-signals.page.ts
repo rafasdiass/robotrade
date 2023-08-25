@@ -32,6 +32,7 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
     this.performHealthCheck();
     this.subscribeToCurrencyPairs();
     this.setUpdateInterval();
+    this.subscribeToRoboDecisions(); 
   }
 
   private performHealthCheck(): void {
@@ -39,6 +40,16 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
       data => console.log('API is working', data),
       error => console.log('API is not working', error)
     );
+  }
+
+  private subscribeToRoboDecisions(): void {
+    const roboDecisionSubscription = this.roboService.decision$.subscribe(decision => {
+      if (decision) {
+        console.log('Decisão atualizada via BehaviorSubject:', decision);
+        // Aqui você pode fazer algo com a decisão atualizada
+      }
+    });
+    this.subscriptions.push(roboDecisionSubscription);
   }
 
   private subscribeToCurrencyPairs(): void {
