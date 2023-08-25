@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { UtilService } from './util.service';
-import { Observable } from 'rxjs';
+import { CurrencyPairService } from './currency-pair.service';
+import { Observable, interval, combineLatest, from, of } from 'rxjs'; 
+import { switchMap, filter, map } from 'rxjs/operators';
 import { APIResponse, TimeSeries, FibonacciLevels } from '../models/api.interfaces'; 
 
 @Injectable({
@@ -11,8 +13,45 @@ export class RoboService {
   private readonly BUY = 'Compra';
   private readonly SELL = 'Venda';
   private readonly NO_SIGNAL = 'Sem sinal';
+  private lastDecisions: { [currencyPair: string]: string } = {}; // Objeto para armazenar a última decisão para cada par de moedas
 
-  constructor(private apiService: ApiService, private utilService: UtilService) {}
+  constructor(
+    private apiService: ApiService,
+    private utilService: UtilService,
+    private currencyPairService: CurrencyPairService
+  ) {
+    // Iniciar o intervalo de 5 minutos
+    const fiveMinuteInterval$ = interval(300000);
+
+    // Observar mudanças
+combineLatest([
+  fiveMinuteInterval$,
+  this.currencyPairService.currencyPairs$
+])
+.pipe(
+  filter(() => new Date().getSeconds() <= 45),
+  switchMap(([_, currencyPairs]) => {
+    return from(currencyPairs).pipe(
+      switchMap(symbol => {
+        if (typeof symbol === 'string') {
+          return this.decideAcao(symbol).pipe(
+            map(decision => ({ symbol, decision }))  // Mapeie a decisão e o símbolo juntos
+          );
+        }
+        return of({ symbol: 'Tipo de dado inválido', decision: 'Tipo de dado inválido' });
+      })
+    );
+  })
+)
+.subscribe(({ symbol, decision }) => {  // Desestruture o objeto para obter símbolo e decisão
+  if (this.lastDecisions[symbol] !== decision) { // Verifique se a decisão mudou para este par de moedas
+    console.log('Decisão alterada:', decision);
+    this.lastDecisions[symbol] = decision; // Atualize a última decisão para este par de moedas
+  } else {
+    console.log('Decisão inalterada:', decision);
+  }
+});
+  }
 
   decideAcao(symbol: string): Observable<string> {
     return new Observable(observer => {
@@ -52,23 +91,6 @@ export class RoboService {
     score += this.applyEMAStrategy(prices[0], ema);
     score += this.applyPriceChangeStrategy(priceChange);
     score += this.applyStochasticOscillatorStrategy(stochasticOscillator);
-    score += this.applyFibonacciLevelsStrategy(prices[0], fibonacciLevels);
-
-    return score > 0 ? this.BUY : score < 0 ? this.SELL : this.NO_SIGNAL;
-  
-    // RSI strategy
-    score += this.applyRSIStrategy(rsi);
-
-    // EMA strategy
-    score += this.applyEMAStrategy(prices[0], ema);
-
-    // Price Change strategy
-    score += this.applyPriceChangeStrategy(priceChange);
-
-    // Stochastic Oscillator strategy
-    score += this.applyStochasticOscillatorStrategy(stochasticOscillator);
-
-    // Fibonacci Levels strategy
     score += this.applyFibonacciLevelsStrategy(prices[0], fibonacciLevels);
 
     return score > 0 ? this.BUY : score < 0 ? this.SELL : this.NO_SIGNAL;

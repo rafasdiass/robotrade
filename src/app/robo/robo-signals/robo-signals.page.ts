@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoboService } from '../../services/robo.service';
 import { CurrencyPairService } from '../../services/currency-pair.service';
@@ -18,12 +18,14 @@ interface RobotSignal {
 export class RoboSignalsPage implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
   public signals: RobotSignal[] = [];
+  private lastDecisions: { [currencyPair: string]: string } = {};
   private updateIntervalId: any;
 
   constructor(
     private roboService: RoboService,
     private currencyPairService: CurrencyPairService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private cdr: ChangeDetectorRef  // Injete o ChangeDetectorRef aqui
   ) {}
 
   ngOnInit(): void {
@@ -56,12 +58,18 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
     console.log('Novos pares de moedas:', pairs);
     pairs.forEach(pair => {
       this.roboService.decideAcao(pair).subscribe(signal => {
-        const robotSignal: RobotSignal = {
-          time: new Date().toLocaleTimeString(),
-          action: signal,
-          currencyPair: pair
-        };
-        this.signals.unshift(robotSignal);
+        if (this.lastDecisions[pair] !== signal) {
+          const robotSignal: RobotSignal = {
+            time: new Date().toLocaleTimeString(),
+            action: signal,
+            currencyPair: pair
+          };
+          this.signals.unshift(robotSignal);
+          this.lastDecisions[pair] = signal; // Atualize a última decisão para este par de moedas
+  
+          // Marque o componente para detecção de mudanças imediatas
+          this.cdr.detectChanges();
+        }
       });
     });
   }
