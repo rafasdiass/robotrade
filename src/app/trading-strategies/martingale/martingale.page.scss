@@ -5,21 +5,26 @@
     border-bottom: 2px solid #d4d4d4;
   }
   
+  ion-content {
+    overflow-y: auto; // Adiciona rolagem vertical
+  }
+  
   // Estilo para o título da página
   .page-title {
     font-size: 24px;
     font-weight: bold;
     margin-top: 16px;
     margin-bottom: 16px;
-    color: #e44d26; // Cor laranja para indicar ação e urgência
+    color: #e44d26;
   }
   
   // Estilo para o card de entrada
   .input-card {
-    width: 40%; // Reduz a largura para 40% da largura do contêiner pai
-    margin: 16px auto; // Margens superior e inferior de 16px e margens laterais automáticas para centralização
+    width: 100%;
+    margin: 16px auto;
     background-color: #f9f9f9;
     border: 1px solid #ccc;
+  
     ion-card-content {
       ion-item {
         margin-bottom: 12px;
@@ -28,12 +33,20 @@
     }
   }
   
+  // Media query para telas maiores
+  @media (min-width: 768px) {
+    .input-card {
+      width: 40%;
+    }
+  }
+  
   // Estilo para os cards de entradas
   .entry-card {
     margin: 8px;
-    background-color: #e6ffe6; // Cor verde clara para indicar recuperação
+    background-color: #e6ffe6;
+  
     ion-card-content {
-      background-color: #ccffcc; // Cor verde um pouco mais escura para contraste
+      background-color: #ccffcc;
     }
   }
   
