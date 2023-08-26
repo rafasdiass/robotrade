@@ -1,18 +1,17 @@
-// Estilo para o contêiner do título da página
-.page-title-container {
+
+  
+  .content-container {
+    width: 100%;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  
+  .page-title-container {
     text-align: center;
     background-color: #f2f2f2;
     border-bottom: 2px solid #d4d4d4;
   }
   
-  .content-container {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    padding: 16px;
-  }
-  
-  // Estilo para o título da página
   .page-title {
     font-size: 24px;
     font-weight: bold;
@@ -20,6 +19,7 @@
     margin-bottom: 16px;
     color: #e44d26;
   }
+  
   
   // Estilo para o card de entrada
   .input-card {
@@ -70,4 +70,3 @@
       text-align: right;
     }
   }
-  
