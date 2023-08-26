@@ -1,19 +1,18 @@
-<ion-header>
+
+<ion-content>
   <ion-toolbar>
     <ion-title>
       Sinais do Robô
     </ion-title>
   </ion-toolbar>
-</ion-header>
-
-<ion-content>
   <ion-list>
-    <ion-item *ngFor="let signal of signals" 
+    <ion-item *ngFor="let signal of signals; last as isLast" 
               [ngClass]="{
                 'buy-signal': signal.action === 'Compra', 
                 'sell-signal': signal.action === 'Venda', 
                 'no-signal': signal.action === 'Sem sinal',
-                'indecision-signal': signal.action === 'Indecisão'
+                'indecision-signal': signal.action === 'Indecisão',
+                'last-item': isLast
               }">
       <ion-label>
         <h2>{{ signal.currencyPair }}</h2>
