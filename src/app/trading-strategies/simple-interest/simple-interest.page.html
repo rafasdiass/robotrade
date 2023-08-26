@@ -1,10 +1,11 @@
-<div class="page-title-container">
-  <ion-label class="page-title">
-    Juros Simples
-  </ion-label>
-</div>
 
 <ion-content>
+  <div class="content-container">
+    <div class="page-title-container">
+      <ion-label class="page-title">
+        Juros Simples
+      </ion-label>
+    </div>
 
   <!-- Card para Valor Inicial, Meta Diária e Payout -->
   <ion-card class="input-card">
@@ -30,10 +31,10 @@
       <ion-grid>
         <ion-row class="entry-row">
           <ion-col class="entry-col">
-            {{ entry.day }}ª Entrada (Juros Simples)
+            {{ entry.day }}ª Entrada 
           </ion-col>
           <ion-col class="entry-col">
-            Valor da Entrada: {{ entry.entryAmount.toFixed(2) }}
+            Valor (R$): {{ entry.entryAmount.toFixed(2) }}
           </ion-col>
           <ion-col class="entry-col">
             Lucro: {{ entry.profit.toFixed(2) }}
@@ -45,4 +46,5 @@
       </ion-grid>
     </ion-card-content>
   </ion-card>
+  </div>
 </ion-content>
