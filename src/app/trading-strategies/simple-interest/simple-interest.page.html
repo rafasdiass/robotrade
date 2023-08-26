@@ -34,14 +34,15 @@
             {{ entry.day }}ª Entrada 
           </ion-col>
           <ion-col class="entry-col">
-            Valor (R$): {{ entry.entryAmount.toFixed(2) }}
+            Entrada (R$):<span class="entry-value"> {{ entry.entryAmount.toFixed(2) }} </span>
           </ion-col>
           <ion-col class="entry-col">
-            Lucro: {{ entry.profit.toFixed(2) }}
+            Lucro: <span class="lucro"> {{ entry.profit.toFixed(2) }}</span>
           </ion-col>
           <ion-col class="entry-col">
-            Total: {{ entry.totalAmount }}
+            Total: <span class="calculated-value">{{ entry.totalAmount }}</span>
           </ion-col>
+          
         </ion-row>
       </ion-grid>
     </ion-card-content>
