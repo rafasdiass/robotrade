@@ -3,43 +3,56 @@ ion-toolbar {
   ion-title {
     color: #ffffff;
   }
+  ion-buttons {
+    height: auto;
+    width: auto;
+  }
 }
 
-ion-button {
-  --padding-start: 15px;
-  --padding-end: 15px;
-  --border-radius: 4px;
-  --background: transparent;  // Remova o background circular
-  margin: 0 5px;
+ion-item {
+  --padding-start: 10px; // Reduzido o padding
+  --padding-end: 10px; // Reduzido o padding
+  margin: 10px 2px; // Reduzido a margem
+  border-radius: 4px;
+  width: 80%; // Reduzido a largura
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.robo-button,
-.soros-button,
-.bank-button,
-.compound-interest-button {
+ion-item.robo-button,
+ion-item.soros-button,
+ion-item.bank-button,
+ion-item.compound-interest-button {
   ion-icon {
     font-size: 24px;
     color: #ffffff;
-    margin-right: 8px;
+    margin-right: 6px; // Reduzido a margem
   }
-  // Adicione o background diretamente aqui
-  background-color: var(--button-color);
-  color: #ffffff;
-  border-radius: 4px;
+  --background: var(--button-color);
+  --color: #ffffff;
+  --border-radius: 4px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
 }
 
-.robo-button {
+ion-item.robo-button {
   --button-color: #4CAF50;
 }
 
-.soros-button {
+ion-item.soros-button {
   --button-color: #2196F3;
 }
 
-.bank-button {
+ion-item.bank-button {
   --button-color: #FFC107;
 }
 
-.compound-interest-button {
+ion-item.compound-interest-button {
   --button-color: #9C27B0;
 }

@@ -25,7 +25,6 @@ export class NavbarPage implements OnInit {
     this.router.navigate(['/simple-interest']);
   }
 
-  // Método para navegar para a nova página de CompoundInterest
   openCompoundInterest() {
     this.router.navigate(['/compound-interest']);
   }
