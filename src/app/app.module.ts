@@ -34,7 +34,6 @@ import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingServ
    
     
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
