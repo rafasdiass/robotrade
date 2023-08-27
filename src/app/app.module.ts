@@ -10,7 +10,7 @@ import { RoboService } from './services/robo.service';
 import { ApiService } from './services/api.service';  
 import { CurrencyPairService } from './services/currency-pair.service';
 import { UtilService } from './services/util.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Adicionado
+
 
 
 // AngularFire
@@ -31,9 +31,10 @@ import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingServ
     AppRoutingModule,
     HttpClientModule,
     NavbarPageModule,
-    FormsModule, // Adicionado
-    ReactiveFormsModule, // Adicionado
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
+   
+    
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
