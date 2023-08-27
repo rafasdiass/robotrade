@@ -10,17 +10,15 @@ import { RoboService } from './services/robo.service';
 import { ApiService } from './services/api.service';  
 import { CurrencyPairService } from './services/currency-pair.service';
 import { UtilService } from './services/util.service';
-import { initializeApp,provideFirebaseApp, getApp  } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp, getApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
-import { provideAnalytics,getAnalytics,ScreenTrackingService,UserTrackingService } from '@angular/fire/analytics';
+import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
-
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
     AppComponent,
-   
   ],
   imports: [
     BrowserModule,
@@ -33,16 +31,15 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     RoboService,  
     ApiService,
     CurrencyPairService,
     UtilService,
-    ScreenTrackingService,UserTrackingService
-  
+    ScreenTrackingService,
+    UserTrackingService
   ],
-
-
   bootstrap: [AppComponent],
 })
 export class AppModule {}
