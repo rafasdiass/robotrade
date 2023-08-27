@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Auth, getAuth, signInWithPopup, GoogleAuthProvider, signOut } from '@angular/fire/auth';
-import { AuthService } from '../../services-login/auth-service';
+import { NavController } from '@ionic/angular';
+import { AuthService } from '../../services-login/auth-service'; // Certifique-se do caminho correto aqui
 
 @Component({
   selector: 'app-login',
@@ -9,15 +9,20 @@ import { AuthService } from '../../services-login/auth-service';
 })
 export class LoginPage implements OnInit {
 
-  constructor(private auth: Auth, private authService: AuthService) { }
+  constructor(private navCtrl: NavController, private authService: AuthService) { }
 
   ngOnInit() {
   }
 
-  login() {
-    this.authService.signInWithGoogle();
+  async login() {
+    try {
+      await this.authService.signInWithGoogle();
+      this.navCtrl.navigateForward('/dashboard');
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+    }
   }
-  
+
   logout() {
     this.authService.signOut();
   }

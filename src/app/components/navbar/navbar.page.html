@@ -4,7 +4,9 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>RobotCoins</ion-title>
-    <ion-label class="login" slot="end" (click)="openLogin()">Login</ion-label>
+    <ion-label class="login" slot="end" (click)="toggleAuthentication()">
+      {{ isLoggedIn ? 'Logout' : 'Login' }}
+    </ion-label>
   </ion-toolbar>
 </ion-header>
 
