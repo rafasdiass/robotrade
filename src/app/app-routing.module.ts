@@ -39,9 +39,6 @@ const routes: Routes = [
   {
     path: 'martingale',
     loadChildren: () => import('./trading-strategies/martingale/martingale.module').then( m => m.MartingalePageModule)
-  },  {
-    path: 'login',
-    loadChildren: () => import('./components/login/login.module').then( m => m.LoginPageModule)
   },
   {
     path: 'login',

@@ -28,4 +28,8 @@ export class NavbarPage implements OnInit {
   openCompoundInterest() {
     this.router.navigate(['/compound-interest']);
   }
+
+  openLogin() {
+    this.router.navigate(['/login']);
+  }
 }
