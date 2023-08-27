@@ -42,10 +42,14 @@ export class NavbarPage implements OnInit {
       this.authService.signOut();
       this.isLoggedIn = false;
       this.navCtrl.navigateRoot('/login');
-    } else {
-      await this.authService.signInWithGoogle();
-      this.isLoggedIn = true;
-      this.navCtrl.navigateForward('/dashboard');
-    }
+    // } else {
+    //   await this.authService.signInWithGoogle();
+    //   this.isLoggedIn = true;
+    //   this.navCtrl.navigateForward('/dashboard');
+    // }
   }
+  
+}
+
+
 }

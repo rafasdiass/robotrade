@@ -1,0 +1,17 @@
+ion-header,
+ion-toolbar,
+ion-title,
+ion-content,
+ion-list,
+ion-item,
+ion-label,
+ion-input,
+ion-button {
+  --padding: 16px;
+}
+
+.error-message {
+  color: red;
+  margin: 16px;
+  text-align: center;
+}

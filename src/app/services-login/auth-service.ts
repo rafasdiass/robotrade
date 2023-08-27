@@ -1,20 +1,78 @@
-import { Injectable } from '@angular/core';
-import { Auth } from '@angular/fire/auth';
-import { GoogleAuthProvider, signInWithPopup, signOut } from '@angular/fire/auth';
+import { Injectable, Inject } from '@angular/core';
+import { User as FirebaseUser, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile, Auth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+import { UserService } from './user.service';
+import { User } from '../models/user.model';
+import { Firestore, setDoc, doc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  user$: Observable<FirebaseUser | null>;
 
-  constructor(private auth: Auth) { }
-
-  async signInWithGoogle() {
-    const provider = new GoogleAuthProvider();
-    return await signInWithPopup(this.auth, provider);
+  constructor(@Inject(Auth) public auth: Auth, private userService: UserService, private db: Firestore) {
+    this.user$ = new Observable((subscriber) => {
+      const unsubscribe = onAuthStateChanged(this.auth, (user) => subscriber.next(user));
+      return unsubscribe;
+    });
   }
 
-  async signOut() {
-    return await signOut(this.auth);
+  async signIn(email: string, password: string): Promise<FirebaseUser> {
+    try {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      const firebaseUser = userCredential.user;
+      if (firebaseUser) {
+        await this.userService.updateUserOnlineStatus(firebaseUser.uid, true);
+      }
+      return firebaseUser;
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error);
+    }
+  }
+
+  async register(email: string, password: string, displayName: string): Promise<FirebaseUser> {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      const firebaseUser = userCredential.user;
+      if (firebaseUser && firebaseUser.email) {
+        await updateProfile(firebaseUser, { displayName });
+        const user = new User(firebaseUser.uid, firebaseUser.email, displayName, true);
+        await setDoc(doc(this.db, 'users', firebaseUser.uid), user.toFirestore()); // Certifique-se de que toFirestore() esteja definido em User
+      } else {
+        // Tratamento de erro para firebaseUser ou firebaseUser.email nulos
+      }
+      return firebaseUser;
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error);
+    }
+  }
+
+  async signOut(): Promise<void> {
+    try {
+      const user = this.auth.currentUser;
+      if (user) {
+        await this.userService.updateUserOnlineStatus(user.uid, false);
+      }
+      await signOut(this.auth);
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error);
+    }
+  }
+
+  getUser(): Observable<FirebaseUser | null> {
+    return this.user$;
+  }
+
+  async updateProfile(user: FirebaseUser, displayName: string): Promise<void> {
+    try {
+      await updateProfile(user, { displayName });
+    } catch (error) {
+      console.error(error);
+      return Promise.reject(error);
+    }
   }
 }
