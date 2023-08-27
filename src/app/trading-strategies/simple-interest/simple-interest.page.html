@@ -1,4 +1,3 @@
-
 <ion-content>
   <div class="content-container">
     <div class="page-title-container">
@@ -7,45 +6,44 @@
       </ion-label>
     </div>
 
-  <!-- Card para Valor Inicial, Meta Diária e Payout -->
-  <ion-card class="input-card">
-    <ion-card-content>
-      <ion-item class="input-item">
-        <ion-label>Valor Inicial (R$)</ion-label>
-        <ion-input [(ngModel)]="initialAmount" (ionChange)="updateValues()"></ion-input>
-      </ion-item>
-      <ion-item class="input-item">
-        <ion-label>Meta Diária (%)</ion-label>
-        <ion-input [(ngModel)]="dailyGoal" (ionChange)="updateValues()"></ion-input>
-      </ion-item>
-      <ion-item class="input-item">
-        <ion-label>Payout (%)</ion-label>
-        <ion-input [(ngModel)]="payout" (ionChange)="updateValues()"></ion-input>
-      </ion-item>
-    </ion-card-content>
-  </ion-card>
+    <!-- Card para Valor Inicial, Meta Diária e Payout -->
+    <ion-card class="input-card">
+      <ion-card-content>
+        <ion-item class="input-item">
+          <ion-label>Valor Inicial (R$)</ion-label>
+          <ion-input [(ngModel)]="initialAmount" (ionChange)="updateValues()"></ion-input>
+        </ion-item>
+        <ion-item class="input-item">
+          <ion-label>Meta Diária (%)</ion-label>
+          <ion-input [(ngModel)]="dailyGoal" (ionChange)="updateValues()"></ion-input>
+        </ion-item>
+        <ion-item class="input-item">
+          <ion-label>Payout (%)</ion-label>
+          <ion-input [(ngModel)]="payout" (ionChange)="updateValues()"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- Cards para as Entradas (Juros Simples) -->
-  <ion-card *ngFor="let entry of entries" class="entry-card">
-    <ion-card-content class="entry-content">
-      <ion-grid>
-        <ion-row class="entry-row">
-          <ion-col class="entry-col">
-            {{ entry.day }}ª Entrada 
-          </ion-col>
-          <ion-col class="entry-col">
-            Entrada (R$):<span class="entry-value"> {{ entry.entryAmount.toFixed(2) }} </span>
-          </ion-col>
-          <ion-col class="entry-col">
-            Lucro: <span class="lucro"> {{ entry.profit.toFixed(2) }}</span>
-          </ion-col>
-          <ion-col class="entry-col">
-            Total: <span class="calculated-value">{{ entry.totalAmount }}</span>
-          </ion-col>
-          
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
+    <!-- Cards para as Entradas (Juros Simples) -->
+    <ion-card *ngFor="let entry of entries" class="entry-card">
+      <ion-card-content class="entry-content">
+        <ion-grid>
+          <ion-row class="entry-row">
+            <ion-col class="entry-col">
+              {{ entry.day }}ª Entrada 
+            </ion-col>
+            <ion-col class="entry-col">
+              Entrada (R$):<span class="entry-value"> {{ entry.entryAmount.toFixed(2) }} </span>
+            </ion-col>
+            <ion-col class="entry-col">
+              Lucro: <span class="lucro"> {{ entry.profit.toFixed(2) }}</span>
+            </ion-col>
+            <ion-col class="entry-col">
+              Total: <span class="calculated-value">{{ entry.totalAmount.toFixed(2) }}</span>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
   </div>
 </ion-content>
