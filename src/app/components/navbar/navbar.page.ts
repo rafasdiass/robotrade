@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
+import { AuthService } from '../../services-login/auth-service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,7 +10,9 @@ import { Router } from '@angular/router';
 })
 export class NavbarPage implements OnInit {
 
-  constructor(private router: Router) { }
+  isLoggedIn = false;
+
+  constructor(private router: Router, private navCtrl: NavController, private authService: AuthService) { }
 
   ngOnInit() {
   }
@@ -27,5 +31,21 @@ export class NavbarPage implements OnInit {
 
   openCompoundInterest() {
     this.router.navigate(['/compound-interest']);
+  }
+
+  openLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  async toggleAuthentication() {
+    if (this.isLoggedIn) {
+      this.authService.signOut();
+      this.isLoggedIn = false;
+      this.navCtrl.navigateRoot('/login');
+    } else {
+      await this.authService.signInWithGoogle();
+      this.isLoggedIn = true;
+      this.navCtrl.navigateForward('/dashboard');
+    }
   }
 }
