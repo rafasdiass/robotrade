@@ -37,7 +37,7 @@ import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingServ
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()), // Adicionado
+    provideStorage(() => getStorage()), 
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
