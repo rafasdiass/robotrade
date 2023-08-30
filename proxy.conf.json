@@ -1,0 +1,12 @@
+{
+    "/api": {
+      "target": "https://api.oanda.com",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug",
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+  }
+  

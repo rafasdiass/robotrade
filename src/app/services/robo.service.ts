@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { CurrencyPairService } from './currency-pair.service';
 import { DecisionService } from './decision.service';
-import { Observable, interval, combineLatest, from, of, BehaviorSubject } from 'rxjs'; 
+import { Observable, interval, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { switchMap, filter, map } from 'rxjs/operators';
-import { APIResponse, TimeSeries } from '../models/api.interfaces'; 
+import { APIResponse, TimeSeries } from '../models/api.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class RoboService {
 
   constructor(
     private apiService: ApiService,
-    private decisionService: DecisionService,  // Novo serviço injetado
+    private decisionService: DecisionService,
     private currencyPairService: CurrencyPairService
   ) {
     this.observeData();
@@ -53,14 +53,19 @@ export class RoboService {
       }
     });
   }
-
   decideAcao(symbol: string): Observable<string> {
     return new Observable(observer => {
       this.apiService.getData(symbol).subscribe((data: APIResponse) => {
         const timeSeries: TimeSeries | undefined = data?.['Time Series (5min)'];
-        if (timeSeries) {
-          const prices = this.extractPrices(timeSeries);
-          const decision = this.decisionService.makeDecision(prices);  
+        const timeSeries15min: TimeSeries | undefined = data?.['Time Series (15min)'];
+        const timeSeries1h: TimeSeries | undefined = data?.['Time Series (1h)'];
+        
+        if (timeSeries && timeSeries15min && timeSeries1h) {
+          const prices5min = this.extractPrices(timeSeries, 14);
+          const prices15min = this.extractPrices(timeSeries15min, 14);
+          const prices1h = this.extractPrices(timeSeries1h, 14);
+  
+          const decision = this.decisionService.makeDecision(prices5min, prices15min, prices1h);  
           this.decisionSubject.next(decision);  
           observer.next(decision);
         } else {
@@ -73,10 +78,12 @@ export class RoboService {
       });
     });
   }
-
-  private extractPrices(timeSeries: TimeSeries): number[] {
+  
+  private extractPrices(timeSeries: TimeSeries, points: number): number[] {
     return Object.values(timeSeries)
       .map(entry => parseFloat(entry['4. close']))
-      .slice(0, 14);
+      .slice(0, points);
   }
+
+  
 }

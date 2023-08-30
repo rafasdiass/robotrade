@@ -5,10 +5,11 @@ export interface TimeSeriesEntry {
   export interface TimeSeries {
     [key: string]: TimeSeriesEntry;
   }
-  
   export interface APIResponse {
     'Time Series (5min)': TimeSeries;
-    allPairs?: string[];  // Adicionado este campo como um array de strings
+    'Time Series (15min)': TimeSeries;
+    'Time Series (1h)': TimeSeries;  // Novo campo adicionado
+    allPairs?: string[];
     // Adicione outros campos conforme necessário
   }
   

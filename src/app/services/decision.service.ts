@@ -9,22 +9,27 @@ export class DecisionService {
 
   constructor(private utilService: UtilService) {}
 
-  makeDecision(prices: number[]): string {
-    const rsi = this.utilService.calculateRSI(prices);
-    const ema9 = this.utilService.calculateEMA(prices, 9);
-    const priceChange = this.utilService.calculatePriceChange(prices);
-    const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices);
-    const fibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices), Math.max(...prices));
-    const { wPatterns, mPatterns } = this.utilService.identifyPatterns(prices);
+  makeDecision(prices5min: number[], prices15min: number[], prices1h: number[]): string {
+    const rsi = this.utilService.calculateRSI(prices5min);
+    const ema9 = this.utilService.calculateEMA(prices5min, 9);
+    const priceChange = this.utilService.calculatePriceChange(prices5min);
+    const stochasticOscillator = this.utilService.calculateStochasticOscillator(prices5min);
+    const fibonacciLevels = this.utilService.calculateFibonacciLevels(Math.min(...prices5min), Math.max(...prices5min));
+    const { wPatterns, mPatterns } = this.utilService.identifyPatterns(prices5min);
+    const compositeRetracement = this.utilService.applyCompositeRetracementStrategy(prices15min, prices1h);
 
     let score = 0;
 
+    if (compositeRetracement !== "Strong Retrace") {
+      return NO_SIGNAL;
+    }
+
     score += this.applyRSIStrategy(rsi);
-    score += this.applyEMAStrategy(prices[0], ema9);
+    score += this.applyEMAStrategy(prices5min[0], ema9);
     score += this.applyPriceChangeStrategy(priceChange);
     score += this.applyStochasticOscillatorStrategy(stochasticOscillator);
-    score += this.applyFibonacciLevelsStrategy(prices[0], fibonacciLevels);
-    score += this.applyPatternStrategy(wPatterns, mPatterns, prices.length - 1);
+    score += this.applyFibonacciLevelsStrategy(prices5min[0], fibonacciLevels);
+    score += this.applyPatternStrategy(wPatterns, mPatterns, prices5min.length - 1);
 
     return score > 0 ? BUY : score < 0 ? SELL : NO_SIGNAL;
   }

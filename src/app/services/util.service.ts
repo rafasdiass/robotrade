@@ -147,7 +147,19 @@ export class UtilService {
 
     return retracementSignal;
   }
-
+  
+  applyCompositeRetracementStrategy(prices5min: number[], prices15min: number[]): string {
+    const retracement5min = this.applyRetracementStrategy(prices5min, '5min');
+    const retracement15min = this.applyRetracementStrategy(prices15min, '15min');
+    
+    if (retracement5min === "Retrace" && retracement15min === "Retrace") {
+      return "Strong Retrace";
+    }
+    
+    return "No Signal";
+  }
 }
+
+
 
   

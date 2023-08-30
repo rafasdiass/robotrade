@@ -20,6 +20,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage'; // Adicionado
 import { environment } from '../environments/environment';
 import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+import { DecisionService } from './services/decision.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingServ
     CurrencyPairService,
     UtilService,
     ScreenTrackingService,
-    UserTrackingService
+    UserTrackingService,
+    DecisionService
   ],
   bootstrap: [AppComponent],
 })
