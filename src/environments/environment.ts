@@ -1,9 +1,7 @@
 export const environment = {
   production: false,
-  apiKey: 'wsBLV4Aehs6xVGomWmILtkNN',
-  baseUrl: 'https://api.oanda.com',
-  token: 'rafa12345',
-  
+  apiKey: 'J8GVVGLTP6XGQYRD',  // Your Alpha Vantage API key
+  baseUrl: 'https://www.alphavantage.co/query', // Alpha Vantage Base URL
   
   firebaseConfig: {
     apiKey: "AIzaSyBcKFpO1EIUwuiWK7xN8MGrL1FqerZ2lMA",

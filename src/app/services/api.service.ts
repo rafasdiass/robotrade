@@ -9,8 +9,8 @@ import { APIResponse } from '../models/api.interfaces';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = environment.baseUrl;
-  private apiKey = environment.apiKey;  // Import the API key from the environment file
+  private baseUrl = environment.baseUrl;  // Alpha Vantage Base URL
+  private apiKey = environment.apiKey;  // Alpha Vantage API key
 
   constructor(private http: HttpClient) { }
 
@@ -19,47 +19,45 @@ export class ApiService {
     return throwError(error);
   }
 
-  private mountURL(endpoint: string, params: string): string {
-    return `${this.baseUrl}/${endpoint}?${params}`;
+  private mountAlphaVantageURL(functionType: string, symbol: string, interval: string): string {
+    return `${this.baseUrl}?function=${functionType}&symbol=${symbol}&interval=${interval}&apikey=${this.apiKey}`;
   }
 
-  private mountGETRequest(endpoint: string): Observable<APIResponse> {  
-    return this.http.get<APIResponse>(endpoint, {
-      headers: new HttpHeaders().set('Authorization', `Bearer ${environment.token}`)  // Use o token do arquivo de ambiente
-    }).pipe(  
+  private mountGETRequest(url: string): Observable<APIResponse> {
+    return this.http.get<APIResponse>(url).pipe(
       catchError(this.handleError)
     );
   }
-  
+
+  // Example: Health Check - you might want to replace this with something relevant to Alpha Vantage
   healthCheck(): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountURL('healthcheck', ''));
+    return this.mountGETRequest(this.mountAlphaVantageURL('TIME_SERIES_INTRADAY', 'AAPL', '5min'));
   }
 
+  // Getting list of currencies - Again, adjust this according to the Alpha Vantage API
   getListOfCurrencies(): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountURL('list-of-currencies', ''));
+    return this.mountGETRequest(this.mountAlphaVantageURL('CURRENCY_EXCHANGE_RATE', 'USD', 'EUR'));
   }
 
-  getData(ref: string): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountURL(`data/${ref}`, 'start_date=2023-01-01&end_date=2023-12-31'));
+  // Getting data - adjust parameters as needed
+  getData(symbol: string, interval: string): Observable<APIResponse> {
+    return this.mountGETRequest(this.mountAlphaVantageURL('TIME_SERIES_INTRADAY', symbol, interval));
   }
 
-  getAllCurrencyPairs(): Observable<APIResponse> {
-    const endpoint = this.mountURL('all-currency-pairs', '');
-    return this.mountGETRequest(endpoint);
+  // Getting 5 min data
+  get5MinData(symbol: string): Observable<APIResponse> {
+    return this.getData(symbol, '5min');
   }
 
-  // Método para obter dados de gráfico de 5 minutos
-  get5MinData(ref: string): Observable<APIResponse> {
-    return this.mountGETRequest(this.mountURL(`data/${ref}`, 'interval=5min'));
+  // Getting 15 min data
+  get15MinData(symbol: string): Observable<APIResponse> {
+    return this.getData(symbol, '15min');
   }
 
-  // Método para obter dados de gráfico de 15 minutos
-  get15MinData(ref: string): Observable<APIResponse> {
-    return this.mountGETRequest(this.mountURL(`data/${ref}`, 'interval=15min'));
+  // Getting 1h data
+  get1hData(symbol: string): Observable<APIResponse> {
+    return this.getData(symbol, '60min');
   }
 
-  // Método para obter dados de gráfico de 1 hora
-  get1hData(ref: string): Observable<APIResponse> {
-    return this.mountGETRequest(this.mountURL(`data/${ref}`, 'interval=1h'));
-  }
+  // Add other methods as you see fit
 }
