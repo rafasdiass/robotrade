@@ -11,7 +11,9 @@ import { APIResponse, TimeSeries } from '../models/api.interfaces';
 })
 export class RoboService {
   private lastDecisions: { [currencyPair: string]: string } = {};
-  private decisionSubject = new BehaviorSubject<string | null>(null);
+  
+  // Atualizando para emitir um objeto com decisão e par de moedas
+  private decisionSubject = new BehaviorSubject<{ decision: string, currencyPair: string } | null>(null);
   public decision$ = this.decisionSubject.asObservable();
 
   constructor(
@@ -35,7 +37,22 @@ export class RoboService {
         return from(currencyPairs).pipe(
           switchMap(symbol => {
             if (typeof symbol === 'string') {
-              return this.decideAcao(symbol).pipe(
+              return this.apiService.getData(symbol, '5min').pipe(
+                switchMap(data5min => {
+                  const timeSeries5min = this.extractPrices(data5min['Time Series (5min)'], 14);
+                  return this.apiService.getData(symbol, '15min').pipe(
+                    switchMap(data15min => {
+                      const timeSeries15min = this.extractPrices(data15min['Time Series (15min)'], 14);
+                      return this.apiService.getData(symbol, '1h').pipe(
+                        map(data1h => {
+                          const timeSeries1h = this.extractPrices(data1h['Time Series (1h)'], 14);
+                          return this.decisionService.makeDecision(timeSeries5min, timeSeries15min, timeSeries1h);
+                        })
+                      );
+                    })
+                  );
+                })
+              ).pipe(
                 map(decision => ({ symbol, decision }))
               );
             }
@@ -47,43 +64,20 @@ export class RoboService {
     .subscribe(({ symbol, decision }) => {
       if (this.lastDecisions[symbol] !== decision) {
         console.log('Decisão alterada:', decision);
+        
+        // Atualize o BehaviorSubject com a nova decisão e par de moedas
+        this.decisionSubject.next({ decision, currencyPair: symbol });
+        
         this.lastDecisions[symbol] = decision;
       } else {
         console.log('Decisão inalterada:', decision);
       }
     });
   }
-  decideAcao(symbol: string): Observable<string> {
-    return new Observable(observer => {
-      this.apiService.getData(symbol).subscribe((data: APIResponse) => {
-        const timeSeries: TimeSeries | undefined = data?.['Time Series (5min)'];
-        const timeSeries15min: TimeSeries | undefined = data?.['Time Series (15min)'];
-        const timeSeries1h: TimeSeries | undefined = data?.['Time Series (1h)'];
-        
-        if (timeSeries && timeSeries15min && timeSeries1h) {
-          const prices5min = this.extractPrices(timeSeries, 14);
-          const prices15min = this.extractPrices(timeSeries15min, 14);
-          const prices1h = this.extractPrices(timeSeries1h, 14);
-  
-          const decision = this.decisionService.makeDecision(prices5min, prices15min, prices1h);  
-          this.decisionSubject.next(decision);  
-          observer.next(decision);
-        } else {
-          observer.next('Sem sinal');
-        }
-        observer.complete();
-      }, error => {
-        observer.next('Erro ao acessar os dados da API');
-        observer.complete();
-      });
-    });
-  }
-  
+
   private extractPrices(timeSeries: TimeSeries, points: number): number[] {
     return Object.values(timeSeries)
       .map(entry => parseFloat(entry['4. close']))
       .slice(0, points);
   }
-
-  
 }

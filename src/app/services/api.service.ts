@@ -3,14 +3,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { APIResponse } from '../models/api.interfaces';
+import { APIResponse, TimeSeries, TimeSeriesEntry } from '../models/api.interfaces';
+import { forkJoin } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = environment.baseUrl;  // Alpha Vantage Base URL
-  private apiKey = environment.apiKey;  // Alpha Vantage API key
+  private baseUrl = environment.baseUrl;
+  private apiKey = environment.apiKey; 
 
   constructor(private http: HttpClient) { }
 
@@ -29,35 +30,38 @@ export class ApiService {
     );
   }
 
-  // Example: Health Check - you might want to replace this with something relevant to Alpha Vantage
   healthCheck(): Observable<APIResponse> {  
     return this.mountGETRequest(this.mountAlphaVantageURL('TIME_SERIES_INTRADAY', 'AAPL', '5min'));
   }
 
-  // Getting list of currencies - Again, adjust this according to the Alpha Vantage API
   getListOfCurrencies(): Observable<APIResponse> {  
     return this.mountGETRequest(this.mountAlphaVantageURL('CURRENCY_EXCHANGE_RATE', 'USD', 'EUR'));
   }
 
-  // Getting data - adjust parameters as needed
   getData(symbol: string, interval: string): Observable<APIResponse> {
     return this.mountGETRequest(this.mountAlphaVantageURL('TIME_SERIES_INTRADAY', symbol, interval));
   }
 
-  // Getting 5 min data
   get5MinData(symbol: string): Observable<APIResponse> {
     return this.getData(symbol, '5min');
   }
 
-  // Getting 15 min data
   get15MinData(symbol: string): Observable<APIResponse> {
     return this.getData(symbol, '15min');
   }
 
-  // Getting 1h data
   get1hData(symbol: string): Observable<APIResponse> {
     return this.getData(symbol, '60min');
   }
 
-  // Add other methods as you see fit
+  getAllCurrencyPairs(): Observable<APIResponse[]> {
+    const allPairs = ['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD', 'AUDUSD', 'NZDJPY', 'AUDCAD'];
+    const observables = allPairs.map(pair => {
+      const from_currency = pair.slice(0, 3);
+      const to_currency = pair.slice(3);
+      const url = `${this.baseUrl}?function=CURRENCY_EXCHANGE_RATE&from_currency=${from_currency}&to_currency=${to_currency}&apikey=${this.apiKey}`;
+      return this.mountGETRequest(url);
+    });
+    return forkJoin(observables);
+  }
 }

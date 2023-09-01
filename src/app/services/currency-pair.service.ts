@@ -1,30 +1,34 @@
-// currency-pair.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ApiService } from './api.service';
-import { UtilService } from './util.service';
 import { APIResponse, TimeSeries, TimeSeriesEntry } from '../models/api.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CurrencyPairService {
-  public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD', 'AUDUSD', 'NZDJPY', 'AUDUSD', 'AUDCAD']);
+  public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   public closingPrices5min$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   public closingPrices15min$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
-  public closingPrices1h$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]); // Novo BehaviorSubject para preços de 1 hora
+  public closingPrices1h$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
-  constructor(private apiService: ApiService, private utilService: UtilService) {
+  constructor(private apiService: ApiService) {
     this.updateCurrencyPairs();
   }
 
   updateCurrencyPairs(): void {
     this.apiService.getAllCurrencyPairs().subscribe(
-      response => {
-        if (response && response.allPairs) {
-          const filteredPairs = response.allPairs.filter(pair => /EUR|USD|JPY|AUD|CAD/.test(pair));
-          this.currencyPairs$.next(filteredPairs);
-        }
+      (responses: APIResponse[]) => {
+        const allPairs: string[] = [];
+        responses.forEach(response => {
+          const keys = Object.keys(response);
+          keys.forEach(pair => {
+            if (/EUR|USD|JPY|AUD|CAD/.test(pair)) {
+              allPairs.push(pair);
+            }
+          });
+        });
+        this.currencyPairs$.next(allPairs);
       },
       error => {
         console.log('Erro ao buscar dados da API:', error);
@@ -37,48 +41,33 @@ export class CurrencyPairService {
     return fiboLevels.map(level => low + (high - low) * level);
   }
 
-  fetch5MinData(ref: string): void {
-    this.apiService.get5MinData(ref).subscribe(
-      response => {
-        if (response && response['Time Series (5min)']) {
-          const timeSeries: TimeSeries = response['Time Series (5min)'];
-          const closingPrices: number[] = Object.values(timeSeries).map(entry => parseFloat(entry['4. close']));
-          this.closingPrices5min$.next(closingPrices);
+  fetchPriceData(ref: string, interval: string): void {
+    this.apiService.getData(ref, interval).subscribe(
+      (response: APIResponse) => {
+        const key = `Time Series (${interval})`;
+        if (response && key in response) {  // Guarda de tipo
+          const timeSeries: TimeSeries = (response as any)[key];  // Type casting
+          const closingPrices: number[] = Object.values(timeSeries).map((entry: TimeSeriesEntry) => parseFloat(entry['4. close']));
+          if (interval === '5min') this.closingPrices5min$.next(closingPrices);
+          if (interval === '15min') this.closingPrices15min$.next(closingPrices);
+          if (interval === '1h') this.closingPrices1h$.next(closingPrices);
         }
       },
       error => {
-        console.log('Erro ao buscar dados de 5 minutos:', error);
+        console.log(`Erro ao buscar dados de ${interval}:`, error);
       }
     );
+  }
+
+  fetch5MinData(ref: string): void {
+    this.fetchPriceData(ref, '5min');
   }
 
   fetch15MinData(ref: string): void {
-    this.apiService.get15MinData(ref).subscribe(
-      response => {
-        if (response && response['Time Series (15min)']) {
-          const timeSeries: TimeSeries = response['Time Series (15min)'];
-          const closingPrices: number[] = Object.values(timeSeries).map(entry => parseFloat(entry['4. close']));
-          this.closingPrices15min$.next(closingPrices);
-        }
-      },
-      error => {
-        console.log('Erro ao buscar dados de 15 minutos:', error);
-      }
-    );
+    this.fetchPriceData(ref, '15min');
   }
 
-  fetch1hData(ref: string): void { // Novo método para buscar dados de 1 hora
-    this.apiService.get1hData(ref).subscribe(
-      response => {
-        if (response && response['Time Series (1h)']) {
-          const timeSeries: TimeSeries = response['Time Series (1h)'];
-          const closingPrices: number[] = Object.values(timeSeries).map(entry => parseFloat(entry['4. close']));
-          this.closingPrices1h$.next(closingPrices);
-        }
-      },
-      error => {
-        console.log('Erro ao buscar dados de 1 hora:', error);
-      }
-    );
+  fetch1hData(ref: string): void {
+    this.fetchPriceData(ref, '1h');
   }
 }

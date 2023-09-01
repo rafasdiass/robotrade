@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   apiKey: 'J8GVVGLTP6XGQYRD',  // Your Alpha Vantage API key
-  baseUrl: 'https://www.alphavantage.co/query', // Alpha Vantage Base URL
+  baseUrl: 'https://www.alphavantage.co', // Alpha Vantage Base URL
   
   firebaseConfig: {
     apiKey: "AIzaSyBcKFpO1EIUwuiWK7xN8MGrL1FqerZ2lMA",
