@@ -28,22 +28,16 @@
     <ion-button type="submit" [disabled]="loginForm.invalid">
       Entrar
     </ion-button>
+
+    <div class="social-login">
+      <p>Ou entre com:</p>
+      <ion-button class="google-button" (click)="socialLogin('google')">
+        <ion-icon name="logo-google"></ion-icon> mail
+      </ion-button>
+    </div>
+  
+    <div class="register-redirect">
+      <p>Não possui uma conta? <ion-button fill="clear" (click)="register()">Clique aqui</ion-button></p>
+    </div>
   </form>
-
-  <div class="social-login">
-    <p>Ou entre com:</p>
-    <ion-button (click)="socialLogin('linkedin')">
-      <ion-icon name="logo-linkedin"></ion-icon> LinkedIn
-    </ion-button>
-    <ion-button (click)="socialLogin('google')">
-      <ion-icon name="logo-google"></ion-icon> Gmail
-    </ion-button>
-    <ion-button (click)="socialLogin('facebook')">
-      <ion-icon name="logo-facebook"></ion-icon> Facebook
-    </ion-button>
-  </div>
-
-  <div class="register-redirect">
-    <p>Não possui uma conta? <ion-button fill="clear" (click)="register()">Clique aqui</ion-button></p>
-  </div>
 </ion-content>

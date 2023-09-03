@@ -12,6 +12,11 @@ ion-toolbar {
   text-align: center;
 }
 
+ion-title {
+  text-align: center;
+  width: 100%;
+}
+
 ion-item {
   --background: #1a1a1a;
   --color: #FFFFFF;
@@ -39,16 +44,37 @@ ion-button {
   --color: #FFFFFF;
   width: 100%;
   margin-top: 20px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 .social-login {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 20px;
 
   ion-button {
     --background: transparent;
     --color: #FFFFFF;
-    margin: 0 10px;
+    margin: 0 5px;
+    font-size: 15px;
+    min-width: auto;
+    padding: 0 10px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  .google-button {
+    --background: #4285F4;
+    --color: #FFFFFF;
+    width: 150px;
   }
 }
 
@@ -70,4 +96,27 @@ ion-button {
   color: #0d5eaf;
   text-align: center;
   margin-bottom: 20px;
+  display: block;
+  margin: auto;
+}
+
+// Media Queries for Responsiveness
+@media (max-width: 768px) {
+  form {
+    width: 90%;
+    padding: 15px;
+  }
+
+  ion-button {
+    margin-top: 15px;
+  }
+
+  .social-login ion-button {
+    font-size: 12px;
+    padding: 0 5px;
+  }
+
+  .google-button {
+    width: 130px;
+  }
 }
