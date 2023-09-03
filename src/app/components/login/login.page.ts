@@ -57,4 +57,16 @@ export class LoginPage implements OnInit {
       console.error('Logout failed', error);
     }
   }
+
+  async socialLogin(platform: string) {
+    try {
+      const firebaseUser: FirebaseUser = await this.authService.socialSignIn(platform);
+      if (firebaseUser) {
+        this.router.navigate(['/dashboard']);
+        console.log(`Login social com ${platform} foi bem-sucedido`);
+      }
+    } catch (error: any) {
+      console.error(`Login social com ${platform} falhou`, error);
+    }
+  }
 }
