@@ -11,8 +11,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // AngularFire
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
+import { initializeApp } from 'firebase/app';
 
 // Services
 import { RoboService } from './services/robo.service';
@@ -21,7 +22,6 @@ import { CurrencyPairService } from './services/currency-pair.service';
 import { UtilService } from './services/util.service';
 import { DecisionService } from './services/decision.service';
 import { AuthService } from './services-login/auth-service';
-import { FirebaseInitializerService } from './services-login/firebase-initializer.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,7 +35,7 @@ import { FirebaseInitializerService } from './services-login/firebase-initialize
     FormsModule,
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -45,7 +45,6 @@ import { FirebaseInitializerService } from './services-login/firebase-initialize
     UtilService,
     DecisionService,
     AuthService,
-    FirebaseInitializerService,
   ],
   bootstrap: [AppComponent],
 })

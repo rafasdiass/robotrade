@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 import { APIResponse, TimeSeries, TimeSeriesEntry } from '../models/api.interfaces';
 import { forkJoin } from 'rxjs';
 
@@ -10,8 +10,8 @@ import { forkJoin } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = environment.baseUrl;
-  private apiKey = environment.apiKey; 
+  private baseUrl = environment.apiEnv.baseUrl;  // Atualizado aqui
+  private apiKey = environment.apiEnv.apiKey;  
 
   constructor(private http: HttpClient) { }
 
