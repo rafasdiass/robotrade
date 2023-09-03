@@ -1,0 +1,88 @@
+ion-content {
+    background: linear-gradient(to bottom, #121212, #1a1a1a, #222) !important; /* Background degradê forçado */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  ion-toolbar {
+    --background: #1a1a1a;
+    --color: #FFFFFF;
+    text-align: center;
+  }
+  
+  ion-item {
+    --background: #1a1a1a;
+    --color: #FFFFFF;
+    --border-color: #333333;
+    --placeholder-color: #666666;
+    --placeholder-opacity: 1;
+    margin: 10px 0;
+  }
+  
+  ion-label[color="danger"] {
+    color: #FF5733;
+  }
+  
+  form {
+    width: 80%;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #1a1a1a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  ion-button {
+    --background: #1E90FF;
+    --color: #FFFFFF;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  ion-button:disabled {
+    --background: #666666;
+    --color: #333333;
+  }
+  
+  ion-button:hover {
+    --background: #4682B4;
+    --color: #FFFFFF;
+  }
+  
+  .login-redirect {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .login-redirect ion-button {
+    --color: #FFFFFF;
+    --background: #333333;
+    --border: 1px solid #1E90FF;
+    border-radius: 5px;
+    padding: 5px 10px;
+    transition: color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .login-redirect ion-button:hover {
+    --color: #1E90FF;
+    --border-color: #FFFFFF;
+    --background: #1a1a1a;
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    form {
+      width: 90%;
+      padding: 15px;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    form {
+      width: 85%;
+    }
+  }
+  

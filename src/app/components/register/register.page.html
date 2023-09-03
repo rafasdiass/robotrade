@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Registro do Robocoins
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="icon-robot">
+    <ion-icon name="robot-outline"></ion-icon>
+  </div>
+
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input formControlName="email" type="email"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="registerForm.controls['email'].invalid && registerForm.controls['email'].touched">
+      <ion-label color="danger">Email inválido</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Senha</ion-label>
+      <ion-input formControlName="password" type="password"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="registerForm.controls['password'].invalid && registerForm.controls['password'].touched">
+      <ion-label color="danger">Senha inválida</ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Nome de Exibição</ion-label>
+      <ion-input formControlName="displayName" type="text"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="registerForm.controls['displayName'].invalid && registerForm.controls['displayName'].touched">
+      <ion-label color="danger">Nome de exibição inválido</ion-label>
+    </ion-item>
+
+    <ion-button type="submit" [disabled]="registerForm.invalid">
+      Registrar
+    </ion-button>
+  </form>
+  <div class="login-redirect">
+    <p>Já possui uma conta? <ion-button fill="clear" (click)="login()">Clique aqui</ion-button> </p>
+  </div>
+</ion-content>
+
