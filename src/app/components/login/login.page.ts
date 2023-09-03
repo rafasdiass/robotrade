@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services-login/auth-service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { User as FirebaseUser } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginPage implements OnInit {
   errorMessage: string = '';
 
   constructor(
-    private authService: AuthService,
+    private authService: AuthService,  // Usando o novo AuthService
     private router: Router,
     private formBuilder: FormBuilder
   ) {
@@ -25,20 +26,19 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {}
 
-  login() {
+  async login() {
     if (this.loginForm.valid) {
       const formValue = this.loginForm.value;
-      this.authService.signIn(formValue.email, formValue.password).then(
-        () => {
+      try {
+        const firebaseUser: FirebaseUser = await this.authService.signIn(formValue.email, formValue.password);
+        if (firebaseUser) {
           this.router.navigate(['/dashboard']);
-          console.log('Login successful');  
-        
-        },
-        (error: any) => {
-          console.log(error);
-          this.errorMessage = error.message;
+          console.log('Login successful');
         }
-      );
+      } catch (error: any) {  // Especificando o tipo como 'any'
+        console.error(error);
+        this.errorMessage = error.message;
+      }
     } else {
       this.router.navigate(['/register']);
     }
@@ -47,12 +47,14 @@ export class LoginPage implements OnInit {
   register() {
     this.router.navigate(['/register']);
   }
-  logout() {
-    this.authService.signOut().then(() => {
+
+  async logout() {
+    try {
+      await this.authService.signOut();
       console.log('Logout successful');
-      this.router.navigate(['/login']);  // Redireciona para a página de login após o logout
-    }).catch((error) => {
+      this.router.navigate(['/login']);
+    } catch (error: any) {  // Especificando o tipo como 'any'
       console.error('Logout failed', error);
-    });
+    }
   }
 }
