@@ -34,7 +34,6 @@
             "styles": [
               "src/theme/variables.scss",
               "src/global.scss"
-              
             ],
             "scripts": []
           },
@@ -86,7 +85,6 @@
             "development": {
               "browserTarget": "app:build:development"
             }
-            
           },
           "defaultConfiguration": "development"
         },

@@ -1,19 +1,4 @@
 {
-  "indexes": [
-    {
-      "collectionGroup": "R6bqfgFfA6wXgLsVYOHg",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "id",
-          "order": "ASCENDING"
-        },
-        {
-          "fieldPath": "nome",
-          "order": "ASCENDING"
-        }
-      ]
-    }
-  ],
+  "indexes": [],
   "fieldOverrides": []
 }

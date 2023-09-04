@@ -1,15 +1,18 @@
+import { API_KEYS } from './api-keys'; // Importa as chaves do seu arquivo api-keys.ts
+
 export const environment = {
-  production: false,
+  production: true,
   firebase: {
-    apiKey: "AIzaSyDXmFWxXk4cAxluMqO32kWc2589OEt99tU",
-    authDomain: "robocoinstrader.firebaseapp.com",
-    projectId: "robocoinstrader",
-    storageBucket: "robocoinstrader.appspot.com",
-    messagingSenderId: "744484041105",
-    appId: "1:744484041105:web:852c6929b4843237ea6a30"
+    projectId: API_KEYS.firebase.projectId,
+    appId: API_KEYS.firebase.appId,
+    storageBucket: API_KEYS.firebase.storageBucket,
+    locationId: 'southamerica-east1',
+    apiKey: API_KEYS.firebase.apiKey,
+    authDomain: API_KEYS.firebase.authDomain,
+    messagingSenderId: API_KEYS.firebase.messagingSenderId,
   },
   apiEnv: {
-    apiKey: 'J8GVVGLTP6XGQYRD',
+    apiKey: API_KEYS.alphaVantage,
     baseUrl: 'https://www.alphavantage.co'
   }
 };

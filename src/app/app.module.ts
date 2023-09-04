@@ -14,6 +14,7 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { initializeApp } from 'firebase/app';
+import { provideStorage,getStorage } from '@angular/fire/storage';
 
 // Services
 import { RoboService } from './services/robo.service';
@@ -36,6 +37,7 @@ import { AuthService } from './services-login/auth-service';
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideStorage(() => getStorage()),
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

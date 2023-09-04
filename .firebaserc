@@ -1,14 +1,5 @@
 {
-  "targets": {
-    "robotcoins-2380b": {
-      "hosting": {
-        "app": [
-          "robotcoins-2380b"
-        ]
-      }
-    }
-  },
   "projects": {
-    "default": "robotcoins-2380b"
+    "default": "banktrader-8487d"
   }
 }
