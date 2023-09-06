@@ -21,11 +21,15 @@ export class DecisionService {
     console.log("Preços 15min: ", prices15min);
     console.log("Preços 1h: ", prices1h);
 
-    if (!prices5min.length || !prices15min.length || !prices1h.length) {
-      console.error("Dados de preços insuficientes para tomar uma decisão.");
+    if (!prices5min.length) {
+      console.error("Dados de preços de 5 minutos insuficientes para tomar uma decisão.");
       return NO_SIGNAL;
     }
-    
+
+    if (!prices15min.length || !prices1h.length) {
+      console.warn("Dados auxiliares de preços insuficientes; tomando decisão apenas com base nos preços de 5 minutos.");
+    }
+
     const rsiScore = this.getRSIScore(this.utilService.calculateRSI(prices5min));
     const emaScore = this.getEMAScore(prices5min[0], this.utilService.calculateEMA(prices5min, 9));
     const priceChangeScore = this.getPriceChangeScore(this.utilService.calculatePriceChange(prices5min));
