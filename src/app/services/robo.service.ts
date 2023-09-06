@@ -42,17 +42,23 @@ export class RoboService {
         );
       })
     )
-    .subscribe(({ symbol, decision }) => {
-      if (this.lastDecisions[symbol] !== decision) {
-        console.log('Decisão alterada:', decision);
+    .subscribe(
+      ({ symbol, decision }) => {
+        // Log para ajudar a entender os dados
+        console.log(`Dados processados para ${symbol}. Decisão: ${decision}`);
         
-        this.decisionSubject.next({ decision, currencyPair: symbol });
-        
-        this.lastDecisions[symbol] = decision;
-      } else {
-        console.log('Decisão inalterada:', decision);
+        if (this.lastDecisions[symbol] !== decision) {
+          console.log('Decisão alterada:', decision);
+          this.decisionSubject.next({ decision, currencyPair: symbol });
+          this.lastDecisions[symbol] = decision;
+        } else {
+          console.log('Decisão inalterada:', decision);
+        }
+      },
+      error => {
+        console.error("Erro ao processar os dados:", error);
       }
-    });
+    );
   }
 
   private fetchAndDecide(symbol: string): Observable<{ symbol: string, decision: string }> {
@@ -82,4 +88,6 @@ export class RoboService {
       .map(entry => parseFloat(entry['4. close']))
       .slice(0, points);
   }
+  
 }
+

@@ -15,8 +15,10 @@ export class CurrencyPairService {
 
   constructor(private apiService: ApiService) {
     console.log('Iniciando serviço de pares de moedas...');
+    this.currencyPairs$.subscribe(pairs => {
+      console.log(`Pares de moedas setados: ${pairs.join(', ')}`);
+    });
   }
-
   public calculateFibonacciLevels(low: number, high: number): number[] {
     const fiboLevels = [0.382, 0.5, 0.618];
     return fiboLevels.map(level => low + (high - low) * level);

@@ -4,6 +4,16 @@
       Sinais do Robô
     </ion-title>
   </ion-toolbar>
+
+  <!-- Mensagem de Carregando -->
+  <div *ngIf="isLoading">
+    <p>Carregando sinais...</p>
+  </div>
+  
+  <!-- Mensagem de erro da API -->
+  <div *ngIf="apiError">
+    <p>Erro: Não foi possível conectar-se à API.</p>
+  </div>
   
   <!-- Exibe a lista se houver sinais -->
   <ion-list *ngIf="signals.length > 0">
@@ -24,7 +34,7 @@
   </ion-list>
 
   <!-- Exibe uma mensagem se a lista estiver vazia -->
-  <div *ngIf="signals.length === 0">
+  <div *ngIf="signals.length === 0 && !isLoading && !apiError">
     <p>Nenhum sinal disponível no momento.</p>
   </div>
 </ion-content>

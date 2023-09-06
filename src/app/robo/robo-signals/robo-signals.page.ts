@@ -19,6 +19,10 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
   public signals: RobotSignal[] = [];
   private lastDecisions: { [currencyPair: string]: string } = {};
 
+  // Declare as novas propriedades aqui
+  public isLoading: boolean = false;
+  public apiError: boolean = false;
+
   constructor(
     private roboService: RoboService,
     private apiService: ApiService,
@@ -32,8 +36,14 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
 
   private performHealthCheck(): void {
     this.apiService.healthCheck().subscribe(
-      data => console.log('API is working', data),
-      error => console.log('API is not working', error)
+      data => {
+        console.log('API is working', data);
+        console.log('Validando os dados: ', JSON.stringify(data, null, 2));
+      },
+      error => {
+        console.log('API is not working', error);
+        this.apiError = true; // atualize o estado se a API não estiver funcionando
+      }
     );
   }
 
@@ -41,20 +51,20 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
     const roboDecisionSubscription = this.roboService.decision$.subscribe(data => {
       if (data) {
         const { decision, currencyPair } = data;
-
+        console.log(`Recebido: ${currencyPair} - ${decision}`);
+  
         if (this.lastDecisions[currencyPair] !== decision) {
           const newSignal: RobotSignal = {
             time: new Date().toLocaleTimeString(),
             action: decision,
             currencyPair
           };
-          this.signals.unshift(newSignal);
+          this.signals = [newSignal, ...this.signals];
           this.lastDecisions[currencyPair] = decision;
-          this.cdr.detectChanges();
         }
       }
     });
-
+  
     this.subscriptions.push(roboDecisionSubscription);
   }
 

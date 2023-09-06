@@ -15,6 +15,16 @@ export class DecisionService {
   constructor(private utilService: UtilService) {}
 
   makeDecision(prices5min: number[], prices15min: number[], prices1h: number[]): string {
+    // Log para depuração
+    console.log("Preços 5min: ", prices5min);
+    console.log("Preços 15min: ", prices15min);
+    console.log("Preços 1h: ", prices1h);
+
+    if (!prices5min.length || !prices15min.length || !prices1h.length) {
+      console.error("Dados de preços insuficientes para tomar uma decisão.");
+      return NO_SIGNAL;
+    }
+    
     const rsiScore = this.getRSIScore(this.utilService.calculateRSI(prices5min));
     const emaScore = this.getEMAScore(prices5min[0], this.utilService.calculateEMA(prices5min, 9));
     const priceChangeScore = this.getPriceChangeScore(this.utilService.calculatePriceChange(prices5min));
