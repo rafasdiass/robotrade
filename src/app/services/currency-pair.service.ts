@@ -8,17 +8,24 @@ import { APIResponse, TimeSeries, TimeSeriesEntry } from '../models/api.interfac
 })
 export class CurrencyPairService {
 
-  public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(['EURUSD', 'AUDCAD', 'EURJPY', 'EURGBP']);
+  private readonly currencyPairs: string[] = ['EURUSD', 'AUDCAD', 'EURJPY', 'EURGBP'];
+  public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(this.currencyPairs);
   public closingPrices5min$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   public closingPrices15min$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   public closingPrices1h$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
 
   constructor(private apiService: ApiService) {
     console.log('Iniciando serviço de pares de moedas...');
-    this.currencyPairs$.subscribe(pairs => {
-      console.log(`Pares de moedas setados: ${pairs.join(', ')}`);
+    console.log(`Pares de moedas setados: ${this.currencyPairs.join(', ')}`);
+    
+    // Chamar a API para cada par de moedas especificado
+    this.currencyPairs.forEach(pair => {
+      this.fetchPriceData(pair, '5min');
+      this.fetchPriceData(pair, '15min');
+      this.fetchPriceData(pair, '1h');
     });
   }
+
   public calculateFibonacciLevels(low: number, high: number): number[] {
     const fiboLevels = [0.382, 0.5, 0.618];
     return fiboLevels.map(level => low + (high - low) * level);

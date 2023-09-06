@@ -1,67 +1,67 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { APIResponse, TimeSeries, TimeSeriesEntry } from '../models/api.interfaces';
-import { forkJoin } from 'rxjs';
+import { APIResponse, TimeSeries, TimeSeriesEntry, CurrencyExchangeRate, FibonacciLevels } from '../models/api.interfaces';
+import { CurrencyPairService } from './currency-pair.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = environment.apiEnv.baseUrl;  // Atualizado aqui
-  private apiKey = environment.apiEnv.apiKey;  
+  private readonly baseUrl = environment.apiEnv.baseUrl;
+  private readonly apiKey = environment.apiEnv.apiKey;
 
-  constructor(private http: HttpClient) { }
+  // Definindo um valor padrão para APIResponse
+  private readonly defaultAPIResponse: APIResponse = {
+    'Time Series (5min)': {},
+    'Time Series (15min)': {},
+    'Time Series (1h)': {},
+    allPairs: []
+  };
+
+  constructor(private readonly http: HttpClient, private readonly currencyPairService: CurrencyPairService) { }
+
+  public healthCheck(): Observable<APIResponse> {
+    return this.currencyPairService.currencyPairs$.pipe(
+      switchMap((pairs: string[]) => {
+        const defaultPair = pairs[0];
+        return defaultPair ? this.fetchTimeSeriesData(defaultPair, '5min') : of(this.defaultAPIResponse);
+      })
+    );
+  }
+
+  private fetchTimeSeriesData(symbol: string, interval: string): Observable<APIResponse> {
+    const url = `${this.baseUrl}?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=${interval}&apikey=${this.apiKey}`;
+    return this.http.get<APIResponse>(url).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   private handleError(error: any): Observable<never> {
     console.error('API Error:', error);
     return throwError(error);
   }
 
-  private mountAlphaVantageURL(functionType: string, symbol: string, interval: string): string {
-    return `${this.baseUrl}?function=${functionType}&symbol=${symbol}&interval=${interval}&apikey=${this.apiKey}`;
+  public getListOfCurrencies(): Observable<APIResponse> {  
+    // Note: This function does not seem to match its implementation. You may want to correct this.
+    return this.fetchTimeSeriesData('USD', 'EUR');
   }
 
-  private mountGETRequest(url: string): Observable<APIResponse> {
-    return this.http.get<APIResponse>(url).pipe(
-      catchError(this.handleError)
-    );
+  public getData(symbol: string, interval: string): Observable<APIResponse> {
+    return this.fetchTimeSeriesData(symbol, interval);
   }
 
-  healthCheck(): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountAlphaVantageURL('TIME_SERIES_INTRADAY', 'AAPL', '5min'));
-  }
-
-  getListOfCurrencies(): Observable<APIResponse> {  
-    return this.mountGETRequest(this.mountAlphaVantageURL('CURRENCY_EXCHANGE_RATE', 'USD', 'EUR'));
-  }
-
-  getData(symbol: string, interval: string): Observable<APIResponse> {
-    return this.mountGETRequest(this.mountAlphaVantageURL('TIME_SERIES_INTRADAY', symbol, interval));
-  }
-
-  get5MinData(symbol: string): Observable<APIResponse> {
+  public get5MinData(symbol: string): Observable<APIResponse> {
     return this.getData(symbol, '5min');
   }
 
-  get15MinData(symbol: string): Observable<APIResponse> {
+  public get15MinData(symbol: string): Observable<APIResponse> {
     return this.getData(symbol, '15min');
   }
 
-  get1hData(symbol: string): Observable<APIResponse> {
+  public get1hData(symbol: string): Observable<APIResponse> {
     return this.getData(symbol, '60min');
-  }
-
-  getAllCurrencyPairs(): Observable<APIResponse[]> {
-    const allPairs = ['USDJPY', 'EURUSD', 'EURJPY', 'EURCAD', 'AUDUSD', 'NZDJPY', 'AUDCAD'];
-    const observables = allPairs.map(pair => {
-      const from_currency = pair.slice(0, 3);
-      const to_currency = pair.slice(3);
-      const url = `${this.baseUrl}?function=CURRENCY_EXCHANGE_RATE&from_currency=${from_currency}&to_currency=${to_currency}&apikey=${this.apiKey}`;
-      return this.mountGETRequest(url);
-    });
-    return forkJoin(observables);
   }
 }

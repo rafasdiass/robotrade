@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
-import { CurrencyPairService } from './currency-pair.service';
 import { DecisionService } from './decision.service';
-import { Observable, interval, combineLatest, from, of, BehaviorSubject } from 'rxjs';
-import { switchMap, filter, map } from 'rxjs/operators';
-import { APIResponse, TimeSeries } from '../models/api.interfaces';
+import { CurrencyPairService } from './currency-pair.service';
+import { Observable, interval, combineLatest } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +15,6 @@ export class RoboService {
   public decision$ = this.decisionSubject.asObservable();
 
   constructor(
-    private apiService: ApiService,
     private decisionService: DecisionService,
     private currencyPairService: CurrencyPairService
   ) {
@@ -37,53 +35,34 @@ export class RoboService {
           return [];
         }
 
-        return from(currencyPairs).pipe(
-          switchMap(symbol => this.fetchAndDecide(symbol))
+        return combineLatest([
+          this.currencyPairService.closingPrices5min$,
+          this.currencyPairService.closingPrices15min$,
+          this.currencyPairService.closingPrices1h$
+        ]).pipe(
+          tap(([closingPrices5min, closingPrices15min, closingPrices1h]) => {
+            currencyPairs.forEach(pair => {
+              const decision = this.decisionService.makeDecision(pair, closingPrices5min, closingPrices15min, closingPrices1h);
+
+              if (this.lastDecisions[pair] !== decision) {
+                console.log(`Decisão alterada para ${pair}: ${decision}`);
+                this.decisionSubject.next({ decision, currencyPair: pair });
+                this.lastDecisions[pair] = decision;
+                console.log(`A decisão atual do robô para ${pair} é ${decision}`);
+              } else {
+                console.log(`Decisão inalterada para ${pair}: ${decision}`);
+                console.log(`A decisão atual do robô para ${pair} ainda é ${decision}`);
+              }
+            });
+          })
         );
       })
     )
     .subscribe(
-      ({ symbol, decision }) => {
-        if (this.lastDecisions[symbol] !== decision) {
-          console.log(`Decisão alterada para ${symbol}: ${decision}`);
-          this.decisionSubject.next({ decision, currencyPair: symbol });
-          this.lastDecisions[symbol] = decision;
-        } else {
-          console.log(`Decisão inalterada para ${symbol}: ${decision}`);
-        }
-      },
+      () => {}, // A lógica foi movida para o operador 'tap'
       error => {
         console.error("Erro ao processar os dados:", error);
       }
     );
   }
-
-  private fetchAndDecide(symbol: string): Observable<{ symbol: string, decision: string }> {
-    return this.apiService.getData(symbol, '5min').pipe(
-      switchMap(data5min => {
-        const timeSeries5min = this.extractPrices(data5min['Time Series (5min)'], 14);
-        return this.apiService.getData(symbol, '15min').pipe(
-          switchMap(data15min => {
-            const timeSeries15min = this.extractPrices(data15min['Time Series (15min)'], 14);
-            return this.apiService.getData(symbol, '1h').pipe(
-              map(data1h => {
-                const timeSeries1h = this.extractPrices(data1h['Time Series (1h)'], 14);
-                return {
-                  symbol,
-                  decision: this.decisionService.makeDecision(symbol, timeSeries5min, timeSeries15min, timeSeries1h)
-                };
-              })
-            );
-          })
-        );
-      })
-    );
-  }
-
-  private extractPrices(timeSeries: TimeSeries, points: number): number[] {
-    return Object.values(timeSeries)
-      .map(entry => parseFloat(entry['4. close']))
-      .slice(0, points);
-  }
-  
 }
