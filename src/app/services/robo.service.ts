@@ -44,15 +44,12 @@ export class RoboService {
     )
     .subscribe(
       ({ symbol, decision }) => {
-        // Log para ajudar a entender os dados
-        console.log(`Dados processados para ${symbol}. Decisão: ${decision}`);
-        
         if (this.lastDecisions[symbol] !== decision) {
-          console.log('Decisão alterada:', decision);
+          console.log(`Decisão alterada para ${symbol}: ${decision}`);
           this.decisionSubject.next({ decision, currencyPair: symbol });
           this.lastDecisions[symbol] = decision;
         } else {
-          console.log('Decisão inalterada:', decision);
+          console.log(`Decisão inalterada para ${symbol}: ${decision}`);
         }
       },
       error => {
@@ -73,7 +70,7 @@ export class RoboService {
                 const timeSeries1h = this.extractPrices(data1h['Time Series (1h)'], 14);
                 return {
                   symbol,
-                  decision: this.decisionService.makeDecision(timeSeries5min, timeSeries15min, timeSeries1h)
+                  decision: this.decisionService.makeDecision(symbol, timeSeries5min, timeSeries15min, timeSeries1h)
                 };
               })
             );
@@ -90,4 +87,3 @@ export class RoboService {
   }
   
 }
-

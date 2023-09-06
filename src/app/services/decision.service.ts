@@ -14,8 +14,9 @@ export class DecisionService {
 
   constructor(private utilService: UtilService) {}
 
-  makeDecision(prices5min: number[], prices15min: number[], prices1h: number[]): string {
+  makeDecision(currencyPair: string, prices5min: number[], prices15min: number[], prices1h: number[]): string {
     // Log para depuração
+    console.log("Currency Pair: ", currencyPair);
     console.log("Preços 5min: ", prices5min);
     console.log("Preços 15min: ", prices15min);
     console.log("Preços 1h: ", prices1h);

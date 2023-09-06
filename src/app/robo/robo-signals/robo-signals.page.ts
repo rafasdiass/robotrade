@@ -34,7 +34,15 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
   }
 
   private performHealthCheck(): void {
-    // ... (Código original sem mudanças)
+    this.apiService.healthCheck().subscribe(
+      data => {
+        console.log('API is working', data);
+      },
+      error => {
+        console.log('API is not working', error);
+        this.apiError = true;
+      }
+    );
   }
 
   private subscribeToRoboDecisions(): void {
