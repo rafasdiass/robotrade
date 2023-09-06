@@ -11,8 +11,7 @@ import { APIResponse, TimeSeries } from '../models/api.interfaces';
 })
 export class RoboService {
   private lastDecisions: { [currencyPair: string]: string } = {};
-  
-  // Atualizando para emitir um objeto com decisão e par de moedas
+
   private decisionSubject = new BehaviorSubject<{ decision: string, currencyPair: string } | null>(null);
   public decision$ = this.decisionSubject.asObservable();
 
@@ -32,32 +31,14 @@ export class RoboService {
       this.currencyPairService.currencyPairs$
     ])
     .pipe(
-      filter(() => new Date().getSeconds() <= 45),
       switchMap(([_, currencyPairs]) => {
+        if (!currencyPairs.length) {
+          console.log("Nenhum par de moeda disponível para análise.");
+          return [];
+        }
+
         return from(currencyPairs).pipe(
-          switchMap(symbol => {
-            if (typeof symbol === 'string') {
-              return this.apiService.getData(symbol, '5min').pipe(
-                switchMap(data5min => {
-                  const timeSeries5min = this.extractPrices(data5min['Time Series (5min)'], 14);
-                  return this.apiService.getData(symbol, '15min').pipe(
-                    switchMap(data15min => {
-                      const timeSeries15min = this.extractPrices(data15min['Time Series (15min)'], 14);
-                      return this.apiService.getData(symbol, '1h').pipe(
-                        map(data1h => {
-                          const timeSeries1h = this.extractPrices(data1h['Time Series (1h)'], 14);
-                          return this.decisionService.makeDecision(timeSeries5min, timeSeries15min, timeSeries1h);
-                        })
-                      );
-                    })
-                  );
-                })
-              ).pipe(
-                map(decision => ({ symbol, decision }))
-              );
-            }
-            return of({ symbol: 'Tipo de dado inválido', decision: 'Tipo de dado inválido' });
-          })
+          switchMap(symbol => this.fetchAndDecide(symbol))
         );
       })
     )
@@ -65,7 +46,6 @@ export class RoboService {
       if (this.lastDecisions[symbol] !== decision) {
         console.log('Decisão alterada:', decision);
         
-        // Atualize o BehaviorSubject com a nova decisão e par de moedas
         this.decisionSubject.next({ decision, currencyPair: symbol });
         
         this.lastDecisions[symbol] = decision;
@@ -73,6 +53,28 @@ export class RoboService {
         console.log('Decisão inalterada:', decision);
       }
     });
+  }
+
+  private fetchAndDecide(symbol: string): Observable<{ symbol: string, decision: string }> {
+    return this.apiService.getData(symbol, '5min').pipe(
+      switchMap(data5min => {
+        const timeSeries5min = this.extractPrices(data5min['Time Series (5min)'], 14);
+        return this.apiService.getData(symbol, '15min').pipe(
+          switchMap(data15min => {
+            const timeSeries15min = this.extractPrices(data15min['Time Series (15min)'], 14);
+            return this.apiService.getData(symbol, '1h').pipe(
+              map(data1h => {
+                const timeSeries1h = this.extractPrices(data1h['Time Series (1h)'], 14);
+                return {
+                  symbol,
+                  decision: this.decisionService.makeDecision(timeSeries5min, timeSeries15min, timeSeries1h)
+                };
+              })
+            );
+          })
+        );
+      })
+    );
   }
 
   private extractPrices(timeSeries: TimeSeries, points: number): number[] {
