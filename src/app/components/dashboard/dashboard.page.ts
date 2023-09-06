@@ -1,111 +1,38 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ModalController, AlertController } from '@ionic/angular';
-import { Trade } from '../../models/trade.model';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { FinanceService } from '../../services/finance.service';
+import { ChartOptions, ChartDataset } from 'chart.js';
+import { ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
   styleUrls: ['./dashboard.page.scss'],
 })
-export class DashboardPage implements OnInit, OnDestroy {
-  private _accountBalance: number = 0;
-  private _initialBank: number = 0;
-  private _currentValue: number = 0;
-  private _dailyGoal: number = 0;
-  tradeHistory: Trade[] = [];
-  currentStrategy!: string;
+export class DashboardPage implements OnInit {
+  public stocks: any[] = [];
+  public newsFeed: any[] = [];
+  public figures: any[] = [];
+  public chartType: ChartType = 'line';
+  public chartData: ChartDataset[] = [{ data: [], label: 'Stocks' }];
+  public chartLabels: string[] = [];  
+  public chartOptions: ChartOptions = {
+    responsive: true,
+  };
+  
 
-  constructor(
-    private modalController: ModalController,
-    private alertController: AlertController
-  ) {}
+  constructor(private financeService: FinanceService) {}
 
-  ngOnInit() {
-    // Initialization logic here
-  }
+  ngOnInit(): void {
+    const stockSymbol = 'AAPL';
+    const timeInterval = '5min';
+    const seriesType = 'close';
 
-  ngOnDestroy() {
-    // Cleanup logic here
-  }
-
-  get accountBalance(): number {
-    return this._accountBalance;
-  }
-
-  set accountBalance(value: number) {
-    this._accountBalance = value;
-    this.calculateInitialBank();
-  }
-
-  get initialBank(): number {
-    return this._initialBank;
-  }
-
-  get currentValue(): number {
-    return this._currentValue;
-  }
-
-  get dailyGoal(): number {
-    return this._dailyGoal;
-  }
-
-  set dailyGoal(value: number) {
-    this._dailyGoal = value;
-    this.generateTrades();
-  }
-
-  calculateInitialBank() {
-    this._initialBank = this._accountBalance * 0.1;
-    this.generateTrades();
-  }
-
-  generateTrades() {
-    this.tradeHistory = [];
-    let availableAmount = this._initialBank;
-    const growthRate = this._dailyGoal / 100;
-
-    for (let i = 0; i < 10; i++) {
-      let tradeAmount = Math.round(availableAmount * growthRate);
-      tradeAmount = Math.max(tradeAmount, 5);
-      this.tradeHistory.push({ id: i, amount: tradeAmount, status: 'pending' });
-      availableAmount += tradeAmount;
-    }
-  }
-
-  async checkForConsecutiveLosses() {
-    const lastTwoTrades = this.tradeHistory.slice(-2).map(trade => trade.status);
-    if (lastTwoTrades.every(status => status === 'loss')) {
-      const alert = await this.alertController.create({
-        header: 'Atenção',
-        message: 'Duas perdas consecutivas. Gostaria de pausar?',
-        buttons: ['Cancelar', 'Pausar']
-      });
-      await alert.present();
-    }
-  }
-
-  updateCurrentValue(event: any, trade: Trade) {
-    const { value } = event.detail;
-    trade.status = value;
-    if (value === 'win') {
-      this._currentValue += trade.amount;
-    } else if (value === 'loss') {
-      this._currentValue -= trade.amount;
-    }
-    this.checkForConsecutiveLosses();
-  }
-
-  updateCerco(trade: Trade) {
-    if (trade.priceHedge === 'both') {
-      this._currentValue += trade.amount * 2;
-    } else if (trade.priceHedge === 'one') {
-      this._currentValue += trade.amount;
-    }
-  }
-
-  updateStrategy(newStrategy: string) {
-    this.currentStrategy = newStrategy;
-    this.generateTrades();
+    this.financeService.getStockData(stockSymbol, timeInterval).subscribe((data: any) => {
+      if (data && data['Time Series (5min)']) {
+        this.stocks = Object.values(data['Time Series (5min)']);
+        this.chartData[0].data = this.stocks.map(stock => parseFloat(stock[seriesType]));
+        this.chartLabels = Object.keys(data['Time Series (5min)']);
+      }
+    });
   }
 }

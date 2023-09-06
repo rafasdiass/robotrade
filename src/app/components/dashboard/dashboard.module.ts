@@ -11,6 +11,7 @@ import { DashboardPage } from './dashboard.page';
 
 import { RoboSignalsPageModule } from '../../robo/robo-signals/robo-signals.module';
 import { NavbarPageModule } from './../navbar/navbar.module';
+import { NgChartsModule } from 'ng2-charts';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { NavbarPageModule } from './../navbar/navbar.module';
     FormsModule,
     IonicModule,
     DashboardPageRoutingModule,
+    NgChartsModule,
    
     RoboSignalsPageModule,
     NavbarPageModule
