@@ -2,6 +2,8 @@ ion-item {
   border-radius: 5px;
   margin-bottom: 10px;
   overflow: hidden;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Adicionando sombra */
+  transition: all 0.3s ease; /* Transição suave para mudanças de estado */
 
   &.buy-signal,
   &.sell-signal,
@@ -15,20 +17,20 @@ ion-item {
   }
 
   &.buy-signal {
-    background-color: #e6ffe6;  // Verde claro
-    border-left: 5px solid #00cc00;  // Verde
+    background-color: #e6ffe6;
+    border-left: 5px solid #00cc00;
 
     h2, p {
-      color: #00cc00;  // Verde
+      color: #00cc00;
     }
   }
 
   &.sell-signal {
-    background-color: #ffe6e6;  // Vermelho claro
-    border-left: 5px solid #ff0000;  // Vermelho
+    background-color: #ffe6e6;
+    border-left: 5px solid #ff0000;
 
     h2, p {
-      color: #ff0000;  // Vermelho
+      color: #ff0000;
     }
   }
 
@@ -38,31 +40,38 @@ ion-item {
     }
 
     h2, p {
-      color: yellow;  // Amarelo
+      color: yellow;
     }
   }
 
   &.indecision-signal {
-    background-color: #e6e6ff;  // Azul claro
-    border-left: 5px solid #0000cc;  // Azul
+    background-color: #e6e6ff;
+    border-left: 5px solid #0000cc;
 
     h2, p {
-      color: #0000cc;  // Azul
+      color: #0000cc;
     }
+  }
+
+  /* Adicionando hover effect para itens */
+  &:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
   }
 }
 
-// Media query para telas maiores
+/* Media query para telas maiores */
 @media (min-width: 768px) {
   ion-item {
     font-size: 18px;
+    margin-bottom: 15px; /* Aumentando o espaçamento */
 
     h2 {
       font-size: 24px;
     }
   }
-}
 
-.last-item {
-  margin-bottom: 40px;
+  .last-item {
+    margin-bottom: 50px; /* Aumentando o espaçamento para o último item */
+  }
 }
