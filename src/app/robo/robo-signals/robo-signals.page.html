@@ -9,12 +9,12 @@
   <div *ngIf="isLoading">
     <p>Carregando sinais...</p>
   </div>
-  
+
   <!-- Mensagem de erro da API -->
   <div *ngIf="apiError">
     <p>Erro: Não foi possível conectar-se à API.</p>
   </div>
-  
+
   <!-- Exibe a lista se houver sinais -->
   <ion-list *ngIf="signals.length > 0">
     <ion-item *ngFor="let signal of signals; last as isLast"
