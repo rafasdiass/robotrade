@@ -15,7 +15,6 @@ export class DecisionService {
   constructor(private utilService: UtilService) {}
 
   makeDecision(currencyPair: string, prices5min: number[], prices15min: number[], prices1h: number[]): string {
-    // Log para depuração
     console.log("Currency Pair: ", currencyPair);
     console.log("Preços 5min: ", prices5min);
     console.log("Preços 15min: ", prices15min);
@@ -35,18 +34,24 @@ export class DecisionService {
     const priceChangeScore = this.getPriceChangeScore(this.utilService.calculatePriceChange(prices5min));
     const stochasticOscillatorScore = this.getStochasticOscillatorScore(this.utilService.calculateStochasticOscillator(prices5min));
     const fibonacciLevelScore = this.getFibonacciLevelScore(prices5min[0], this.utilService.calculateFibonacciLevels(Math.min(...prices5min), Math.max(...prices5min)));
-    const patternScore = this.getPatternScore(
-      this.utilService.identifyPatterns(prices5min),
-      prices5min.length - 1
-    );
-
-    if (this.utilService.applyCompositeRetracementStrategy(prices15min, prices1h) !== "Strong Retrace") {
-      return NO_SIGNAL;
-    }
+    const patternScore = this.getPatternScore(this.utilService.identifyPatterns(prices5min), prices5min.length - 1);
 
     const totalScore = rsiScore + emaScore + priceChangeScore + stochasticOscillatorScore + fibonacciLevelScore + patternScore;
 
-    return totalScore > 0 ? BUY : totalScore < 0 ? SELL : NO_SIGNAL;
+    if (totalScore === 0) {
+      return 'Sem sinal';
+    }
+
+    let decision = '';
+    let confidence = Math.abs(totalScore);
+
+    if (totalScore > 0) {
+      decision = `Compra com ${confidence * 10}% de confiança`;
+    } else {
+      decision = `Venda com ${confidence * 10}% de confiança`;
+    }
+
+    return decision;
   }
 
   private getRSIScore(rsi: number): number {
