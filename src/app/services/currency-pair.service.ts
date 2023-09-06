@@ -8,7 +8,7 @@ import { APIResponse, TimeSeries, TimeSeriesEntry } from '../models/api.interfac
 })
 export class CurrencyPairService {
 
-  private readonly currencyPairs: string[] = ['EURUSD', 'AUDCAD', 'EURJPY', 'EURGBP'];
+  private readonly currencyPairs: string[] = ['EURUSD', 'AUDCAD'];
   public currencyPairs$: BehaviorSubject<string[]> = new BehaviorSubject<string[]>(this.currencyPairs);
   public closingPrices5min$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
   public closingPrices15min$: BehaviorSubject<number[]> = new BehaviorSubject<number[]>([]);
@@ -33,7 +33,8 @@ export class CurrencyPairService {
 
   public fetchPriceData(ref: string, interval: string): void {
     console.log(`Buscando dados de preço para ${ref} no intervalo ${interval}...`);
-    this.apiService.getData(ref, interval).subscribe(
+    // Atualizado para usar fetchTimeSeriesData
+    this.apiService.fetchTimeSeriesData(ref, interval).subscribe(
       (response: APIResponse) => this.processPriceDataResponse(response, interval),
       error => console.log(`Erro ao buscar dados de ${interval}:`, error)
     );

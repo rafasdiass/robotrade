@@ -34,7 +34,8 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
   }
 
   private performHealthCheck(): void {
-    this.apiService.healthCheck().subscribe(
+    // Verificando a saúde da API com um conjunto de dados de amostra
+    this.apiService.fetchTimeSeriesData('EURUSD', '5min').subscribe(
       data => {
         console.log('API is working', data);
       },
