@@ -13,6 +13,6 @@ export const environment = {
   },
   apiEnv: {
     apiKey: API_KEYS.alphaVantage,
-    baseUrl: 'https://www.alphavantage.co'
+    baseUrl: 'https://www.alphavantage.co/query'  // Atualizado aqui
   }
 };

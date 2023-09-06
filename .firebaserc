@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "banktrader-8487d"
-  }
+    "default": "banktrader-8487d",
+    "producao": "banktrader-8487d"
+  },
+  "targets": {},
+  "etags": {}
 }
