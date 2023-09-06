@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { RoboService } from '../../services/robo.service';
-import { CurrencyPairService } from '../../services/currency-pair.service';
 import { ApiService } from '../../services/api.service';
 
 interface RobotSignal {
@@ -22,7 +21,6 @@ export class RoboSignalsPage implements OnInit, OnDestroy {
 
   constructor(
     private roboService: RoboService,
-    private currencyPairService: CurrencyPairService,
     private apiService: ApiService,
     private cdr: ChangeDetectorRef
   ) {}

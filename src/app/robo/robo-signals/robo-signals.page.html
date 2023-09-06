@@ -1,15 +1,16 @@
-
 <ion-content>
   <ion-toolbar>
     <ion-title>
       Sinais do Robô
     </ion-title>
   </ion-toolbar>
-  <ion-list>
-    <ion-item *ngFor="let signal of signals; last as isLast" 
+  
+  <!-- Exibe a lista se houver sinais -->
+  <ion-list *ngIf="signals.length > 0">
+    <ion-item *ngFor="let signal of signals; last as isLast"
               [ngClass]="{
-                'buy-signal': signal.action === 'Compra', 
-                'sell-signal': signal.action === 'Venda', 
+                'buy-signal': signal.action === 'Compra',
+                'sell-signal': signal.action === 'Venda',
                 'no-signal': signal.action === 'Sem sinal',
                 'indecision-signal': signal.action === 'Indecisão',
                 'last-item': isLast
@@ -21,4 +22,9 @@
       </ion-label>
     </ion-item>
   </ion-list>
+
+  <!-- Exibe uma mensagem se a lista estiver vazia -->
+  <div *ngIf="signals.length === 0">
+    <p>Nenhum sinal disponível no momento.</p>
+  </div>
 </ion-content>
