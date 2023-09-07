@@ -20,25 +20,34 @@ export class SimpleInterestPage implements OnInit {
   ngOnInit() {
     this.updateValues();
   }
-
   calculateSimpleInterest() {
-    let totalAmount = this.initialAmount; // Valor inicial da banca
-    const dailyGoalPercent = this.dailyGoal / 100; // Meta diária em porcentagem
-    const payoutPercent = this.payout / 100; // Payout em porcentagem
-
-    this.entries = []; // Limpa o array de entradas
-
+    let totalAmountCents = this.initialAmount * 100;  // Convert to cents
+    const dailyGoalPercent = this.dailyGoal / 100; 
+    const payoutPercent = this.payout / 100; 
+    this.entries = [];
+  
+    let entryAmountCents = Math.round(totalAmountCents * dailyGoalPercent);  // Now in cents
+  
     for (let i = 0; i < 30; i++) {
-      const entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
-      const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
-
-      totalAmount = totalAmount + profit; // Atualiza o valor total da banca usando juros simples
-      totalAmount = parseFloat(totalAmount.toFixed(2)); // Arredonda para duas casas decimais e converte de volta para número
-
-      this.entries.push({ day: i + 1, entryAmount, profit, totalAmount });
+      const profitCents = Math.round(entryAmountCents * payoutPercent);  // Profit in cents
+      totalAmountCents += profitCents;  // Total amount now in cents
+  
+      const entry = {
+        day: i + 1,
+        entryAmount: entryAmountCents / 100,  // Convert back to dollars for display
+        profit: profitCents / 100,  // Convert back to dollars for display
+        totalAmount: totalAmountCents / 100  // Convert back to dollars for display
+      };
+  
+    
+      entry.entryAmount = Number(entry.entryAmount.toFixed(2));
+      entry.profit = Number(entry.profit.toFixed(2));
+      entry.totalAmount = Number(entry.totalAmount.toFixed(2));
+  
+      this.entries.push(entry);
     }
   }
-
+  
   // Função para atualizar o cálculo quando os valores são alterados
   updateValues() {
     this.entries = []; // Limpa o array de entradas

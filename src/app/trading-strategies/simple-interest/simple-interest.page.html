@@ -2,16 +2,16 @@
   <div class="content-container">
     <div class="page-title-container">
       <ion-label class="page-title">
-        Juros Simples
+        Juros Simples <!-- Título atualizado -->
       </ion-label>
     </div>
-
+ 
     <!-- Card para Valor Inicial, Meta Diária e Payout -->
     <ion-card class="input-card">
       <ion-card-content>
         <ion-item class="input-item">
-          <ion-label>Valor Inicial (R$)</ion-label>
-          <ion-input [(ngModel)]="initialAmount" (ionChange)="updateValues()"></ion-input>
+          <ion-label position="floating">Valor Inicial (R$)</ion-label>
+          <ion-input [(ngModel)]="initialAmount" (ionChange)="updateValues()" aria-labelledby="initialAmountLabel"></ion-input>
         </ion-item>
         <ion-item class="input-item">
           <ion-label>Meta Diária (%)</ion-label>
@@ -24,22 +24,22 @@
       </ion-card-content>
     </ion-card>
 
-    <!-- Cards para as Entradas (Juros Simples) -->
+    <!-- Cards para as Entradas -->
     <ion-card *ngFor="let entry of entries" class="entry-card">
       <ion-card-content class="entry-content">
         <ion-grid>
           <ion-row class="entry-row">
             <ion-col class="entry-col">
-              {{ entry.day }}ª Entrada 
+              {{ entry.day }}ª Entrada
             </ion-col>
             <ion-col class="entry-col">
-              Entrada (R$):<span class="entry-value"> {{ entry.entryAmount.toFixed(2) }} </span>
+              Entrada (R$):<span class="entry-value"> {{ entry.entryAmount }} </span> <!-- Removido o .toFixed(2) já que é um número inteiro -->
             </ion-col>
             <ion-col class="entry-col">
               Lucro: <span class="lucro"> {{ entry.profit.toFixed(2) }}</span>
             </ion-col>
             <ion-col class="entry-col">
-              Total: <span class="calculated-value">{{ entry.totalAmount.toFixed(2) }}</span>
+              Total: <span class="calculated-value">{{ entry.totalAmount }}</span>
             </ion-col>
           </ion-row>
         </ion-grid>
