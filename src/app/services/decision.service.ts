@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UtilService } from './util.service';
+import { LearningService } from './learning.service';
 import { BUY, SELL, NO_SIGNAL, RSI_LOWER_LIMIT, RSI_UPPER_LIMIT } from './constants';
 
 const STOCHASTIC_LOWER_LIMIT = 20;
@@ -12,7 +13,9 @@ const FIBONACCI_UPPER_LEVEL = '100.0%';
 })
 export class DecisionService {
 
-  constructor(private utilService: UtilService) {}
+  constructor(private utilService: UtilService, private learningService: LearningService) {
+    console.log("DecisionService iniciado");
+  }
 
   makeDecision(currencyPair: string, prices5min: number[], prices15min: number[], prices1h: number[]): string {
     console.log("Currency Pair: ", currencyPair);
@@ -29,14 +32,25 @@ export class DecisionService {
       console.warn("Dados auxiliares de preços insuficientes; tomando decisão apenas com base nos preços de 5 minutos.");
     }
 
-    const rsiScore = this.getRSIScore(this.utilService.calculateRSI(prices5min));
-    const emaScore = this.getEMAScore(prices5min[0], this.utilService.calculateEMA(prices5min, 9));
-    const priceChangeScore = this.getPriceChangeScore(this.utilService.calculatePriceChange(prices5min));
-    const stochasticOscillatorScore = this.getStochasticOscillatorScore(this.utilService.calculateStochasticOscillator(prices5min));
-    const fibonacciLevelScore = this.getFibonacciLevelScore(prices5min[0], this.utilService.calculateFibonacciLevels(Math.min(...prices5min), Math.max(...prices5min)));
-    const patternScore = this.getPatternScore(this.utilService.identifyPatterns(prices5min), prices5min.length - 1);
+    const weights = this.learningService.getWeights(); // Obtenção dos pesos
+    console.log("Pesos atuais: ", weights);
 
-    const totalScore = rsiScore + emaScore + priceChangeScore + stochasticOscillatorScore + fibonacciLevelScore + patternScore;
+    const indicators = {
+      rsi: this.getRSIScore(this.utilService.calculateRSI(prices5min)),
+      ema: this.getEMAScore(prices5min[0], this.utilService.calculateEMA(prices5min, 9)),
+      priceChange: this.getPriceChangeScore(this.utilService.calculatePriceChange(prices5min)),
+      stochasticOscillator: this.getStochasticOscillatorScore(this.utilService.calculateStochasticOscillator(prices5min)),
+      fibonacciLevel: this.getFibonacciLevelScore(prices5min[0], this.utilService.calculateFibonacciLevels(Math.min(...prices5min), Math.max(...prices5min))),
+      pattern: this.getPatternScore(this.utilService.identifyPatterns(prices5min), prices5min.length - 1)
+    };
+
+    console.log("Indicadores calculados: ", indicators);
+
+    let totalScore = this.learningService.makeDecision(indicators);
+
+    // Salva o resultado para futuras decisões
+    this.learningService.storeResult(indicators, totalScore > 0);
+    console.log("Resultado armazenado para futuras decisões");
 
     if (totalScore === 0) {
       return 'Sem sinal';
@@ -51,6 +65,7 @@ export class DecisionService {
       decision = `Venda com ${confidence * 10}% de confiança`;
     }
 
+    console.log("Decisão final: ", decision);
     return decision;
   }
 
@@ -59,9 +74,7 @@ export class DecisionService {
   }
 
   private getEMAScore(price: number, ema9: number): number {
-    if (price > ema9) return 1;
-    if (price < ema9) return -1;
-    return 0;
+    return price > ema9 ? 1 : price < ema9 ? -1 : 0;
   }
 
   private getPriceChangeScore(priceChange: number): number {
@@ -69,21 +82,14 @@ export class DecisionService {
   }
 
   private getStochasticOscillatorScore(stochasticOscillator: number): number {
-    if (stochasticOscillator < STOCHASTIC_LOWER_LIMIT) return 1;
-    if (stochasticOscillator > STOCHASTIC_UPPER_LIMIT) return -1;
-    return 0;
+    return stochasticOscillator < STOCHASTIC_LOWER_LIMIT ? 1 : stochasticOscillator > STOCHASTIC_UPPER_LIMIT ? -1 : 0;
   }
 
   private getFibonacciLevelScore(price: number, fibonacciLevels: { [key: string]: number }): number {
-    if (price > fibonacciLevels[FIBONACCI_LOWER_LEVEL] && price < fibonacciLevels[FIBONACCI_UPPER_LEVEL]) {
-      return 1;
-    }
-    return 0;
+    return price > fibonacciLevels[FIBONACCI_LOWER_LEVEL] && price < fibonacciLevels[FIBONACCI_UPPER_LEVEL] ? 1 : 0;
   }
 
   private getPatternScore({ wPatterns, mPatterns }: { wPatterns: number[], mPatterns: number[] }, lastIndex: number): number {
-    if (wPatterns.includes(lastIndex)) return 1;
-    if (mPatterns.includes(lastIndex)) return -1;
-    return 0;
+    return wPatterns.includes(lastIndex) ? 1 : mPatterns.includes(lastIndex) ? -1 : 0;
   }
 }
