@@ -29,12 +29,16 @@ export class CompoundInterestPage implements OnInit {
     this.entries = []; // Limpa o array de entradas
   
     for (let i = 0; i < 30; i++) {
-      const entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
+      let entryAmount = totalAmount * dailyGoalPercent; // Calcula o valor da entrada com base na meta diária
+      
+      // Arredonda o valor da entrada para o número inteiro mais próximo
+      entryAmount = Math.round(entryAmount);
+  
       const profit = entryAmount * payoutPercent; // Calcula o lucro com base no payout
   
       totalAmount = totalAmount - entryAmount + entryAmount + profit; // Atualiza o valor total da banca
       totalAmount = parseFloat(totalAmount.toFixed(2)); // Arredonda para duas casas decimais e converte de volta para número
-
+  
       this.entries.push({ day: i + 1, entryAmount, profit, totalAmount });
     }
   }
